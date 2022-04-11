@@ -1,7 +1,7 @@
 {
   "name": "tfxjs",
-  "version": "0.0.1",
-  "description": "i run unit tests",
+  "version": "0.0.2",
+  "description": "Terraform acceptance testing framework",
   "main": "./index.js",
   "bin" : {
     "tfx" : "./index.js"
