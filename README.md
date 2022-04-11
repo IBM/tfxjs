@@ -1,6 +1,6 @@
 # tfxjs
 
-tfxjs is a terrafrom acceptance test framework built with [mocha](https://mochajs.org/) and [chai](https://www.chaijs.com/) to allow users to quickly create acceptance tests for terraform tmplates.
+tfxjs is a terrafrom acceptance test framework built with [mocha](https://mochajs.org/) and [chai](https://www.chaijs.com/) to allow users to quickly create acceptance tests for terraform templates.
 
 ---
 
@@ -116,7 +116,7 @@ tfx.plan("MyModule", () => { // Gerate a plan in the directory
    * @param {string} moduleAddress relative module address from root
    * @param {Array<object>} resources Array of resources from the module to check
    */
-  module(moduleName, moduleAddress, resources)
+  tfx.module(moduleName, moduleAddress, resources)
 ```
 
 `tfx.module` runs a set of tests against a module inside the plan data. In order to call `tfx.module`, a `tfx.plan` command must be run first.
@@ -138,7 +138,7 @@ tfx.plan("MyModule", "module.my_module", () => {
 
 ## Contributing
 
-If you have any questions or issues you can create a new [issue here][issues]. See the full contribution guidelines [here](./CONTRIBUTING.md)/
+If you have any questions or issues you can create a new [issue here][issues]. See the full contribution guidelines [here](./CONTRIBUTING.md).
 
 Pull requests are very welcome! Make sure your patches are well tested.
 Ideally create a topic branch for every separate change you make. For
