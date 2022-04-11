@@ -1,0 +1,114 @@
+const { assert } = require("chai");
+const mocks = require("./tfx.mocks");
+let mock = new mocks();
+
+describe("mocks", () => {
+  describe("describe", () => {
+    it("should return the evaluation of the inside callback function", () => {
+      let data = mock.describe("should blah blah blah", () => {
+        return {
+          data: true,
+        };
+      });
+      assert.deepEqual(
+        data,
+        { data: true },
+        "Should return result of inner function"
+      );
+    });
+    it("should add a definition to the definition list", () => {
+      assert.deepEqual(
+        mock.definitionList,
+        ["should blah blah blah"],
+        "Should return result of inner function"
+      );
+    });
+    it("should return the value of it when the mock it is used inside describe", () => {
+      let data = mock.describe("should outside", () => {
+        return mock.it("should insdie", () => {
+          return "sending out an sos";
+        });
+      });
+      assert.deepEqual(
+        data,
+        "sending out an sos",
+        "it should evaluate inner callback"
+      );
+    });
+  });
+  describe("it", () => {
+    before(() => {
+      mock = new mocks();
+    });
+    it("should return the evaluation of the inside callback function", () => {
+      let data = mock.it("should blah blah blah", () => {
+        return {
+          data: true,
+        };
+      });
+      assert.deepEqual(
+        data,
+        { data: true },
+        "Should return result of inner function"
+      );
+    });
+    it("should add a definition to the it list", () => {
+      assert.deepEqual(
+        mock.itList,
+        ["should blah blah blah"],
+        "Should return result of inner function"
+      );
+    });
+  });
+  describe("before", () => {
+    before(() => {
+      mock = new mocks();
+    });
+    it("should return the evaluation of the inside callback function", () => {
+      let data = mock.before(() => {
+        return {
+          data: true,
+        };
+      });
+      assert.deepEqual(
+        data,
+        { data: true },
+        "Should return result of inner function"
+      );
+    });
+    it("should add a definition to the before list", () => {
+      assert.deepEqual(
+        mock.beforeList,
+        [{
+          data: true,
+        }],
+        "Should return result of inner function"
+      );
+    });
+  });
+  describe("exec", () => {
+    it("should return the correct string", async () => {
+      assert.deepEqual(
+        await mock.exec(""),
+        {
+          stdout: `{"planned_values" : "success"}`,
+        },
+        "it should return the correct string"
+      );
+    });
+    it("should set lest script to equal script run", async () => {
+      await mock.exec("script");
+      assert.deepEqual(
+        mock.lastScript,
+        `script`,
+        "it should return the correct string"
+      );
+    });
+  });
+  describe("log", () => {
+    it("should add a string to log list when called", () => {
+      mock.log("hi")
+      assert.deepEqual(mock.logList, ["hi"], "it should return the correct array")
+    })
+  })
+});
