@@ -1,8 +1,8 @@
 {
   "name": "tfxjs",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Terraform acceptance testing framework",
-  "main": "./index.js",
+  "main": "./lib/index.js",
   "bin" : {
     "tfx" : "./index.js"
   },
