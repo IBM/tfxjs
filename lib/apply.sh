@@ -6,5 +6,6 @@ FILE_PATH=$3
 cd $FILE_PATH
 QUIET=$(terraform init)
 QUIET=$(terraform plan -out=tfplan -input=false)
-terraform show -json tfplan | jq
-QUIET=$(rm -rf tfplan .terraform/ .terraform.lock.hcl)
+TRY=$(terraform show -json tfplan | jq)
+QUIET=$(echo "yes" | terraform apply)
+cat terraform.tfstate
