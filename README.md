@@ -290,7 +290,7 @@ npm run coverage
 
 File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ---------------|---------|----------|---------|---------|-------------------
-All files      |     100 |    95.04 |     100 |     100 |                   
+All files      |    <span style='color:lime;font-weight:bold'> 100</span> |    <span style='color:lime;font-weight:bold'>95.04</span>  |     <span style='color:lime;font-weight:bold'> 100</span>  |     <span style='color:lime;font-weight:bold'> 100</span>  |                   
  lib           |     100 |    95.04 |     100 |     100 |                   
   helpers.js   |     100 |      100 |     100 |     100 |                   
   index.js     |     100 |      100 |     100 |     100 |                   
