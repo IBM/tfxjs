@@ -757,11 +757,12 @@ describe("tfUnitTestUtils", () => {
   });
   describe("testModule", () => {
     beforeEach(() => (mock = new mocks()));
-    it("should run the correct describe and test functions for apply", () => {
-      tfutils.testModule(
-        "test",
-        "module.test",
-        {
+    it("should run the correct describe and test functions for plan", () => {
+      let callbackDone = false;
+      let options = {
+        moduleName: "test",
+        address: "module.test",
+        tfData: {
           root_module: {
             child_modules: [
               {
@@ -779,7 +780,10 @@ describe("tfUnitTestUtils", () => {
             ],
           },
         },
-        [
+        callback: function(){
+          callbackDone = true;
+        },
+        testList: [
           {
             name: "test",
             address: "test",
@@ -788,7 +792,8 @@ describe("tfUnitTestUtils", () => {
             },
           },
         ]
-      );
+      }
+      tfutils.testModule(options);
       assert.deepEqual(
         tfUtilMocks.itList,
         [
@@ -804,6 +809,7 @@ describe("tfUnitTestUtils", () => {
         ["Module test", "test"],
         "should return correct it function were run"
       );
+      assert.isTrue(callbackDone, "it should execute the callback")
     });
     it("should run the correct describe and test function for apply", () => {
       let tfstate = {
@@ -838,11 +844,12 @@ describe("tfUnitTestUtils", () => {
           },
         ],
       };
-      tfutils.testModule(
-        "Cluster Versions",
-        "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-        tfstate,
-        [
+      let options = {
+        moduleName: "Cluster Versions",
+        address : "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+        tfData: tfstate,
+        isApply: true,
+        testList: [
           {
             name: "Cluster Versions",
             address:
@@ -857,9 +864,9 @@ describe("tfUnitTestUtils", () => {
               },
             ],
           },
-        ],
-        true
-      );
+        ]
+      }
+      tfutils.testModule(options);
       assert.deepEqual(
         tfUtilMocks.itList,
         [
@@ -886,6 +893,10 @@ describe("tfUnitTestUtils", () => {
         "should return correct it function were run"
       );
     });
+    it("should throw an error if no tf data", () => {
+      let task = () => tfutils.testModule({frog: "frog"});
+      assert.throws(task, `tfData must be passed as an option got ["frog"]`)
+    })
   });
   describe("buildInstanceTest", () => {
     it("should return a test to check if the resource exists in the resources object when found in state", () => {
