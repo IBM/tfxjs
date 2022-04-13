@@ -12,6 +12,7 @@ tfxjs is a terrafrom acceptance test framework built with [mocha](https://mochaj
 4. [Example Usage](#example-usage)
 5. [Methods](#methods)
 5. [Contributing](#contributing)
+6. [Code Test Coverage](#code-test-coverage)
 
 ---
 
@@ -271,3 +272,28 @@ example:
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+--- 
+
+## Code Test Coverage
+
+This module uses [nyc](https://www.npmjs.com/package/nyc) for unit test coverage.
+
+To get test coverage, run the command 
+```shell
+npm run coverage
+```
+
+---
+
+### Current Test Coverage
+
+File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------|---------|----------|---------|---------|-------------------
+All files      |     100 |    95.04 |     100 |     100 |                   
+ lib           |     100 |    95.04 |     100 |     100 |                   
+  helpers.js   |     100 |      100 |     100 |     100 |                   
+  index.js     |     100 |      100 |     100 |     100 |                   
+  utils.js     |     100 |    92.95 |     100 |     100 | <span style='color:yellow;font-weight:bold'>207,252,286-289</span>
+ unit-tests    |     100 |      100 |     100 |     100 |                   
+  tfx.mocks.js |     100 |      100 |     100 |     100 |                   
