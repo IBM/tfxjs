@@ -754,6 +754,98 @@ describe("tfUnitTestUtils", () => {
         "it should return correct json data"
       );
     });
+    it("should return a failing resource test if resources declared in child module are found", () => {
+      let actualData = buildModuleTest(
+        "test",
+        "module.test",
+        {
+          root_module: {
+            child_modules: [
+              {
+                address: "module.parent",
+                child_modules: [{
+                  address: "module.parent.module.test",
+                  resources: [
+                    {
+                      name: "test",
+                      address: "module.parent.module.test.test",
+                      values: {
+                        test: "test",
+                      },
+                    },
+                    {
+                      name: "todd",
+                      address: "module.parent.module.test.todd",
+                      values: {
+                        test: "test",
+                      },
+                    },
+                  ],
+                }]
+              },
+            ],
+          },
+        },
+        [
+          {
+            name: "test",
+            address: "test",
+            values: {
+              test: "test",
+            },
+          },
+        ]
+      );
+      let expecctedData = {
+        describe: "Module test",
+        tests: [
+          {
+            name: "Plan should contain the module module.test",
+            assertionType: "isTrue",
+            assertionArgs: [
+              true,
+              "The module module.test should exist in the terraform plan.",
+            ],
+          },
+          {
+            describe: "test",
+            tests: [
+              {
+                name: "Module module.parent.module.test should contain resource test",
+                assertionType: "isNotFalse",
+                assertionArgs: [
+                  true,
+                  "Expected module.parent.module.test contain the test resource.",
+                ],
+              },
+              {
+                name: "test should have the correct test value",
+                assertionType: "deepEqual",
+                assertionArgs: [
+                  "test",
+                  "test",
+                  "Expected test to have correct value for test.",
+                ],
+              },
+            ],
+          },
+          {
+            name: "module.test should not contain additional resources",
+            assertionType: "deepEqual",
+            assertionArgs: [
+              ["module.parent.module.test.test", "module.parent.module.test.todd"],
+              ["module.parent.module.test.test"],
+              "The module module.test should not contain any resources in addition to ones passed",
+            ],
+          },
+        ],
+      };
+      assert.deepEqual(
+        actualData,
+        expecctedData,
+        "it should return correct json data"
+      );
+    });
   });
   describe("testModule", () => {
     beforeEach(() => (mock = new mocks()));
