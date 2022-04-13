@@ -938,6 +938,14 @@ describe("tfUnitTestUtils", () => {
               "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] name to have value ut-atracker",
             ],
           },
+          {
+            assertionArgs: [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ],
+            assertionType: "isFalse",
+            name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target"
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -994,6 +1002,14 @@ describe("tfUnitTestUtils", () => {
               "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] name to contain the prefix `ut-`.",
             ],
           },
+          {
+            assertionArgs: [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ],
+            assertionType: "isFalse",
+            name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target"
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1050,6 +1066,14 @@ describe("tfUnitTestUtils", () => {
               "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] name to exist in module, got undefined."
             ],
           },
+          {
+            assertionArgs: [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ],
+            assertionType: "isFalse",
+            name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target"
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1102,6 +1126,14 @@ describe("tfUnitTestUtils", () => {
               "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] name to have value ut-atracker",
             ],
           },
+          {
+            assertionArgs: [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ],
+            assertionType: "isFalse",
+            name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target"
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1144,30 +1176,38 @@ describe("tfUnitTestUtils", () => {
         describe: "test",
         tests: [
           {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
+            "name": "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
               true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
-            assertionType: "isNotFalse",
-            assertionArgs: [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist",
-            ],
+            "name": "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+            "assertionType": "isFalse",
+            "assertionArgs": [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
-            assertionType: "deepEqual",
-            assertionArgs: [
-              "REDACTED",
-              "REDACTED",
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be REDACTED",
-            ],
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
+              true,
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist"
+            ]
           },
+          {
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
+            "assertionType": "deepEqual",
+            "assertionArgs": [
+              "REDACTED",
+              "REDACTED",
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be REDACTED"
+            ]
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1211,35 +1251,7 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      let expectedData = {
-        describe: "test",
-        tests: [
-          {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
-          },
-          {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
-            assertionType: "isNotFalse",
-            assertionArgs: [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist",
-            ],
-          },
-          {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
-            assertionType: "isTrue",
-            assertionArgs: [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be equal to REDACTED",
-            ],
-          },
-        ],
-      };
+      let expectedData = {"describe":"test","tests":[{"name":"Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate","assertionType":"isNotFalse","assertionArgs":[true,"Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate"]},{"name":"Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target","assertionType":"isFalse","assertionArgs":[false,"Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"]},{"name":"Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint","assertionType":"isNotFalse","assertionArgs":[true,"Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist"]},{"name":"Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key","assertionType":"isTrue","assertionArgs":[true,"Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be equal to REDACTED"]}]};
       assert.deepEqual(actualData, expectedData);
     });
     it("should return the correct test for an object nested in an array with only one object where object does not exist", () => {
@@ -1280,24 +1292,32 @@ describe("tfUnitTestUtils", () => {
         describe: "test",
         tests: [
           {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
+            "name": "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
               true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for dos_endpoint.",
-            assertionType: "deepEqual",
-            assertionArgs: [
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for dos_endpoint.",
+            "assertionType": "deepEqual",
+            "assertionArgs": [
               undefined,
               {
-                api_key: "REDACTED",
+                "api_key": "REDACTED"
               },
-              'Expected module.landing_zone.ibm_atracker_target.atracker_target[0] dos_endpoint to have value {"api_key":"REDACTED"}',
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] dos_endpoint to have value {\"api_key\":\"REDACTED\"}"
+            ]
           },
+          {
+            "name": "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+            "assertionType": "isFalse",
+            "assertionArgs": [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ]
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1341,38 +1361,46 @@ describe("tfUnitTestUtils", () => {
         describe: "test",
         tests: [
           {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
+            "name": "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
               true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
-            assertionType: "isNotFalse",
-            assertionArgs: [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist",
-            ],
+            "name": "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+            "assertionType": "isFalse",
+            "assertionArgs": [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
-            assertionType: "deepEqual",
-            assertionArgs: [
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
+              true,
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist"
+            ]
+          },
+          {
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
+            "assertionType": "deepEqual",
+            "assertionArgs": [
               "REDACTED",
               "REDACTED",
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be REDACTED",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be REDACTED"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint.unfound",
-            assertionType: "isNotFalse",
-            assertionArgs: [
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint.unfound",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
               true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint.unfound to exist",
-            ],
-          },
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint.unfound to exist"
+            ]
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1409,22 +1437,36 @@ describe("tfUnitTestUtils", () => {
         describe: "test",
         tests: [
           {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
+            "name": "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
               true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for tags.",
-            assertionType: "deepEqual",
-            assertionArgs: [
-              ["tag1", "tag2"],
-              ["tag1", "tag2"],
-              'Expected module.landing_zone.ibm_atracker_target.atracker_target[0] tags to have value ["tag1","tag2"]',
-            ],
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for tags.",
+            "assertionType": "deepEqual",
+            "assertionArgs": [
+              [
+                "tag1",
+                "tag2"
+              ],
+              [
+                "tag1",
+                "tag2"
+              ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] tags to have value [\"tag1\",\"tag2\"]"
+            ]
           },
+          {
+            "name": "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+            "assertionType": "isFalse",
+            "assertionArgs": [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ]
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1475,36 +1517,44 @@ describe("tfUnitTestUtils", () => {
         describe: "test",
         tests: [
           {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
+            "name": "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
               true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for tags.",
-            assertionType: "deepEqual",
-            assertionArgs: [
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for tags.",
+            "assertionType": "deepEqual",
+            "assertionArgs": [
               [
                 {
-                  frog: "true",
+                  "frog": "true"
                 },
                 {
-                  frog: "false",
-                },
+                  "frog": "false"
+                }
               ],
               [
                 {
-                  frog: "true",
+                  "frog": "true"
                 },
                 {
-                  frog: "false",
-                },
+                  "frog": "false"
+                }
               ],
-              'Expected module.landing_zone.ibm_atracker_target.atracker_target[0] tags to have value [{"frog":"true"},{"frog":"false"}]',
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] tags to have value [{\"frog\":\"true\"},{\"frog\":\"false\"}]"
+            ]
           },
+          {
+            "name": "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+            "assertionType": "isFalse",
+            "assertionArgs": [
+              false,
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ]
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1542,22 +1592,30 @@ describe("tfUnitTestUtils", () => {
         describe: "test",
         tests: [
           {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
+            "name": "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+            "assertionType": "isNotFalse",
+            "assertionArgs": [
               true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate"
+            ]
           },
           {
-            name: "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[atracker] to have correct value for name.",
-            assertionType: "deepEqual",
-            assertionArgs: [
+            "name": "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[atracker] to have correct value for name.",
+            "assertionType": "deepEqual",
+            "assertionArgs": [
               "ut-atracker",
               "ut-atracker",
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[atracker] name to have value ut-atracker",
-            ],
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target[atracker] name to have value ut-atracker"
+            ]
           },
+          {
+            "name": "Expected instance with key atracker to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+            "assertionType": "isFalse",
+            "assertionArgs": [
+              false,
+              "Expected instance with key atracker to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances"
+            ]
+          }
         ],
       };
       assert.deepEqual(actualData, expectedData);
@@ -1611,12 +1669,76 @@ describe("tfUnitTestUtils", () => {
               {
                 index_key: "test",
                 name: "name-two"
+              },
+              {
+                index_key: "bad-index"
               }
             ]
           },
         ]
       )
-      //console.log(JSON.stringify(actualData, null, 2))
+      let expectedData = {
+        "describe": "Landing Zone",
+        "tests": [
+          {
+            "describe": "Cluster Versions",
+            "tests": [
+              {
+                "name": "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
+                "assertionType": "isNotFalse",
+                "assertionArgs": [
+                  true,
+                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions resource to be included in tfstate"
+                ]
+              },
+              {
+                "name": "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
+                "assertionType": "deepEqual",
+                "assertionArgs": [
+                  "name-one",
+                  "name-one",
+                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] name to have value name-one"
+                ]
+              },
+              {
+                "name": "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                "assertionType": "isFalse",
+                "assertionArgs": [
+                  false,
+                  "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances"
+                ]
+              },
+              {
+                "name": "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
+                "assertionType": "deepEqual",
+                "assertionArgs": [
+                  "name-two",
+                  "name-two",
+                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] name to have value name-two"
+                ]
+              },
+              {
+                "name": "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                "assertionType": "isFalse",
+                "assertionArgs": [
+                  false,
+                  "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances"
+                ]
+              },
+              {
+                "name": "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                "assertionType": "isFalse",
+                "assertionArgs": [
+                  true,
+                  "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      
+      assert.deepEqual(actualData, expectedData, "It should return correct instance test data")
     })
   })
 });
