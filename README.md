@@ -26,6 +26,10 @@ npm install tfxjs -g
 ## Prerequisites
 
 Create a `.env` file for your environment and set the `API_KEY` value 
+If [mocha](https://mochajs.org/) is not installed globally run:
+```shell
+npm install mocha -g
+```
 
 ## Usage
 
@@ -135,9 +139,9 @@ tfx.plan("MyModule", "module.my_module", () => {
 })
 ```
 
-#### Resources
+#### Module Resource Test definitions
 
-Resources are described in an object with a name, address, and values.
+Resources for modules are described in an object with a name, address, and values.
 
 ```js
 {
@@ -180,6 +184,74 @@ Example resource with a function:
       },
       receive_global_events: true,
     }
+  }
+}
+```
+
+### apply
+
+```js
+  /**
+   * Apply Terraform module from directory and return tfstate data using mocha
+   * @param {string} moduleName Name of the module that is being tested
+   * @param {Function} callback Callback function
+   */
+  tfx.plan(moduleName, callback)
+```
+
+`tfx.apply` runs a `terraform apply` command in the directory where `tfx` is initialized and adds the terraform.tfstate data to the `tfx` object. After the plan has been completed, the callback function will be executed. 
+
+### state
+
+
+```js
+  /**
+   * Run tests for terraform state
+   * @param {string} moduleName decorative string for module name
+   * @param {string} moduleAddress relative module address from root
+   * @param {Array<object>} resources Array of resources from the module to check
+   */
+  tfx.state(moduleName, moduleAddress, resources)
+```
+
+`tfx.state` runs a set of tests against a module inside the tf.state data. In order to call `tfx.module`, a `tfx.apply` command must be run first.
+
+`tfx.state` runs commands only against specific resources. Ex:
+
+```js
+tfx.apply("myModule", () => {
+  tfx.state("myTests", [
+    ...tests
+  ])
+})
+```
+
+#### State Resource Test definitions
+
+```js
+[
+  {
+    name: // Decorative name of the resource
+    address: // Address for resource
+    instances: [
+      {
+        index_key: // Optional, use only if the index of the instance is a string, otherwise index will
+        // be generated automatically
+        ...attributes // Any attributes that will be tested for that instance
+      }
+    ]
+  }
+]
+```
+
+In addition to being any other data type, a function can also be passed in `values`.
+
+```js
+function (value) {
+  // your code here
+  return {
+    expectedData: // Must be `true` or `false` after evaluation
+    appendMessage: // String message to append to the end of a test
   }
 }
 ```
