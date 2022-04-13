@@ -121,18 +121,68 @@ tfx.plan("MyModule", () => { // Gerate a plan in the directory
 
 `tfx.module` runs a set of tests against a module inside the plan data. In order to call `tfx.module`, a `tfx.plan` command must be run first.
 
-`tfx.module` checks for children relative to the parent. ex.
+`tfx.module` checks for children relative to the parent.
+
+#### Example
 
 `module.my_module` has a sub module `module.sub_module` creating a composed module address of `module.my_module.module.sub_module`. tfx will dynamically add the parent module name to child modules. This allows sub modules to be accessed like this:
 
 ```js
 tfx.plan("MyModule", "module.my_module", () => {
-  tfx.module("SubModudle", "module.sub_module", () => {
-    ...
-  })
+  tfx.module("SubModudle", "module.sub_module", [
+    ...resources
+  ]})
 })
 ```
 
+#### Resources
+
+Resources are described in an object with a name, address, and values.
+
+```js
+{
+  {
+    name: "Activity Tracker Route",
+    address: "ibm_atracker_route.atracker_route",
+    values: {
+      name: "ut-atracker-route",
+      receive_global_events: true,
+    }
+  }
+}
+```
+
+In addition to being any other data type, a function can also be passed in `values`.
+
+```js
+function (value) {
+  // your code here
+  return {
+    expectedData: // Must be `true` or `false` after evaluation
+    appendMessage: // String message to append to the end of a test
+  }
+}
+```
+
+Example resource with a function:
+
+```js
+{
+  {
+    name: "Activity Tracker Route",
+    address: "ibm_atracker_route.atracker_route",
+    values: {
+      name: function(value) {
+        return {
+          expectedData: value.indexOf("_") === -1,
+          appendMessage: "to not contain the underscore character."
+        }
+      },
+      receive_global_events: true,
+    }
+  }
+}
+```
 
 ---
 

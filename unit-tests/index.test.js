@@ -151,6 +151,54 @@ describe("tfxjs", () => {
 
     })
   });
+  describe("apply", () => {
+    beforeEach(() => {
+      mock = new mocks();
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+        overrideBefore: mock.before,
+        overrideDescribe: mock.describe,
+        overrideIt: mock.it,
+      });
+      overrideTfx.print = mock.log;
+    });
+    it("should run the correct describe function", () => {
+      overrideTfx.apply("describe", () => {});
+      assert.deepEqual(
+        mock.definitionList,
+        ["describe"],
+        "it should add the correct data to the mock definitionList"
+      );
+    });
+    it("should run the correct callback function", () => {
+      let callbackSuccess = false;
+      overrideTfx.apply("describe", () => {
+        callbackSuccess = true;
+      });
+      assert.isTrue(
+        callbackSuccess,
+        "it should return the correct describe function"
+      );
+    });
+    it("should run the correct it function", () => {
+      overrideTfx.apply("describe", () => {});
+      let exepectedItList = ["Runs `terraform apply` in the target directory"];
+      assert.deepEqual(
+        mock.itList,
+        exepectedItList,
+        "it should run the correct it assertion"
+      );
+    });
+    it("should produce the correct console.log data", () => {
+      overrideTfx.apply("describe", () => {});
+      assert.deepEqual(
+        mock.logList,
+        [
+          "\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform apply`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n"
+        ],
+        "it should print out the correct data"
+      );
+    });
+  });
   describe("planAndSetData", () => {
     beforeEach(() => {
       mock = new mocks();
@@ -174,7 +222,59 @@ describe("tfxjs", () => {
         testModuleArgs = args;
       }
       overrideTfx.module("test", "test", [])
-      assert.deepEqual(testModuleArgs, ["test", "test", "success", []])
+      assert.deepEqual(testModuleArgs, [{
+        address: "test",
+        moduleName: "test",
+        testList: [],
+        tfData: "success"
+      }])
+    })
+    it("should throw an error if no tfplan", () => {
+      overrideTfx.tfplan = undefined;
+      let task = () => {
+        overrideTfx.module("test", "test", [])
+      }
+      assert.throws(task, "`tfx.plan` needs to be successfully completed before running `tfx.module`.")
+    })
+  })
+  describe("applyAndSetState", () => {
+    beforeEach(() => {
+      mock = new mocks();
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+        overrideBefore: mock.before,
+        overrideDescribe: mock.describe,
+        overrideIt: mock.it,
+      });
+      overrideTfx.print = mock.log;
+    });
+    it("should return the correct data and set this.apply", async() => {
+      overrideTfx.exec = mock.exec;
+      await overrideTfx.applyAndSetState()
+      assert.deepEqual(overrideTfx.tfstate,{ planned_values: 'success' }, "it should store correct plan")
+    })
+  });
+  describe("state", () => {
+    it("should run tfutils with correct params", () => {
+      let testModuleArgs;
+      overrideTfx.tfutils.testModule = function(...args) {
+        testModuleArgs = args;
+      }
+      overrideTfx.state("test", "test", [])
+      assert.deepEqual(testModuleArgs, [{
+        isApply: true,
+        moduleName: "test",
+        testList: "test",
+        tfData: {
+          planned_values: "success"
+        }
+      }])
+    })
+    it("should throw an error if no tfstate", () => {
+      overrideTfx.tfstate = undefined;
+      let task = () => {
+        overrideTfx.state("test", "test", [])
+      }
+      assert.throws(task, "`tfx.apply` needs to be successfully completed before running `tfx.state`.")
     })
   })
 });
