@@ -25,8 +25,8 @@ npm install tfxjs -g
 
 ## Prerequisites
 
-Create a `.env` file for your environment and set the `API_KEY` value 
-If [mocha](https://mochajs.org/) is not installed globally run:
+- Create a `.env` file for your environment and set the `API_KEY` value
+- If [mocha](https://mochajs.org/) is not installed globally run:
 ```shell
 npm install mocha -g
 ```
