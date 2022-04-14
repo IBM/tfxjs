@@ -763,25 +763,27 @@ describe("tfUnitTestUtils", () => {
             child_modules: [
               {
                 address: "module.parent",
-                child_modules: [{
-                  address: "module.parent.module.test",
-                  resources: [
-                    {
-                      name: "test",
-                      address: "module.parent.module.test.test",
-                      values: {
-                        test: "test",
+                child_modules: [
+                  {
+                    address: "module.parent.module.test",
+                    resources: [
+                      {
+                        name: "test",
+                        address: "module.parent.module.test.test",
+                        values: {
+                          test: "test",
+                        },
                       },
-                    },
-                    {
-                      name: "todd",
-                      address: "module.parent.module.test.todd",
-                      values: {
-                        test: "test",
+                      {
+                        name: "todd",
+                        address: "module.parent.module.test.todd",
+                        values: {
+                          test: "test",
+                        },
                       },
-                    },
-                  ],
-                }]
+                    ],
+                  },
+                ],
               },
             ],
           },
@@ -833,7 +835,10 @@ describe("tfUnitTestUtils", () => {
             name: "module.test should not contain additional resources",
             assertionType: "deepEqual",
             assertionArgs: [
-              ["module.parent.module.test.test", "module.parent.module.test.todd"],
+              [
+                "module.parent.module.test.test",
+                "module.parent.module.test.todd",
+              ],
               ["module.parent.module.test.test"],
               "The module module.test should not contain any resources in addition to ones passed",
             ],
@@ -847,25 +852,29 @@ describe("tfUnitTestUtils", () => {
       );
     });
     it("should throw an error root module is address and no resources are provided", () => {
-      
       let task = () => {
         buildModuleTest("Example", "root_module", {
-          root_module : {}
-        })
-      }
-      assert.throws(task, "Expected root module to have resources. Check your plan configuration and try again.")
-    })
+          root_module: {},
+        });
+      };
+      assert.throws(
+        task,
+        "Expected root module to have resources. Check your plan configuration and try again."
+      );
+    });
     it("should throw an error root module is address and resources length is 0", () => {
-      
       let task = () => {
         buildModuleTest("Example", "root_module", {
-          root_module : {
-            resources: []
-          }
-        })
-      }
-      assert.throws(task, "Expected root_modules to contain at least one resource. Check your plan configuration and try again.")
-    })
+          root_module: {
+            resources: [],
+          },
+        });
+      };
+      assert.throws(
+        task,
+        "Expected root_modules to contain at least one resource. Check your plan configuration and try again."
+      );
+    });
     it("should return the correct data if module is root_module and has resources", () => {
       let actualData = buildModuleTest(
         "test",
@@ -875,9 +884,9 @@ describe("tfUnitTestUtils", () => {
             resources: [
               {
                 address: "test.test",
-                values : {
-                  test: "test"
-                }
+                values: {
+                  test: "test",
+                },
               },
             ],
           },
@@ -894,52 +903,48 @@ describe("tfUnitTestUtils", () => {
       );
 
       let expecctedData = {
-        "describe": "Module test",
-        "tests": [
+        describe: "Module test",
+        tests: [
           {
-            "name": "Plan should contain the module root_module",
-            "assertionType": "isTrue",
-            "assertionArgs": [
+            name: "Plan should contain the module root_module",
+            assertionType: "isTrue",
+            assertionArgs: [
               true,
-              "The module root_module should exist in the terraform plan."
-            ]
+              "The module root_module should exist in the terraform plan.",
+            ],
           },
           {
-            "describe": "test",
-            "tests": [
+            describe: "test",
+            tests: [
               {
-                "name": "Module root_module should contain resource test.test",
-                "assertionType": "isNotFalse",
-                "assertionArgs": [
+                name: "Module root_module should contain resource test.test",
+                assertionType: "isNotFalse",
+                assertionArgs: [
                   true,
-                  "Expected root_module contain the test resource."
-                ]
+                  "Expected root_module contain the test resource.",
+                ],
               },
               {
-                "name": "test should have the correct test value",
-                "assertionType": "deepEqual",
-                "assertionArgs": [
+                name: "test should have the correct test value",
+                assertionType: "deepEqual",
+                assertionArgs: [
                   "test",
                   "test",
-                  "Expected test.test to have correct value for test."
-                ]
-              }
-            ]
+                  "Expected test.test to have correct value for test.",
+                ],
+              },
+            ],
           },
           {
-            "name": "root_module should not contain additional resources",
-            "assertionType": "deepEqual",
-            "assertionArgs": [
-              [
-                "test.test"
-              ],
-              [
-                "test.test"
-              ],
-              "The module root_module should not contain any resources in addition to ones passed"
-            ]
-          }
-        ]
+            name: "root_module should not contain additional resources",
+            assertionType: "deepEqual",
+            assertionArgs: [
+              ["test.test"],
+              ["test.test"],
+              "The module root_module should not contain any resources in addition to ones passed",
+            ],
+          },
+        ],
       };
       assert.deepEqual(
         actualData,
@@ -973,7 +978,7 @@ describe("tfUnitTestUtils", () => {
             ],
           },
         },
-        callback: function(){
+        callback: function () {
           callbackDone = true;
         },
         testList: [
@@ -984,8 +989,8 @@ describe("tfUnitTestUtils", () => {
               test: "test",
             },
           },
-        ]
-      }
+        ],
+      };
       tfutils.testModule(options);
       assert.deepEqual(
         tfUtilMocks.itList,
@@ -1002,7 +1007,7 @@ describe("tfUnitTestUtils", () => {
         ["Module test", "test"],
         "should return correct it function were run"
       );
-      assert.isTrue(callbackDone, "it should execute the callback")
+      assert.isTrue(callbackDone, "it should execute the callback");
     });
     it("should run the correct describe and test function for apply", () => {
       let tfstate = {
@@ -1039,7 +1044,8 @@ describe("tfUnitTestUtils", () => {
       };
       let options = {
         moduleName: "Cluster Versions",
-        address : "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+        address:
+          "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
         tfData: tfstate,
         isApply: true,
         testList: [
@@ -1057,8 +1063,8 @@ describe("tfUnitTestUtils", () => {
               },
             ],
           },
-        ]
-      }
+        ],
+      };
       tfutils.testModule(options);
       assert.deepEqual(
         tfUtilMocks.itList,
@@ -1087,9 +1093,9 @@ describe("tfUnitTestUtils", () => {
       );
     });
     it("should throw an error if no tf data", () => {
-      let task = () => tfutils.testModule({frog: "frog"});
-      assert.throws(task, `tfData must be passed as an option got ["frog"]`)
-    })
+      let task = () => tfutils.testModule({ frog: "frog" });
+      assert.throws(task, `tfData must be passed as an option got ["frog"]`);
+    });
   });
   describe("buildInstanceTest", () => {
     it("should return a test to check if the resource exists in the resources object when found in state", () => {
@@ -2019,6 +2025,110 @@ describe("tfUnitTestUtils", () => {
         actualData,
         expectedData,
         "It should return correct instance test data"
+      );
+    });
+    it("should correctly return a list of tests for resources in root_module", () => {
+      let tfstate = {
+        resources: [
+          {
+            mode: "data",
+            type: "external",
+            name: "example",
+            provider: 'provider["registry.terraform.io/hashicorp/external"]',
+            instances: [
+              {
+                schema_version: 0,
+                attributes: {
+                  id: "-",
+                  program: ["sh", "./test-output.sh", "example", "test"],
+                  query: null,
+                  result: {
+                    data: "example-test-value",
+                  },
+                  working_dir: null,
+                },
+                sensitive_attributes: [],
+              },
+            ],
+          },
+        ],
+      };
+      let actualData = tfutils.buildStateTest("External Data Source", tfstate, [
+        {
+          name: "External Data Source",
+          address: "data.external.example",
+          instances: [
+            {
+              id: "-",
+              program: ["sh", "./test-output.sh", "example", "test"],
+              result: {
+                data: "example-test-value",
+              },
+            },
+          ],
+        },
+      ]);
+      let expecctedData = {
+        describe: "External Data Source",
+        tests: [
+          {
+            describe: "data.external.example",
+            tests: [
+              {
+                name: "Resource data.external.example should be in tfstate",
+                assertionType: "isNotFalse",
+                assertionArgs: [
+                  true,
+                  "Expected data.external.example resource to be included in tfstate",
+                ],
+              },
+              {
+                name: "Expected resource data.external.example[0] to have correct value for id.",
+                assertionType: "deepEqual",
+                assertionArgs: [
+                  "-",
+                  "-",
+                  "Expected data.external.example[0] id to have value -",
+                ],
+              },
+              {
+                name: "Expected resource data.external.example[0] to have correct value for program.",
+                assertionType: "deepEqual",
+                assertionArgs: [
+                  ["sh", "./test-output.sh", "example", "test"],
+                  ["sh", "./test-output.sh", "example", "test"],
+                  'Expected data.external.example[0] program to have value ["sh","./test-output.sh","example","test"]',
+                ],
+              },
+              {
+                name: "Expected resource data.external.example[0] to have correct value for result.",
+                assertionType: "deepEqual",
+                assertionArgs: [
+                  {
+                    data: "example-test-value",
+                  },
+                  {
+                    data: "example-test-value",
+                  },
+                  'Expected data.external.example[0] result to have value {"data":"example-test-value"}',
+                ],
+              },
+              {
+                name: "Expected instance with key 0 to exist at data.external.example",
+                assertionType: "isFalse",
+                assertionArgs: [
+                  false,
+                  "Expected instance with key 0 to exist at data.external.example.instances",
+                ],
+              },
+            ],
+          },
+        ],
+      };
+      assert.deepEqual(
+        actualData,
+        expecctedData,
+        "it should return correct data"
       );
     });
   });
