@@ -846,6 +846,107 @@ describe("tfUnitTestUtils", () => {
         "it should return correct json data"
       );
     });
+    it("should throw an error root module is address and no resources are provided", () => {
+      
+      let task = () => {
+        buildModuleTest("Example", "root_module", {
+          root_module : {}
+        })
+      }
+      assert.throws(task, "Expected root module to have resources. Check your plan configuration and try again.")
+    })
+    it("should throw an error root module is address and resources length is 0", () => {
+      
+      let task = () => {
+        buildModuleTest("Example", "root_module", {
+          root_module : {
+            resources: []
+          }
+        })
+      }
+      assert.throws(task, "Expected root_modules to contain at least one resource. Check your plan configuration and try again.")
+    })
+    it("should return the correct data if module is root_module and has resources", () => {
+      let actualData = buildModuleTest(
+        "test",
+        "root_module",
+        {
+          root_module: {
+            resources: [
+              {
+                address: "test.test",
+                values : {
+                  test: "test"
+                }
+              },
+            ],
+          },
+        },
+        [
+          {
+            name: "test",
+            address: "test.test",
+            values: {
+              test: "test",
+            },
+          },
+        ]
+      );
+
+      let expecctedData = {
+        "describe": "Module test",
+        "tests": [
+          {
+            "name": "Plan should contain the module root_module",
+            "assertionType": "isTrue",
+            "assertionArgs": [
+              true,
+              "The module root_module should exist in the terraform plan."
+            ]
+          },
+          {
+            "describe": "test",
+            "tests": [
+              {
+                "name": "Module root_module should contain resource test.test",
+                "assertionType": "isNotFalse",
+                "assertionArgs": [
+                  true,
+                  "Expected root_module contain the test resource."
+                ]
+              },
+              {
+                "name": "test should have the correct test value",
+                "assertionType": "deepEqual",
+                "assertionArgs": [
+                  "test",
+                  "test",
+                  "Expected test.test to have correct value for test."
+                ]
+              }
+            ]
+          },
+          {
+            "name": "root_module should not contain additional resources",
+            "assertionType": "deepEqual",
+            "assertionArgs": [
+              [
+                "test.test"
+              ],
+              [
+                "test.test"
+              ],
+              "The module root_module should not contain any resources in addition to ones passed"
+            ]
+          }
+        ]
+      };
+      assert.deepEqual(
+        actualData,
+        expecctedData,
+        "it should return correct json data"
+      );
+    });
   });
   describe("testModule", () => {
     beforeEach(() => (mock = new mocks()));
