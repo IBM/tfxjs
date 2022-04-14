@@ -42,6 +42,10 @@ tfx <path to test file>
 
 ## Example Usage
 
+For a detailed example of using this framework, see [example tests](./example-tests/)
+
+### Example File
+
 ```js
 
 const tfxjs = require("tfxjs"); // Initialize tfxjs
@@ -119,7 +123,7 @@ tfx.plan("MyModule", () => { // Gerate a plan in the directory
    * Run tests for a module
    * @param {string} moduleName decorative string for module name
    * @param {string} moduleAddress relative module address from root
-   * @param {Array<object>} resources Array of resources from the module to check
+   * @param {Array<{name: string, address: string, values:{Object}}>} resources Array of resources from the module to check
    */
   tfx.module(moduleName, moduleAddress, resources)
 ```
@@ -209,8 +213,7 @@ Example resource with a function:
   /**
    * Run tests for terraform state
    * @param {string} moduleName decorative string for module name
-   * @param {string} moduleAddress relative module address from root
-   * @param {Array<object>} resources Array of resources from the module to check
+   * @param {Array.<{address: string, instances: Array<Object>}>} resources Array of resources from the module to check
    */
   tfx.state(moduleName, moduleAddress, resources)
 ```
@@ -232,7 +235,6 @@ tfx.apply("myModule", () => {
 ```js
 [
   {
-    name: // Decorative name of the resource
     address: // Address for resource
     instances: [
       {
