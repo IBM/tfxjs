@@ -124,4 +124,36 @@ describe("helpers", () => {
       );
     });
   });
+  describe("childArraySearch", () => {
+    it("should return correct object for unfound parent address", () => {
+      let data = helpers.childArraySearch("missing", [
+        {
+          address: "found",
+        },
+      ]);
+      assert.deepEqual(
+        data,
+        { containsModule: false, moduleData: undefined },
+        "should contain correct data"
+      );
+    });
+  });
+  describe("getFoundResources", () => {
+    it("should return correct array when none unexpected resources found and address is empty string", () => {
+      let data = helpers.getFoundResources([
+        {
+          address: "test.test"
+        }
+      ], "", ["test.test"])
+      assert.deepEqual(data.length, 0 , "should return empty array")
+    })
+    it("should return correct array when none unexpected resources found and address is not empty string", () => {
+      let data = helpers.getFoundResources([
+        {
+          address: "test.test"
+        }
+      ], "frog", ["frog.test.test"])
+      assert.deepEqual(data.length, 0 , "should return empty array")
+    })
+  })
 });

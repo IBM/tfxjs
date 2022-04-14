@@ -288,12 +288,13 @@ npm run coverage
 
 ### Current Test Coverage
 
+
 File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ---------------|---------|----------|---------|---------|-------------------
-All files      |     100 |    95.14 |     100 |     100 |                   
- lib           |     100 |    95.14 |     100 |     100 |                   
-  helpers.js   |     100 |      100 |     100 |     100 |                   
-  index.js     |     100 |      100 |     100 |     100 |                   
-  utils.js     |     100 |    93.15 |     100 |     100 | <span style='color:yellow;font-weight:bold'>207,253,287-290</span>
- unit-tests    |     100 |      100 |     100 |     100 |                   
-  tfx.mocks.js |     100 |      100 |     100 |     100 |                   
+All files      |      100|      100 |     100 |     100 | 🏆               
+ lib           |     100 |      100 |     100 |     100 | 🏆                  
+  helpers.js   |     100 |      100 |     100 |     100 | 🏆                  
+  index.js     |     100 |      100 |     100 |     100 | 🏆                  
+  utils.js     |     100 |      100 |     100 |     100 | 🏆                  
+ unit-tests    |     100 |      100 |     100 |     100 | 🏆                  
+  tfx.mocks.js |     100 |      100 |     100 |     100 | 🏆                  
