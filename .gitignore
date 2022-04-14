@@ -1,4 +1,5 @@
 .terraform.*
+example_tests/.terraform.*
 .terraform/
 .DS_Store
 terraform.*.*
