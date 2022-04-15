@@ -194,11 +194,10 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "frog should have the correct test value",
-            assertionType: "isTrue",
+            assertionType: "isNotFalse",
             assertionArgs: [
               false,
-              "Expected frog resource test value to exist in module, got undefined.",
-            ],
+              "Expected frog resource test to be defined got undefined."           ],
           },
         ],
       };
@@ -385,6 +384,47 @@ describe("tfUnitTestUtils", () => {
         "should return correct object"
       );
     });
+    it("should create correct test object with static tests on found value with function", () => {
+      let actualData = tfutils.buildResourceTest(
+        "frog",
+        {
+          address: "frog",
+          resources: [{ address: "frog.frog", values: { test: "test" } }],
+        },
+        "frog",
+        {
+          test: function(value) {
+            return {
+              appendMessage: "should",
+              expectedData: true
+            }
+          },
+        }
+      );
+      let expectedData = {
+        describe: "frog",
+        tests: [
+          {
+            name: "Module frog should contain resource frog",
+            assertionType: "isNotFalse",
+            assertionArgs: [true, "Expected frog contain the frog resource."],
+          },
+          {
+            name: "frog should have the correct test value",
+            assertionType: "isTrue",
+            assertionArgs: [
+              true,
+              "Expected frog resource test value should",
+            ],
+          },
+        ],
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "should return correct object"
+      );
+    });
     it("should create correct test object with static tests on not found value", () => {
       let actualData = tfutils.buildResourceTest(
         "frog",
@@ -407,11 +447,10 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "frog should have the correct egg value",
-            assertionType: "deepEqual",
+            assertionType: "isNotFalse",
             assertionArgs: [
-              undefined,
-              "test",
-              "Expected frog to have correct value for egg.",
+              false,
+              "Expected frog resource egg to be defined got undefined.",
             ],
           },
         ],
@@ -648,11 +687,10 @@ describe("tfUnitTestUtils", () => {
               },
               {
                 name: "test should have the correct test value",
-                assertionType: "deepEqual",
+                assertionType: "isNotFalse",
                 assertionArgs: [
-                  undefined,
-                  "test",
-                  "Expected test to have correct value for test.",
+                  false,
+                  "Expected test resource test to be defined got undefined."                
                 ],
               },
             ],
@@ -1205,10 +1243,10 @@ describe("tfUnitTestUtils", () => {
           },
           {
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
           },
         ],
@@ -1268,10 +1306,10 @@ describe("tfUnitTestUtils", () => {
           },
           {
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
           },
         ],
@@ -1331,10 +1369,10 @@ describe("tfUnitTestUtils", () => {
           },
           {
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
           },
         ],
@@ -1390,10 +1428,10 @@ describe("tfUnitTestUtils", () => {
           },
           {
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
           },
         ],
@@ -1446,9 +1484,9 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
           },
@@ -1524,9 +1562,9 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
           },
@@ -1607,9 +1645,9 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
           },
@@ -1664,9 +1702,9 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
           },
@@ -1748,9 +1786,9 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
           },
@@ -1835,9 +1873,9 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
           },
@@ -1895,9 +1933,9 @@ describe("tfUnitTestUtils", () => {
           },
           {
             name: "Expected instance with key atracker to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            assertionType: "isFalse",
+            assertionType: "isTrue",
             assertionArgs: [
-              false,
+              true,
               "Expected instance with key atracker to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
             ],
           },
@@ -1985,9 +2023,9 @@ describe("tfUnitTestUtils", () => {
               },
               {
                 name: "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                assertionType: "isFalse",
+                assertionType: "isTrue",
                 assertionArgs: [
-                  false,
+                  true,
                   "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
                 ],
               },
@@ -2002,17 +2040,17 @@ describe("tfUnitTestUtils", () => {
               },
               {
                 name: "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                assertionType: "isFalse",
+                assertionType: "isTrue",
                 assertionArgs: [
-                  false,
+                  true,
                   "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
                 ],
               },
               {
                 name: "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                assertionType: "isFalse",
+                assertionType: "isTrue",
                 assertionArgs: [
-                  true,
+                  false,
                   "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
                 ],
               },
@@ -2115,9 +2153,9 @@ describe("tfUnitTestUtils", () => {
               },
               {
                 name: "Expected instance with key 0 to exist at data.external.example",
-                assertionType: "isFalse",
+                assertionType: "isTrue",
                 assertionArgs: [
-                  false,
+                  true,
                   "Expected instance with key 0 to exist at data.external.example.instances",
                 ],
               },
