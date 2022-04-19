@@ -3,8 +3,8 @@ const tfUnitTestUtils = require("../lib/utils.js"); // Import utils
 const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
-const path = require("path"); // init path
 let mock = new mocks(); // initialize mocks
+
 // initialize mock tfx
 let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
   overrideBefore: mock.before,
@@ -58,19 +58,8 @@ describe("tfxjs", () => {
         );
       });
     });
-    it("should initialize the planTestPath correctly", () => {
-      let expectedPath = path
-        .join(__dirname, "/lib/plan_test.sh")
-        .replace(/unit-tests\//i, "");
-      let actualPlan = tfx.planTestPath;
-      assert.deepEqual(
-        actualPlan,
-        expectedPath,
-        "it should return the correct path"
-      );
-    });
     it("should correctly initialize tfutils", () => {
-      let tfutils = new tfUnitTestUtils(tfx.planTestPath, "./mock_path");
+      let tfutils = new tfUnitTestUtils("./mock_path");
       assert.deepEqual(
         tfx.tfutils.toString(),
         tfutils.toString(),
