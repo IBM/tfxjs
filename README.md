@@ -26,6 +26,8 @@ npm install tfxjs -g
 
 ## Prerequisites
 
+- [Terraform CLI](https://www.terraform.io/cli/commands)
+- [jq](https://stedolan.github.io/jq/)
 - Create a `.env` file for your environment and set the `API_KEY` value
 - If [mocha](https://mochajs.org/) is not installed globally run:
 ```shell
@@ -295,7 +297,8 @@ File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ---------------|---------|----------|---------|---------|-------------------
 All files      |      100|      100 |     100 |     100 | 🏆               
  lib           |     100 |      100 |     100 |     100 | 🏆                  
-  helpers.js   |     100 |      100 |     100 |     100 | 🏆                  
+  helpers.js   |     100 |      100 |     100 |     100 | 🏆 
+  builders.js  |     100 |      100 |     100 |     100 | 🏆                                   
   index.js     |     100 |      100 |     100 |     100 | 🏆                  
   utils.js     |     100 |      100 |     100 |     100 | 🏆                  
  unit-tests    |     100 |      100 |     100 |     100 | 🏆                  
