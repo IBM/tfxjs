@@ -482,5 +482,19 @@ describe("helpers", () => {
       let actualData = expectedResourceAddress(undefined, "one", "two")
       assert.deepEqual(actualData, "two.one", "it should return correct string")
     })
+  });
+  describe("azsort", () => {
+    it("should return -1 if string a is less than string b", () => {
+      let actualData = helpers.azsort("a", "b");
+      assert.deepEqual(actualData, -1, "it should return -1")
+    })
+    it("should return 1 if string a is greater than string b", () => {
+      let actualData = helpers.azsort(3, 2);
+      assert.deepEqual(actualData, 1, "it should return 11")
+    })
+    it("should return 0 if string a is equal to string b", () => {
+      let actualData = helpers.azsort(2, 2);
+      assert.deepEqual(actualData, 0, "it should return 11")
+    })
   })
 });
