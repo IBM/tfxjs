@@ -1,6 +1,6 @@
 const helpers = require("../lib/helpers");
 const { assert } = require("chai");
-const { checkResourceTests, expectedResourceAddress } = require("../lib/helpers");
+const { checkResourceTests, expectedResourceAddress, childArraySearch } = require("../lib/helpers");
 
 describe("helpers", () => {
   describe("keyContains", () => {
@@ -161,6 +161,25 @@ describe("helpers", () => {
         "should contain correct data"
       );
     });
+    it("should search child modules of child modules for address", () => {
+      let data = childArraySearch("module.ez_vpc.module.vpc", [
+        {
+          "address": "module.ez_vpc",
+          "child_modules": [
+            {
+              "address" : "module.ez_vpc.module.vpc"
+            }
+          ]
+        }
+      ]);
+      let expectedData = {
+        containsModule: true,
+        moduleData: {
+          "address" : "module.ez_vpc.module.vpc"
+        }
+      }
+      assert.deepEqual(data, expectedData, "it should return correct data")
+    })
   });
   describe("getFoundResources", () => {
     it("should return correct array when none unexpected resources found and address is empty string", () => {
