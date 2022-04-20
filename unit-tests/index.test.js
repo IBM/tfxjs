@@ -77,17 +77,25 @@ describe("tfxjs", () => {
       });
     });
     it("should send correct string to console log", () => {
-      let data = ""
+      let data = "";
       overrideTfx.log = (str) => {
         data = str;
       };
       overrideTfx.print("string");
-      assert.deepEqual(data, "string", "should send correct function to console log")
-    })
+      assert.deepEqual(
+        data,
+        "string",
+        "should send correct function to console log"
+      );
+    });
     it("should by default have console.log set to this.log", () => {
-      assert.deepEqual(overrideTfx.log, console.log, "should be correct function")
-    })
-  })
+      assert.deepEqual(
+        overrideTfx.log,
+        console.log,
+        "should be correct function"
+      );
+    });
+  });
   describe("plan", () => {
     beforeEach(() => {
       mock = new mocks();
@@ -135,10 +143,9 @@ describe("tfxjs", () => {
         "it should print out the correct data"
       );
     });
-    it("should set this.tfplan to plan data", async() => {
+    it("should set this.tfplan to plan data", async () => {
       overrideTfx.exec = mock.exec;
-
-    })
+    });
   });
   describe("apply", () => {
     beforeEach(() => {
@@ -182,7 +189,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          "\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform apply`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n"
+          "\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform apply`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n",
         ],
         "it should print out the correct data"
       );
@@ -198,34 +205,64 @@ describe("tfxjs", () => {
       });
       overrideTfx.print = mock.log;
     });
-    it("should return the correct data and set this.tfplan", async() => {
+    it("should return the correct data and set this.tfplan", async () => {
       overrideTfx.exec = mock.exec;
-      await overrideTfx.planAndSetData()
-      assert.deepEqual(overrideTfx.tfplan, "success", "it should store correct plan")
-    })
+      await overrideTfx.planAndSetData();
+      assert.deepEqual(
+        overrideTfx.tfplan,
+        "success",
+        "it should store correct plan"
+      );
+    });
   });
   describe("module", () => {
     it("should run tfutils with correct params", () => {
       let testModuleArgs;
-      overrideTfx.tfutils.testModule = function(...args) {
+      overrideTfx.tfutils.testModule = function (...args) {
         testModuleArgs = args;
-      }
-      overrideTfx.module("test", "test", [])
-      assert.deepEqual(testModuleArgs, [{
-        address: "test",
-        moduleName: "test",
-        testList: [],
-        tfData: "success"
-      }])
-    })
+      };
+      overrideTfx.module("test", "test", []);
+      assert.deepEqual(testModuleArgs, [
+        {
+          address: "test",
+          moduleName: "test",
+          testList: [],
+          tfData: "success",
+        },
+      ]);
+    });
+    it("should run tfutils with correct params using spead operator", () => {
+      let testModuleArgs;
+      overrideTfx.tfutils.testModule = function (...args) {
+        testModuleArgs = args;
+      };
+      overrideTfx.module("test", "test", { name: "test", address: "test" });
+      assert.deepEqual(testModuleArgs, [
+        {
+          address: "test",
+          moduleName: "test",
+          testList: [
+            {
+              address: "test",
+              name: "test",
+              values: {},
+            },
+          ],
+          tfData: "success",
+        },
+      ]);
+    });
     it("should throw an error if no tfplan", () => {
       overrideTfx.tfplan = undefined;
       let task = () => {
-        overrideTfx.module("test", "test", [])
-      }
-      assert.throws(task, "`tfx.plan` needs to be successfully completed before running `tfx.module`.")
-    })
-  })
+        overrideTfx.module("test", "test", []);
+      };
+      assert.throws(
+        task,
+        "`tfx.plan` needs to be successfully completed before running `tfx.module`."
+      );
+    });
+  });
   describe("applyAndSetState", () => {
     beforeEach(() => {
       mock = new mocks();
@@ -236,34 +273,64 @@ describe("tfxjs", () => {
       });
       overrideTfx.print = mock.log;
     });
-    it("should return the correct data and set this.apply", async() => {
+    it("should return the correct data and set this.apply", async () => {
       overrideTfx.exec = mock.exec;
-      await overrideTfx.applyAndSetState()
-      assert.deepEqual(overrideTfx.tfstate,{ planned_values: 'success' }, "it should store correct plan")
-    })
+      await overrideTfx.applyAndSetState();
+      assert.deepEqual(
+        overrideTfx.tfstate,
+        { planned_values: "success" },
+        "it should store correct plan"
+      );
+    });
   });
   describe("state", () => {
     it("should run tfutils with correct params", () => {
       let testModuleArgs;
-      overrideTfx.tfutils.testModule = function(...args) {
+      overrideTfx.tfutils.testModule = function (...args) {
         testModuleArgs = args;
-      }
-      overrideTfx.state("test", "test", [])
-      assert.deepEqual(testModuleArgs, [{
-        isApply: true,
-        moduleName: "test",
-        testList: "test",
-        tfData: {
-          planned_values: "success"
-        }
-      }])
-    })
+      };
+      overrideTfx.state("test", [{ test: "test" }]);
+      assert.deepEqual(testModuleArgs, [
+        {
+          isApply: true,
+          moduleName: "test",
+          testList: [
+            {
+              test: "test",
+            },
+          ],
+          tfData: {
+            planned_values: "success",
+          },
+        },
+      ]);
+    });
+    it("should run tfutils with correct params using multiple objects", () => {
+      let testModuleArgs;
+      overrideTfx.tfutils.testModule = function (...args) {
+        testModuleArgs = args;
+      };
+      overrideTfx.state("test", "test", { test: "test" }, { test: "test" });
+      assert.deepEqual(testModuleArgs, [
+        {
+          isApply: true,
+          moduleName: "test",
+          testList: ["test", { test: "test" }, { test: "test" }],
+          tfData: {
+            planned_values: "success",
+          },
+        },
+      ]);
+    });
     it("should throw an error if no tfstate", () => {
       overrideTfx.tfstate = undefined;
       let task = () => {
-        overrideTfx.state("test", "test", [])
-      }
-      assert.throws(task, "`tfx.apply` needs to be successfully completed before running `tfx.state`.")
-    })
-  })
+        overrideTfx.state("test", "test", []);
+      };
+      assert.throws(
+        task,
+        "`tfx.apply` needs to be successfully completed before running `tfx.state`."
+      );
+    });
+  });
 });
