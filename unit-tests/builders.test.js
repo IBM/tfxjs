@@ -198,4 +198,125 @@ describe("builders", () => {
       );
     });
   });
+  describe("eval", () => {
+    let eval = builders.eval;
+    it("should throw an error if appendMessage is not string", () => {
+      let task = () => {
+        eval(2);
+      };
+      assert.throws(
+        task,
+        "tfx.expect expects append message to be a string got number"
+      );
+    });
+    it("should throw an error if evaluationFunction is not function", () => {
+      let task = () => {
+        eval("name", 3);
+      };
+      assert.throws(
+        task,
+        "tfx.expect expected evaluationFunction to be a function"
+      );
+    });
+    it("should return a function", () => {
+      assert.isTrue(
+        eval("test", () => {}) instanceof Function,
+        "it should return funciton"
+      );
+    });
+    it("should evaluate the function when run", () => {
+      let actualData = eval("test", () => {
+        return true;
+      })();
+      let expectedData = {
+        appendMessage: "test",
+        expectedData: true,
+      };
+      assert.deepEqual(actualData, expectedData, "it should return value");
+    });
+  });
+  describe("resource", () => {
+    let resource = builders.resource;
+    it("should throw an error if any of the values are undefined", () => {
+      let task = () => {
+        resource(1, 3);
+      };
+      assert.throws(task, "Resource function expected three values got 2");
+    });
+    it("should throw an error if values is wrong type", () => {
+      let task = () => {
+        resource("hi", "hello", "x");
+      };
+      assert.throws(task, "Expected type of object for values, got string");
+    });
+    it("should throw an error if values is array", () => {
+      let task = () => {
+        resource("hi", "hello", []);
+      };
+      assert.throws(task, "Expected type of object for values, got Array");
+    });
+    it("should throw an error if name is wrong type", () => {
+      let task = () => {
+        resource(2, "hello", {});
+      };
+      assert.throws(task, "Expected type of string for name got number");
+    });
+    it("should throw an error if name is wrong type", () => {
+      let task = () => {
+        resource("hi", 3, "x");
+      };
+      assert.throws(task, "Expected type of string for address got number");
+    });
+    it("should return the correct object otherwise", () => {
+      let actualData = resource("test", "test", {});
+      assert.deepEqual(actualData, {
+        name: "test",
+        address: "test",
+        values: {},
+      });
+    });
+  });
+  describe("check", () => {
+    let check = builders.check;
+    it("should throw an error if address is not sring", () => {
+      let task = () => {
+        check(2);
+      };
+      assert.throws(
+        task,
+        "tfx.check expects address to be a string got number"
+      );
+    });
+    it("should throw an error if instances not passed", () => {
+      let task = () => {
+        check("test");
+      };
+      assert.throw(task, "tfx.check expects at least one instance got 0");
+    });
+    it("should throw an error if instances is not array of object", () => {
+      let task = () => {
+        check("test", {}, "frog", 0, [1, 2, 3]);
+      };
+      assert.throws(
+        task,
+        'tfx.check expected all instances to be of type Object got ["object","string","number","Array"]'
+      );
+    });
+    it("should return instances", () => {
+      let actualData = check("test", { id: true });
+      let expectedData = {
+        address: "test",
+        instances: [
+          {
+            id: true,
+          },
+        ],
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct data"
+      );
+    });
+  });
 });

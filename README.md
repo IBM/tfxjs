@@ -55,17 +55,19 @@ const tfx = new tfxjs(" <path to template directory> ", "<name of terraform envi
 
 tfx.plan("MyModule", () => { // Gerate a plan in the directory
   // Run tests for the module
-  tfx.module("Root Module", "module.my_module", [
-    // List of resources to test
-    {
-      name: "Activity Tracker Route", // Name of the resource (decorative)
-      address: "ibm_atracker_route.atracker_route", // Expected address within module
-      values: { // List of values to check in that resource
+  tfx.module(
+    "Root Module", // decorative module name
+    "module.my_module", // module address
+    tfx.resource(
+      "Activity Tracker Route", // Name of the resource (decorative)
+      "ibm_atracker_route.atracker_route", // Expected address within module
+      // values to check in that resource
+      { 
         name: "tfx-atracker-route",
         receive_global_events: true,
       },
-    },
-  ]);
+    ),
+  );
 });
 ```
 
@@ -139,60 +141,82 @@ tfx.plan("MyModule", () => { // Gerate a plan in the directory
 `module.my_module` has a sub module `module.sub_module` creating a composed module address of `module.my_module.module.sub_module`. tfx will dynamically add the parent module name to child modules. This allows sub modules to be accessed like this:
 
 ```js
-tfx.plan("MyModule", "module.my_module", () => {
-  tfx.module("SubModudle", "module.sub_module", [
+tfx.plan("MyModule", () => {
+  tfx.module(
+    "SubModudle", 
+    "module.sub_module", 
     ...resources
-  ]})
+  )
 })
 ```
 
-#### Module Resource Test definitions
+### resource
 
-Resources for modules are described in an object with a name, address, and values.
+`tfx.resource` creates a resource for a single resource inside a module.
 
 ```js
-{
-  {
-    name: "Activity Tracker Route",
-    address: "ibm_atracker_route.atracker_route",
-    values: {
-      name: "ut-atracker-route",
-      receive_global_events: true,
-    }
-  }
-}
+  /**
+   * Creates a resource object for acceptence tests. Used with `tfx.plan`.
+   * @param {string} name Decorative name for module test
+   * @param {string} address Address relative to the module being tested (ex. use `test.resource` for `module.example.test.resource` when testing in `module.example`)
+   * @param {Object} values Arbitrary values to test that exist in Terraform Plan
+   * @returns {Object{name=string address=string values=object}}
+   */
+  tfx.resource(name, address, values)
 ```
 
-In addition to being any other data type, a function can also be passed in `values`.
+#### Example
 
 ```js
-function (value) {
-  // your code here
-  return {
-    expectedData: // Must be `true` or `false` after evaluation
-    appendMessage: // String message to append to the end of a test
-  }
-}
+tfx.plan("MyModule", () => {
+  tfx.module(
+    "SubModudle", 
+    "module.sub_module", 
+    tfx.resource(
+      "myResource",
+      "resource.address",
+      {
+        testValue: true
+      }
+    ),
+    tfx.resource(
+      "myResource2",
+      "resource.address2",
+      {
+        testValue: true
+      }
+    )
+  )
+})
+```
+
+### expect
+
+In addition to being any other data type, a function can also be passed using `tfx.expect`
+
+```js
+  /**
+   * Create a compiled function to run against a value
+   * @param {string} appendMessage Append to end of message Expected resource to ... + appendMessage
+   * @param {Function} evaluationFunction Function to be used for evaluation. Must evaluate to boolean value. Takes a single paraneter
+   * @returns Validation Function
+   */
+  tfx.expect(appendMessage, evaluationFunction) 
 ```
 
 Example resource with a function:
 
 ```js
-{
+tfx.resource(
+  "Activity Tracker Route",
+  "ibm_atracker_route.atracker_route",
   {
-    name: "Activity Tracker Route",
-    address: "ibm_atracker_route.atracker_route",
-    values: {
-      name: function(value) {
-        return {
-          expectedData: value.indexOf("_") === -1,
-          appendMessage: "to not contain the underscore character."
-        }
-      },
-      receive_global_events: true,
-    }
+    name: tfx.expect("to not contain the underscore character.",  (value) => {
+      return value.indexOf("_") === -1
+    })
+    receive_global_events: true,
   }
-}
+)
 ```
 
 ### apply
@@ -226,40 +250,53 @@ Example resource with a function:
 
 ```js
 tfx.apply("myModule", () => {
-  tfx.state("myTests", [
+  tfx.state(
+    "myTests", 
     ...tests
-  ])
+  )
 })
 ```
 
-#### State Resource Test definitions
+### address
+
+`tfx.address` creates tests to run against instances at an address in a terraform state.
 
 ```js
-[
-  {
-    address: // Address for resource
-    instances: [
+  /**
+   * Check values for a resource against terraform state after apply
+   * @param {string} address Composed resource address ex "module.example_module.random_pet.random_example"
+   * @param {Array} instances Array of instances to test
+   * @returns {{address=string instances=array}} Returns the object for instance
+   */
+ tfx.address(address, ...instances)
+```
+
+#### Example Address
+
+```js
+tfx.apply("Hashicorp Provider Example Tests", () => {
+  tfx.state(
+    "Local Files",
+    tfx.address(
+      "data.local_file.lists",
       {
-        index_key: // Optional, use only if the index of the instance is a string, otherwise index will
-        // be generated automatically
-        ...attributes // Any attributes that will be tested for that instance
+        index_key: "list_1",
+        content: "ponder,consider,opt,preordain,brainstorm,portent",
+        content_base64:
+          "cG9uZGVyLGNvbnNpZGVyLG9wdCxwcmVvcmRhaW4sYnJhaW5zdG9ybSxwb3J0ZW50",
+        filename: "./local-files/shuffle_list_1.txt",
+      },
+      {
+        index_key: "list_2",
+        content: "scout,slinger,warrior,builder,settler",
+        content_base64: "c2NvdXQsc2xpbmdlcix3YXJyaW9yLGJ1aWxkZXIsc2V0dGxlcg==",
+        filename: "./local-files/shuffle_list_2.txt",
       }
-    ]
-  }
-]
+    )
+  );
+});
 ```
 
-In addition to being any other data type, a function can also be passed in `values`.
-
-```js
-function (value) {
-  // your code here
-  return {
-    expectedData: // Must be `true` or `false` after evaluation
-    appendMessage: // String message to append to the end of a test
-  }
-}
-```
 
 ---
 
