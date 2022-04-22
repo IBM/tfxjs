@@ -1,0 +1,283 @@
+{
+  "version": 4,
+  "terraform_version": "1.1.7",
+  "serial": 11,
+  "lineage": "ff8847e4-3dc3-a90a-9dfe-2c84b0ca695f",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "data",
+      "type": "external",
+      "name": "example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/external\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "-",
+            "program": [
+              "sh",
+              "./test-output.sh",
+              "example",
+              "test"
+            ],
+            "query": null,
+            "result": {
+              "data": "example-test-value"
+            },
+            "working_dir": null
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "local_file",
+      "name": "lists",
+      "provider": "provider[\"registry.terraform.io/hashicorp/local\"]",
+      "instances": [
+        {
+          "index_key": "list_1",
+          "schema_version": 0,
+          "attributes": {
+            "content": "ponder,consider,opt,preordain,brainstorm,portent",
+            "content_base64": "cG9uZGVyLGNvbnNpZGVyLG9wdCxwcmVvcmRhaW4sYnJhaW5zdG9ybSxwb3J0ZW50",
+            "filename": "./local-files/shuffle_list_1.txt",
+            "id": "a48eb33e75d9fddbd716a126fb3fb52f0ca07613"
+          },
+          "sensitive_attributes": []
+        },
+        {
+          "index_key": "list_2",
+          "schema_version": 0,
+          "attributes": {
+            "content": "scout,slinger,warrior,builder,settler",
+            "content_base64": "c2NvdXQsc2xpbmdlcix3YXJyaW9yLGJ1aWxkZXIsc2V0dGxlcg==",
+            "filename": "./local-files/shuffle_list_2.txt",
+            "id": "a994e19704ace6b7540ce5a2ce8842cdcdd815dd"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "count_example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "id": "9142834085509673071",
+            "triggers": {
+              "trigger_value": "this-is-the-apply"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.external.example"
+          ]
+        },
+        {
+          "index_key": 1,
+          "schema_version": 0,
+          "attributes": {
+            "id": "2069881511077264837",
+            "triggers": {
+              "trigger_value": "this-is-the-apply"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.external.example"
+          ]
+        },
+        {
+          "index_key": 2,
+          "schema_version": 0,
+          "attributes": {
+            "id": "1377046888799190686",
+            "triggers": {
+              "trigger_value": "this-is-the-apply"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.external.example"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "map_example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "index_key": "example",
+          "schema_version": 0,
+          "attributes": {
+            "id": "8960187214139378692",
+            "triggers": {
+              "trigger_value": "this-is-the-apply"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.external.example"
+          ]
+        },
+        {
+          "index_key": "test",
+          "schema_version": 0,
+          "attributes": {
+            "id": "1086600198146314309",
+            "triggers": {
+              "trigger_value": "this-is-the-apply"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.external.example"
+          ]
+        },
+        {
+          "index_key": "value",
+          "schema_version": 0,
+          "attributes": {
+            "id": "6009568497056111935",
+            "triggers": {
+              "trigger_value": "this-is-the-apply"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.external.example"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "random_pet",
+      "name": "random_example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "example-acceptance-morally-evident-malamute",
+            "keepers": null,
+            "length": 3,
+            "prefix": "example-acceptance",
+            "separator": "-"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "random_shuffle",
+      "name": "shuffle_example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "index_key": "list_1",
+          "schema_version": 0,
+          "attributes": {
+            "id": "-",
+            "input": [
+              "ponder",
+              "consider",
+              "opt",
+              "preordain",
+              "brainstorm",
+              "portent"
+            ],
+            "keepers": {
+              "shuffle_count": "5"
+            },
+            "result": [
+              "consider",
+              "opt",
+              "preordain",
+              "portent",
+              "ponder"
+            ],
+            "result_count": 5,
+            "seed": null
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.local_file.lists"
+          ]
+        },
+        {
+          "index_key": "list_2",
+          "schema_version": 0,
+          "attributes": {
+            "id": "-",
+            "input": [
+              "scout",
+              "slinger",
+              "warrior",
+              "builder",
+              "settler"
+            ],
+            "keepers": {
+              "shuffle_count": "5"
+            },
+            "result": [
+              "slinger",
+              "builder",
+              "scout",
+              "settler",
+              "warrior"
+            ],
+            "result_count": 5,
+            "seed": null
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.local_file.lists"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.example_module",
+      "mode": "managed",
+      "type": "random_pet",
+      "name": "random_example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "acceptance-module-knowing-pup",
+            "keepers": null,
+            "length": 2,
+            "prefix": "acceptance-module",
+            "separator": "-"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    }
+  ]
+}

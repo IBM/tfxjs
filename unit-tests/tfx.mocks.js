@@ -15,15 +15,7 @@ const mocks = function () {
       stdout: `{"planned_values" : "success"}`,
     };
   };
-  /**
-   * Mock JS Exec where an error happens
-   * @param {string} script Script data
-   * @returns plain text "uh oh"
-   */
-  this.errExec = async (script) => {
-    this.lastScript = script;
-    return "uh oh";
-  };
+
   // List of definitions calles
   this.definitionList = [];
   // List of it assertions called
@@ -55,23 +47,39 @@ const mocks = function () {
 
   /**
    * Mock before function for testing
-   * @param {*} callback 
+   * @param {*} callback
    * @param {Function} callback callback function
    * @returns Execution of callback function
    */
   this.before = (callback) => {
     this.beforeList.push(callback());
-    return callback()
-  }
+    return callback();
+  };
 
-  this.logList = []
+  this.logList = [];
   /**
    * Mock for console.log adds string to logList
    * @param {string} str arbitrary string
    */
   this.log = (str) => {
-    this.logList.push(str)
-  }
+    this.logList.push(str);
+  };
+
+  /**
+   * Create a mock exec function
+   * @param {Object} data arbitrary data bject to return
+   */
+  this.mockExec = function (data) {
+    this.data = data;
+    this.commandList = [];
+    this.promise = (command) => {
+      this.commandList.push(command);
+      return new Promise((resolve, reject) => {
+        if (this.data?.stderr) reject(this.data);
+        else resolve(this.data);
+      });
+    };
+  };
 };
 
 module.exports = mocks;

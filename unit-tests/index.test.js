@@ -4,6 +4,7 @@ const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
 let mock = new mocks(); // initialize mocks
+process.env.API_KEY = "test";
 
 // initialize mock tfx
 let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
@@ -64,6 +65,31 @@ describe("tfxjs", () => {
         tfx.tfutils.toString(),
         tfutils.toString(),
         "it should correctly initialize utils"
+      );
+    });
+    it("shoudld create tfvars if a string passed", () => {
+      assert.deepEqual(
+        overrideTfx.tfvars,
+        {
+          ibmcloud_api_key: "test",
+        },
+        "should create correct data from string"
+      );
+    });
+    it("should set tfvars if object passed", () => {
+      overrideTfx = new tfxjs(
+        "./mock_path",
+        { test: "test" },
+        {
+          overrideBefore: mock.before,
+          overrideDescribe: mock.describe,
+          overrideIt: mock.it,
+        }
+      );
+      assert.deepEqual(
+        overrideTfx.tfvars,
+        { test: "test" },
+        "should correctly set variables"
       );
     });
   });
@@ -202,11 +228,13 @@ describe("tfxjs", () => {
         overrideBefore: mock.before,
         overrideDescribe: mock.describe,
         overrideIt: mock.it,
+        overrideExec: new mock.mockExec({
+          stdout: '{"planned_values" : "success"}',
+        }).promise,
       });
       overrideTfx.print = mock.log;
     });
     it("should return the correct data and set this.tfplan", async () => {
-      overrideTfx.exec = mock.exec;
       await overrideTfx.planAndSetData();
       assert.deepEqual(
         overrideTfx.tfplan,
@@ -270,6 +298,9 @@ describe("tfxjs", () => {
         overrideBefore: mock.before,
         overrideDescribe: mock.describe,
         overrideIt: mock.it,
+        overrideExec: new mock.mockExec({
+          stdout: '{"planned_values" : "success"}',
+        }).promise,
       });
       overrideTfx.print = mock.log;
     });

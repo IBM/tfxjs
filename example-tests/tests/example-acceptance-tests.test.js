@@ -1,5 +1,7 @@
-const tfxjs = require("../../lib/index");
-const tfx = new tfxjs("../", "apikey");
+const tfxjs = require("tfxjs");
+const tfx = new tfxjs("../", {
+  trigger_value: "example-acceptance",
+});
 
 tfx.plan("Hashicorp Provider Example Tests", () => {
   tfx.module(
@@ -7,17 +9,17 @@ tfx.plan("Hashicorp Provider Example Tests", () => {
     "root_module",
     tfx.resource("Count Example 0", "null_resource.count_example[0]", {
       triggers: {
-        trigger_value: "this-is-a-test",
+        trigger_value: "example-acceptance",
       },
     }),
     tfx.resource("Count Example 1", "null_resource.count_example[1]", {
       triggers: {
-        trigger_value: "this-is-a-test",
+        trigger_value: "example-acceptance",
       },
     }),
     tfx.resource("Count Example 2", "null_resource.count_example[2]", {
       triggers: {
-        trigger_value: "this-is-a-test",
+        trigger_value: "example-acceptance",
       },
     }),
     tfx.resource(
@@ -25,18 +27,18 @@ tfx.plan("Hashicorp Provider Example Tests", () => {
       'null_resource.map_example["example"]',
       {
         triggers: {
-          trigger_value: "this-is-a-test",
+          trigger_value: "example-acceptance",
         },
       }
     ),
     tfx.resource("Map Example Test", 'null_resource.map_example["test"]', {
       triggers: {
-        trigger_value: "this-is-a-test",
+        trigger_value: "example-acceptance",
       },
     }),
     tfx.resource("Map Example Value", 'null_resource.map_example["value"]', {
       triggers: {
-        trigger_value: "this-is-a-test",
+        trigger_value: "example-acceptance",
       },
     }),
     tfx.resource("Random Pet Example", "random_pet.random_example", {
