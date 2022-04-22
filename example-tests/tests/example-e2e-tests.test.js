@@ -1,5 +1,8 @@
 const tfxjs = require("tfxjs");
-const tfx = new tfxjs("../", "apikey");
+const tfx = new tfxjs("../", {
+  trigger_value: "example-e2e-tests",
+  shuffle_count: 3,
+});
 
 tfx.apply("Hashicorp Provider Example Tests", () => {
   tfx.state(
@@ -42,7 +45,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           return id.match(/^\d+$/g)[0] === id;
         }),
         triggers: {
-          trigger_value: "this-is-a-test",
+          trigger_value: "example-e2e-tests",
         },
       },
       {
@@ -51,7 +54,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           return id.match(/^\d+$/g)[0] === id;
         }),
         triggers: {
-          trigger_value: "this-is-a-test",
+          trigger_value: "example-e2e-tests",
         },
       },
       {
@@ -60,7 +63,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           return id.match(/^\d+$/g)[0] === id;
         }),
         triggers: {
-          trigger_value: "this-is-a-test",
+          trigger_value: "example-e2e-tests",
         },
       }
     )
@@ -76,7 +79,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           return id.match(/^\d+$/g)[0] === id;
         }),
         triggers: {
-          trigger_value: "this-is-a-test",
+          trigger_value: "example-e2e-tests",
         },
       },
       {
@@ -86,7 +89,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           return id.match(/^\d+$/g)[0] === id;
         }),
         triggers: {
-          trigger_value: "this-is-a-test",
+          trigger_value: "example-e2e-tests",
         },
       },
       {
@@ -96,7 +99,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           return id.match(/^\d+$/g)[0] === id;
         }),
         triggers: {
-          trigger_value: "this-is-a-test",
+          trigger_value: "example-e2e-tests",
         },
       }
     )
@@ -119,9 +122,9 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
       {
         index_key: "list_1",
         keepers: {
-          shuffle_count: "2",
+          shuffle_count: "3",
         },
-        result_count: 2,
+        result_count: 3,
         input: [
           "ponder",
           "consider",
@@ -130,7 +133,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           "brainstorm",
           "portent",
         ],
-        result: tfx.expect("to contain 2 entries from the list.", (inputs) => {
+        result: tfx.expect("to contain 3 entries from the list.", (inputs) => {
           let foundCount = 0;
           inputs.forEach((resource) => {
             if (
@@ -145,17 +148,17 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
             )
               foundCount++;
           });
-          return foundCount === 2;
+          return foundCount === 3;
         }),
       },
       {
         index_key: "list_2",
         keepers: {
-          shuffle_count: "2",
+          shuffle_count: "3",
         },
-        result_count: 2,
+        result_count: 3,
         input: ["scout", "slinger", "warrior", "builder", "settler"],
-        result: tfx.expect("to contain 2 entries from the list.", (inputs) => {
+        result: tfx.expect("to contain 3 entries from the list.", (inputs) => {
           let foundCount = 0;
           inputs.forEach((resource) => {
             if (
@@ -165,23 +168,20 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
             )
               foundCount++;
           });
-          return foundCount === 2;
+          return foundCount === 3;
         }),
       }
     )
   );
   tfx.state(
     "Example Module",
-    tfx.address(
-      "module.example_module.random_pet.random_example",
-      {
-        id: tfx.expect("to have 4 total segments seperated by hyphens.", (id) => {
-          return id.split("-").length === 4
-        }),
-        length: 2,
-        prefix: "acceptance-module",
-        separator: "-",
-      }
-    )
+    tfx.address("module.example_module.random_pet.random_example", {
+      id: tfx.expect("to have 4 total segments seperated by hyphens.", (id) => {
+        return id.split("-").length === 4;
+      }),
+      length: 2,
+      prefix: "acceptance-module",
+      separator: "-",
+    })
   );
 });

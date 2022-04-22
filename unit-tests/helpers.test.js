@@ -1,6 +1,10 @@
 const helpers = require("../lib/helpers");
-const { assert } = require("chai");
-const { checkResourceTests, expectedResourceAddress, childArraySearch } = require("../lib/helpers");
+const { assert, util } = require("chai");
+const {
+  checkResourceTests,
+  expectedResourceAddress,
+  childArraySearch,
+} = require("../lib/helpers");
 
 describe("helpers", () => {
   describe("keyContains", () => {
@@ -23,10 +27,10 @@ describe("helpers", () => {
   describe("checkResourceTests", () => {
     it("should throw an error if resources is not an array", () => {
       let test = () => {
-        checkResourceTests("frog")
-      }
-      assert.throws(test, "Expected resource tests to be an array got string.")
-    })
+        checkResourceTests("frog");
+      };
+      assert.throws(test, "Expected resource tests to be an array got string.");
+    });
     it("should throw an error if test is passed with no name", () => {
       let test = () => {
         checkResourceTests([
@@ -164,22 +168,22 @@ describe("helpers", () => {
     it("should search child modules of child modules for address", () => {
       let data = childArraySearch("module.ez_vpc.module.vpc", [
         {
-          "address": "module.ez_vpc",
-          "child_modules": [
+          address: "module.ez_vpc",
+          child_modules: [
             {
-              "address" : "module.ez_vpc.module.vpc"
-            }
-          ]
-        }
+              address: "module.ez_vpc.module.vpc",
+            },
+          ],
+        },
       ]);
       let expectedData = {
         containsModule: true,
         moduleData: {
-          "address" : "module.ez_vpc.module.vpc"
-        }
-      }
-      assert.deepEqual(data, expectedData, "it should return correct data")
-    })
+          address: "module.ez_vpc.module.vpc",
+        },
+      };
+      assert.deepEqual(data, expectedData, "it should return correct data");
+    });
   });
   describe("getFoundResources", () => {
     it("should return correct array when none unexpected resources found and address is empty string", () => {
@@ -479,22 +483,54 @@ describe("helpers", () => {
   });
   describe("expectedResourceAddress", () => {
     it("should return address plus resource address if not parent address", () => {
-      let actualData = expectedResourceAddress(undefined, "one", "two")
-      assert.deepEqual(actualData, "two.one", "it should return correct string")
-    })
+      let actualData = expectedResourceAddress(undefined, "one", "two");
+      assert.deepEqual(
+        actualData,
+        "two.one",
+        "it should return correct string"
+      );
+    });
   });
   describe("azsort", () => {
     it("should return -1 if string a is less than string b", () => {
       let actualData = helpers.azsort("a", "b");
-      assert.deepEqual(actualData, -1, "it should return -1")
-    })
+      assert.deepEqual(actualData, -1, "it should return -1");
+    });
     it("should return 1 if string a is greater than string b", () => {
       let actualData = helpers.azsort(3, 2);
-      assert.deepEqual(actualData, 1, "it should return 11")
-    })
+      assert.deepEqual(actualData, 1, "it should return 11");
+    });
     it("should return 0 if string a is equal to string b", () => {
       let actualData = helpers.azsort(2, 2);
-      assert.deepEqual(actualData, 0, "it should return 11")
-    })
-  })
+      assert.deepEqual(actualData, 0, "it should return 11");
+    });
+  });
+  describe("tfVarCheck", () => {
+    let tfVarCheck = helpers.tfVarCheck;
+    it("should not throw if string, boolean, and number are passed", () => {
+      let data = {
+        one: 1,
+        two: "two",
+        three: true,
+      };
+      let task = () => {
+        tfVarCheck(data);
+      };
+      assert.doesNotThrow(task, "everything is fine");
+    });
+    it("should  throw if types other than string, boolean, and number are passed", () => {
+      let data = {
+        one: [],
+        two: {},
+        three: true,
+      };
+      let task = () => {
+        tfVarCheck(data);
+      };
+      assert.throws(
+        task,
+        "Expected type of string, number, or boolean for one got string\nExpected type of string, number, or boolean for two got string"
+      );
+    });
+  });
 });

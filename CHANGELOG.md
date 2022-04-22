@@ -2,12 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.4.0] - 2022-04-22
 
-## [0.0.1] - 2019-02-15
-
-### Added
-- Added a changelog
-
-[unreleased]: https://github.com/ibm/repo-template/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/ibm/repo-template/releases/tag/v0.0.1
+- Bash commands are no longer run from a script and are now handled in [./lib/terraform-cli.js](./lib/terraform-cli.js).
+    - This allows for more robust error handling; the complete output for terraform commands will now be shown as commands run before testing.
+    - Bash script commands have been removed from [./lib](./lib)
+- Additional terraform environment variables can be export from the `tfxjs` constructor.
+    - Now excepts `tfvars` as an optional second parameter an object with any number of keys and values
+    - These values will be exported into the bash shell at runtime of any terraform functions
+    - Currently only number, string, and boolean types are supported
+- The `tfxjs` constructor can take `quiet` as a boolean in the `options` when initializing the constructor. 
+    - This option will prevent terraform commands from outputting during test runtime.
+- [End to end tests](./e2e-tests/) have been added to ensure CLI commands run return correct results
+- Removed `jq` dependency
+- The ability to run `terraform destroy` has been added as part of the CLI commands but is not yet implemented in the [main tfx module](./lib/index.js)
+- `tfxjs` when initialized now has more methods to allow for easier creation of tests
+    - `tfx.module` can now take mulitple resources as arfs
+    - `tfx.resource` now creates a test object for a resource
+    - `tfx.expect` allows for streamlined writing of function tests
+    - `tfx address` allows for easy creation of state resources and accepts multiple instances as args
+    - None of the above changes will break existing code patterns
+- All `exec` commands have been reworked to better use promises
+- More robust error handling

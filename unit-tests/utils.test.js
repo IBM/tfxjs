@@ -6,14 +6,15 @@ const {
 } = require("../lib/builders.js");
 const tfUnitTestUtils = require("../lib/utils.js");
 const mocks = require("./tfx.mocks");
-process.env.API_KEY = "apikey";
 
 // Initialize mocks for unit testing
 let mock = new mocks();
+
 // Initialize mocks to test against `mock`
 let tfUtilMocks = new mocks();
+
 // create new tfutils overriding describe, it, and assert for unit testing
-const tfutils = new tfUnitTestUtils("../defaults", "ibmcloud_api_key", {
+const tfutils = new tfUnitTestUtils({
   overrideDescribe: tfUtilMocks.describe,
   overrideIt: tfUtilMocks.it,
   overrideAssert: assert,
@@ -63,62 +64,6 @@ describe("tfUnitTestUtils", () => {
         assert.toString(),
         "it should have correct assert function"
       );
-    });
-  });
-  describe("getPlanJson", () => {
-    it("should run the correct bash script", async () => {
-      await tfutils.getPlanJson(mock.exec);
-      assert.isTrue(
-        mock.lastScript.match(
-          /^sh\s.*\/plan\.sh\sibmcloud_api_key\sapikey\s\.\.\/defaults$/i
-        ).length === 1,
-        "it should correctly run the script"
-      );
-    });
-    it("should return a value if valid json is passed", async () => {
-      let json = await tfutils.getPlanJson(mock.exec);
-      assert.deepEqual(json, "success", "it should correctly run the script");
-    });
-    it("should throw an error if invalid json is passed", async () => {
-      let expectedError =
-        "SyntaxError: Unexpected token u in JSON at position 0. Ensure your template file is correct and try again.";
-      await tfutils.getPlanJson(mock.errExec).catch((err) => {
-        assert.deepEqual(
-          err.message,
-          expectedError,
-          "it should return the correct error"
-        );
-      });
-    });
-  });
-  describe("getApplyJson", () => {
-    it("should run the correct bash script", async () => {
-      await tfutils.getApplyJson(mock.exec);
-      assert.isTrue(
-        mock.lastScript.match(
-          /^sh\s.*\/apply\.sh\sibmcloud_api_key\sapikey\s\.\.\/defaults$/i
-        ).length === 1,
-        "it should correctly run the script"
-      );
-    });
-    it("should return a value if valid json is passed", async () => {
-      let json = await tfutils.getApplyJson(mock.exec);
-      assert.deepEqual(
-        json,
-        { planned_values: "success" },
-        "it should correctly run the script"
-      );
-    });
-    it("should throw an error if invalid json is passed", async () => {
-      let expectedError =
-        "SyntaxError: Unexpected token u in JSON at position 0. Ensure your template file is correct and try again.";
-      await tfutils.getApplyJson(mock.errExec).catch((err) => {
-        assert.deepEqual(
-          err.message,
-          expectedError,
-          "it should return the correct error"
-        );
-      });
     });
   });
   describe("buildResourceTest", () => {

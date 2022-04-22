@@ -79,9 +79,11 @@ describe("mocks", () => {
     it("should add a definition to the before list", () => {
       assert.deepEqual(
         mock.beforeList,
-        [{
-          data: true,
-        }],
+        [
+          {
+            data: true,
+          },
+        ],
         "Should return result of inner function"
       );
     });
@@ -107,8 +109,56 @@ describe("mocks", () => {
   });
   describe("log", () => {
     it("should add a string to log list when called", () => {
-      mock.log("hi")
-      assert.deepEqual(mock.logList, ["hi"], "it should return the correct array")
-    })
-  })
+      mock.log("hi");
+      assert.deepEqual(
+        mock.logList,
+        ["hi"],
+        "it should return the correct array"
+      );
+    });
+  });
+  describe("mockExec", () => {
+    let mockExec;
+    beforeEach(() => {
+      mockExec = new mock.mockExec('{"ding": "dong"}');
+    });
+    it("should init data", () => {
+      assert.deepEqual(
+        mockExec.data,
+        '{"ding": "dong"}',
+        "it should have correct data"
+      );
+    });
+    describe("promise", () => {
+      it("should resolve if correct data and add command to command list", () => {
+        return mockExec.promise("hi").then((data) => {
+          assert.deepEqual(data, `{"ding": "dong"}`, "should return");
+          assert.deepEqual(
+            mockExec.commandList,
+            ["hi"],
+            "should have correct commands"
+          );
+        });
+      });
+      it("should reject if incorrect data and add command to command list", () => {
+        mockExec.data = {
+          stderr: "whoops",
+        };
+        return mockExec.promise("hi").catch((data) => {
+          assert.deepEqual(
+            data,
+            {
+              stderr: "whoops",
+            },
+            "should return"
+          );
+          assert.deepEqual(
+            mockExec.commandList,
+            ["hi"],
+            "should have correct commands"
+          );
+        });
+      });
+    });
+  });
 });

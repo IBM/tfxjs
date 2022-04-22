@@ -27,8 +27,6 @@ npm install tfxjs -g
 ## Prerequisites
 
 - [Terraform CLI](https://www.terraform.io/cli/commands)
-- [jq](https://stedolan.github.io/jq/)
-- Create a `.env` file for your environment and set the `API_KEY` value
 - If [mocha](https://mochajs.org/) is not installed globally run:
 ```shell
 npm install mocha -g
@@ -51,7 +49,10 @@ For a detailed example of using this framework, see [example tests](./example-te
 ```js
 
 const tfxjs = require("tfxjs"); // Initialize tfxjs
-const tfx = new tfxjs(" <path to template directory> ", "<name of terraform environment api key variable >"); // Create a new constructor for terraform teplate
+const tfx = new tfxjs(" <path to template directory> ", {
+  my_tf_value_1 : "<data>", // export variable data to template directory
+  my_tf_value_2 : "<data>"
+}); // Create a new constructor for terraform teplate
 
 tfx.plan("MyModule", () => { // Gerate a plan in the directory
   // Run tests for the module
@@ -67,6 +68,7 @@ tfx.plan("MyModule", () => { // Gerate a plan in the directory
         receive_global_events: true,
       },
     ),
+    ...
   );
 });
 ```
@@ -105,6 +107,40 @@ tfx.plan("MyModule", () => { // Gerate a plan in the directory
 ---
 
 ## Methods
+
+### constructor
+
+```js
+/**
+ * Create a new tfx instance
+ * @param {string} templatePath File path to terraform template to test
+ * @param {Object} tfvars key value pair of tfvars
+ * @param {boolean} options List of options
+ * @param {boolean} options.quiet // Set to true to limit cli outpit
+ */
+
+const tfx = new tfxjs(templatePath, tfvars, options)
+```
+
+#### tfvars
+
+This parameter takes any number of values and injects them into the template data at runtime. Currently only `string`, `number`, and `boolean` types are supported.
+
+```js
+{
+  value_1: "test",
+  value_2: 3
+}
+```
+
+Doing this results in the following bash commands:
+
+```shell
+export TF_VAR_value_1="test"
+export TF_VAR_value_2=3
+```
+
+**Note** These values may conflict with `terraform.tfvars`
 
 ### plan
 
@@ -325,18 +361,26 @@ To get test coverage, run the command
 npm run coverage
 ```
 
+## End to End Tests
+
+To run end-to-end tests, use the following command
+```shell
+tfx e2e-tests/
+```
+
 ---
 
 ### Current Test Coverage
 
 
-File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
----------------|---------|----------|---------|---------|-------------------
-All files      |      100|      100 |     100 |     100 | 🏆               
- lib           |     100 |      100 |     100 |     100 | 🏆                  
-  helpers.js   |     100 |      100 |     100 |     100 | 🏆 
-  builders.js  |     100 |      100 |     100 |     100 | 🏆                                   
-  index.js     |     100 |      100 |     100 |     100 | 🏆                  
-  utils.js     |     100 |      100 |     100 |     100 | 🏆                  
- unit-tests    |     100 |      100 |     100 |     100 | 🏆                  
-  tfx.mocks.js |     100 |      100 |     100 |     100 | 🏆                  
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |     100 |      100 |     100 |     100 | 🏆
+ lib               |     100 |      100 |     100 |     100 | 🏆
+  builders.js      |     100 |      100 |     100 |     100 | 🏆
+  helpers.js       |     100 |      100 |     100 |     100 | 🏆
+  index.js         |     100 |      100 |     100 |     100 | 🏆
+  terraform-cli.js |     100 |      100 |     100 |     100 | 🏆
+  utils.js         |     100 |      100 |     100 |     100 | 🏆
+ unit-tests        |     100 |      100 |     100 |     100 | 🏆
+  tfx.mocks.js     |     100 |      100 |     100 |     100 | 🏆
