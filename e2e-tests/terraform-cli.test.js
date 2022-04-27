@@ -2,6 +2,8 @@ const { assert } = require("chai");
 const cli = require("../lib/terraform-cli");
 const jsutil = require("util"); // Utils to run child process
 const fs = require("fs");
+const { tdd } = require("mocha/lib/interfaces");
+const tfx = require("../lib/tfx-cli");
 const jsExec = jsutil.promisify(require("child_process").exec); // Exec from child process
 let tf;
 let tfLogs = [];
@@ -95,5 +97,34 @@ describe("example-test terraformCli", () => {
         );
       });
     });
+  });
+  describe("clone", () => {
+    it("should create a clone directory", () => {
+      let cloneLs;
+      return tf
+        .clone("./clone")
+        .then(() => {
+          return tf.execPromise("ls ./clone/example-tests");
+        })
+        .then((lsData) => {
+          cloneLs = lsData;
+        })
+        .then(() => {
+          return tf.execPromise("ls ./example-tests");
+        })
+        .then(expectedData => {
+          assert.deepEqual(cloneLs, expectedData)
+        })
+    });
+    it("should correctly purge the directory", () => {
+      tf.directory = "./clone"
+      return tf.purgeClone()
+        .then(() => {
+          return tf.execPromise("ls ./clone")
+        })
+        .catch(err => {
+          assert.deepEqual(err.stderr, 'ls: ./clone: No such file or directory\n', "it should have correct error");
+        })
+    })
   });
 });
