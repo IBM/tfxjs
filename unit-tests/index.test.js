@@ -11,6 +11,8 @@ let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
   overrideBefore: mock.before,
   overrideDescribe: mock.describe,
   overrideIt: mock.it,
+  quiet: true,
+  overrideExec: new mock.mockExec({}).promise
 });
 
 describe("tfxjs", () => {
@@ -122,7 +124,7 @@ describe("tfxjs", () => {
       );
     });
   });
-  describe("plan", () => {
+  describe("tfAction", () => {
     beforeEach(() => {
       mock = new mocks();
       overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
@@ -132,32 +134,123 @@ describe("tfxjs", () => {
       });
       overrideTfx.print = mock.log;
     });
+    it("should throw an error if action is not supported", () => {
+      let task = () => {
+        overrideTfx.tfAction("test", "bad-name");
+      };
+      assert.throws(
+        task,
+        'tfAction currently only accepts ["plan","apply","clone"], got bad-name'
+      );
+    });
+    it("should throw an error if callback is not function", () => {
+      let task = () => {
+        overrideTfx.tfAction("test", "apply", "egg", "frog");
+      };
+      assert.throws(
+        task,
+        "tfx.apply expected callback to be a function got string"
+      );
+    });
+    it("should throw an error if beforeFn is not function", () => {
+      let task = () => {
+        overrideTfx.tfAction("test", "apply", "egg", () => {});
+      };
+      assert.throws(
+        task,
+        "tfx.apply expected beforeFn to be a function got string"
+      );
+    });
     it("should run the correct describe function", () => {
-      overrideTfx.plan("describe", () => {});
+      overrideTfx.tfAction(
+        "describe",
+        "plan",
+        () => {},
+        () => {}
+      );
       assert.deepEqual(
         mock.definitionList,
         ["describe"],
         "it should add the correct data to the mock definitionList"
       );
     });
-    it("should run the correct callback function", () => {
-      let callbackSuccess = false;
-      overrideTfx.plan("describe", () => {
-        callbackSuccess = true;
-      });
-      assert.isTrue(
-        callbackSuccess,
-        "it should return the correct describe function"
+    it("should run the correct it function for plan", () => {
+      overrideTfx.tfAction(
+        "describe",
+        "plan",
+        () => {},
+        () => {}
       );
-    });
-    it("should run the correct it function", () => {
-      overrideTfx.plan("describe", () => {});
-      let exepectedItList = ["Successfully generates a terraform plan file"];
       assert.deepEqual(
         mock.itList,
-        exepectedItList,
-        "it should run the correct it assertion"
+        ["Successfully generates a terraform plan file"],
+        "it should add the correct data to the mock itList"
       );
+    });
+    it("should run the correct it function for apply", () => {
+      overrideTfx.tfAction(
+        "describe",
+        "apply",
+        () => {},
+        () => {}
+      );
+      assert.deepEqual(
+        mock.itList,
+        ["Runs `terraform apply` in the target directory"],
+        "it should add the correct data to the mock itList"
+      );
+    });
+    it("should run the correct it function for clone", () => {
+      overrideTfx.tfAction(
+        "describe",
+        "clone",
+        () => {},
+        () => {},
+        "path"
+      );
+      assert.deepEqual(
+        mock.itList,
+        ["Creates a clone directory at destination path path"],
+        "it should add the correct data to the mock itList"
+      );
+    });
+    it("should run the before function", () => {
+      let value;
+      overrideTfx.tfAction(
+        "describe",
+        "clone",
+        () => {
+          value = true;
+        },
+        () => {},
+        "path"
+      );
+      assert.isTrue(value, "it should return true");
+    });
+    it("should run the callback function", () => {
+      let value;
+      overrideTfx.tfAction(
+        "describe",
+        "clone",
+        () => {},
+        () => {
+          value = true;
+        },
+        "path"
+      );
+      assert.isTrue(value, "it should return true");
+    });
+  });
+  describe("plan", () => {
+    beforeEach(() => {
+      mock = new mocks();
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+        overrideBefore: mock.before,
+        overrideDescribe: mock.describe,
+        overrideIt: mock.it,
+        overrideExec: new mock.mockExec({}).promise
+      });
+      overrideTfx.print = mock.log;
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.plan("describe", () => {});
@@ -169,9 +262,6 @@ describe("tfxjs", () => {
         "it should print out the correct data"
       );
     });
-    it("should set this.tfplan to plan data", async () => {
-      overrideTfx.exec = mock.exec;
-    });
   });
   describe("apply", () => {
     beforeEach(() => {
@@ -180,35 +270,9 @@ describe("tfxjs", () => {
         overrideBefore: mock.before,
         overrideDescribe: mock.describe,
         overrideIt: mock.it,
+        quiet: true,
       });
       overrideTfx.print = mock.log;
-    });
-    it("should run the correct describe function", () => {
-      overrideTfx.apply("describe", () => {});
-      assert.deepEqual(
-        mock.definitionList,
-        ["describe"],
-        "it should add the correct data to the mock definitionList"
-      );
-    });
-    it("should run the correct callback function", () => {
-      let callbackSuccess = false;
-      overrideTfx.apply("describe", () => {
-        callbackSuccess = true;
-      });
-      assert.isTrue(
-        callbackSuccess,
-        "it should return the correct describe function"
-      );
-    });
-    it("should run the correct it function", () => {
-      overrideTfx.apply("describe", () => {});
-      let exepectedItList = ["Runs `terraform apply` in the target directory"];
-      assert.deepEqual(
-        mock.itList,
-        exepectedItList,
-        "it should run the correct it assertion"
-      );
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.apply("describe", () => {});
@@ -231,6 +295,7 @@ describe("tfxjs", () => {
         overrideExec: new mock.mockExec({
           stdout: '{"planned_values" : "success"}',
         }).promise,
+        quiet: true,
       });
       overrideTfx.print = mock.log;
     });
@@ -244,6 +309,18 @@ describe("tfxjs", () => {
     });
   });
   describe("module", () => {
+    beforeEach(() => {
+      mock = new mocks();
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+        overrideBefore: mock.before,
+        overrideDescribe: mock.describe,
+        overrideIt: mock.it,
+        quiet: true,
+        overrideExec: new mock.mockExec({}).promise
+      });
+      overrideTfx.print = mock.log;
+      overrideTfx.tfplan = "arbitraty_data"
+    });
     it("should run tfutils with correct params", () => {
       let testModuleArgs;
       overrideTfx.tfutils.testModule = function (...args) {
@@ -255,11 +332,11 @@ describe("tfxjs", () => {
           address: "test",
           moduleName: "test",
           testList: [],
-          tfData: "success",
+          tfData: "arbitraty_data",
         },
       ]);
     });
-    it("should run tfutils with correct params using spead operator", () => {
+    it("should run tfutils with correct params using spread operator", () => {
       let testModuleArgs;
       overrideTfx.tfutils.testModule = function (...args) {
         testModuleArgs = args;
@@ -276,7 +353,7 @@ describe("tfxjs", () => {
               values: {},
             },
           ],
-          tfData: "success",
+          tfData: "arbitraty_data",
         },
       ]);
     });
@@ -363,5 +440,24 @@ describe("tfxjs", () => {
         "`tfx.apply` needs to be successfully completed before running `tfx.state`."
       );
     });
+    describe("clone", () => {
+      beforeEach(() => {
+        mock = new mocks();
+        overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+          overrideBefore: mock.before,
+          overrideDescribe: mock.describe,
+          overrideIt: mock.it,
+          overrideExec: new mock.mockExec("ff").promise
+        });
+        overrideTfx.print = mock.log;
+
+      });
+      it("should create a clone with correct template path", () => {
+        overrideTfx.clone("test", (cloneTfx, done) => {
+          assert.deepEqual(cloneTfx.templatePath, "test", "it should have correct path")
+          assert.isTrue(done instanceof Function, "it should be a function")
+        })
+      })
+    })
   });
 });
