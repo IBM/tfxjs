@@ -276,34 +276,34 @@ describe("builders", () => {
       });
     });
   });
-  describe("check", () => {
-    let check = builders.check;
+  describe("address", () => {
+    let address = builders.address;
     it("should throw an error if address is not sring", () => {
       let task = () => {
-        check(2);
+        address(2);
       };
       assert.throws(
         task,
-        "tfx.check expects address to be a string got number"
+        "tfx.address expects address to be a string got number"
       );
     });
     it("should throw an error if instances not passed", () => {
       let task = () => {
-        check("test");
+        address("test");
       };
-      assert.throw(task, "tfx.check expects at least one instance got 0");
+      assert.throw(task, "tfx.address expects at least one instance got 0");
     });
     it("should throw an error if instances is not array of object", () => {
       let task = () => {
-        check("test", {}, "frog", 0, [1, 2, 3]);
+        address("test", {}, "frog", 0, [1, 2, 3]);
       };
       assert.throws(
         task,
-        'tfx.check expected all instances to be of type Object got ["object","string","number","Array"]'
+        'tfx.address expected all instances to be of type Object got ["object","string","number","Array"]'
       );
     });
     it("should return instances", () => {
-      let actualData = check("test", { id: true });
+      let actualData = address("test", { id: true });
       let expectedData = {
         address: "test",
         instances: [

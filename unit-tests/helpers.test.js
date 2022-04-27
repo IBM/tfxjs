@@ -185,6 +185,38 @@ describe("helpers", () => {
       assert.deepEqual(data, expectedData, "it should return correct data");
     });
   });
+  it("should search child modules of child modules of child_modules for address", () => {
+    let data = childArraySearch("module.ez_vpc.module.vpc.module.test_module.module.deep_test2", [
+      {
+        address: "module.ez_vpc",
+        child_modules: [
+          {
+            address: "module.ez_vpc.module.vpc",
+            child_modules: [
+              {
+                address: "module.ez_vpc.module.vpc.module.test_module",
+                child_modules: [
+                  {
+                    address: "module.ez_vpc.module.vpc.module.test_module.module.deep_test"
+                  },
+                  {
+                    address: "module.ez_vpc.module.vpc.module.test_module.module.deep_test2"
+                  }
+                ]
+              },
+            ]
+          },
+        ],
+      },
+    ]);
+    let expectedData = {
+      containsModule: true,
+      moduleData: {
+        address: "module.ez_vpc.module.vpc.module.test_module.module.deep_test2",
+      },
+    };
+    assert.deepEqual(data, expectedData, "it should return correct data");
+  });
   describe("getFoundResources", () => {
     it("should return correct array when none unexpected resources found and address is empty string", () => {
       let data = helpers.getFoundResources(

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2022-04-27
+
+- Added `clone` method to `tfxjs`. This allows users to run tests against a copy of the template for silmultanious tests.
+- Moved method docs from README.md to [./.docs/tfxjs.md](./.docs/tfxjs.md)
+- Improved jsdocs
+- Refactoring
+- Rename builder from `check` to `address` for consistancy
+- Rename `tfx.js` to `tfx-cli.js` for clarity
+
 ## [0.4.0] - 2022-04-22
 
 - Bash commands are no longer run from a script and are now handled in [./lib/terraform-cli.js](./lib/terraform-cli.js).

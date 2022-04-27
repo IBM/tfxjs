@@ -21,6 +21,40 @@ describe("terraformCli", () => {
     exec = new mockExec({}, false);
     tf = new cli("../directory", exec.promise);
   });
+  describe("clone", () => {
+    it("should run with no overridePath", () => {
+      return tf.clone("./.tmp-clone-template").then(() => {
+        assert.deepEqual(
+          tf.directory,
+          "../directory",
+          "it should return correct path"
+        );
+        assert.deepEqual(
+          exec.commandList,
+          [
+            "mkdir ./.tmp-clone-template && cp -r ../directory ./.tmp-clone-template",
+          ],
+          "should return correct commands"
+        );
+      });
+    });
+  });
+  describe("purgeClone", () => {
+    it("should run correct command if clone is done first", () => {
+      return tf.clone("./.tmp-clone-template").then(() => {
+        return tf.purgeClone().then(() => {
+          assert.deepEqual(
+            exec.commandList,
+            [
+              "mkdir ./.tmp-clone-template && cp -r ../directory ./.tmp-clone-template",
+              "rm -rf ../directory",
+            ],
+            "should return correct commands"
+          );
+        });
+      });
+    });
+  });
   describe("execPromise", () => {
     it("should return correct promise", () => {
       return tf.execPromise("command").then(() => {
