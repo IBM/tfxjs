@@ -1,5 +1,5 @@
 const { assert } = require("chai");
-const tfUnitTestUtils = require("../lib/utils.js"); // Import utils
+const tfUnitTestUtils = require("../lib/tf-utils.js"); // Import utils
 const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
@@ -133,33 +133,6 @@ describe("tfxjs", () => {
         overrideIt: mock.it,
       });
       overrideTfx.print = mock.log;
-    });
-    it("should throw an error if action is not supported", () => {
-      let task = () => {
-        overrideTfx.tfAction("test", "bad-name");
-      };
-      assert.throws(
-        task,
-        'tfAction currently only accepts ["plan","apply","clone"], got bad-name'
-      );
-    });
-    it("should throw an error if callback is not function", () => {
-      let task = () => {
-        overrideTfx.tfAction("test", "apply", "egg", "frog");
-      };
-      assert.throws(
-        task,
-        "tfx.apply expected callback to be a function got string"
-      );
-    });
-    it("should throw an error if beforeFn is not function", () => {
-      let task = () => {
-        overrideTfx.tfAction("test", "apply", "egg", () => {});
-      };
-      assert.throws(
-        task,
-        "tfx.apply expected beforeFn to be a function got string"
-      );
     });
     it("should run the correct describe function", () => {
       overrideTfx.tfAction(

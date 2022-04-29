@@ -7,56 +7,24 @@ const {
 } = require("../lib/helpers");
 
 describe("helpers", () => {
-  describe("keyContains", () => {
+  describe("keycontainsKeys", () => {
     it("should return true if key is found in object", () => {
       assert.isTrue(
-        helpers.keysContains({ test: true }, "test"),
+        helpers.containsKeys({ test: true }, "test"),
         "it should return true"
       );
     });
     it("should return false if key is found in object", () => {
-      assert.isFalse(helpers.keysContains({}, "test"), "it should return true");
+      assert.isFalse(helpers.containsKeys({}, "test"), "it should return true");
     });
     it("should return false if the type passed is not object", () => {
       assert.isFalse(
-        helpers.keysContains("frog", "test"),
+        helpers.containsKeys("frog", "test"),
         "it should return false"
       );
     });
   });
   describe("checkResourceTests", () => {
-    it("should throw an error if resources is not an array", () => {
-      let test = () => {
-        checkResourceTests("frog");
-      };
-      assert.throws(test, "Expected resource tests to be an array got string.");
-    });
-    it("should throw an error if test is passed with no name", () => {
-      let test = () => {
-        checkResourceTests([
-          {
-            address: "test",
-          },
-        ]);
-      };
-      assert.throws(
-        test,
-        `Tests object requires \`name\` and \`address\` parameter. Got {\n  "address": "test"\n}`
-      );
-    });
-    it("should throw an error if test is passed with no address", () => {
-      let test = () => {
-        checkResourceTests([
-          {
-            name: "test",
-          },
-        ]);
-      };
-      assert.throws(
-        test,
-        `Tests object requires \`name\` and \`address\` parameter. Got {\n  "name": "test"\n}`
-      );
-    });
     it("should add empty values object to tests passed with no values param", () => {
       let tests = [
         {
@@ -66,36 +34,6 @@ describe("helpers", () => {
       ];
       checkResourceTests(tests);
       assert.deepEqual(tests[0].values, {}, "it should add empty object");
-    });
-    it("should throw an error if test is passed values array", () => {
-      let test = () => {
-        checkResourceTests([
-          {
-            name: "test",
-            address: "test",
-            values: [1, 2, 3, 4],
-          },
-        ]);
-      };
-      assert.throws(
-        test,
-        `Values fields for test objects must be type object, got Array:\n{\n  "name": "test",\n  "address": "test",\n  "values": [\n    1,\n    2,\n    3,\n    4\n  ]\n}`
-      );
-    });
-    it("should throw an error if test is passed not object and not array", () => {
-      let test = () => {
-        checkResourceTests([
-          {
-            name: "test",
-            address: "test",
-            values: 1,
-          },
-        ]);
-      };
-      assert.throws(
-        test,
-        `Values fields for test objects must be type object, got number:\n{\n  "name": "test",\n  "address": "test",\n  "values": 1\n}`
-      );
     });
     it("should not throw an error if everything is correct", () => {
       let test = () => {
@@ -147,7 +85,7 @@ describe("helpers", () => {
         },
       ]);
       assert.deepEqual(data, {
-        containsModule: true,
+        containsKeysModule: true,
         moduleData: {
           address: "found",
         },
@@ -161,7 +99,7 @@ describe("helpers", () => {
       ]);
       assert.deepEqual(
         data,
-        { containsModule: false, moduleData: undefined },
+        { containsKeysModule: false, moduleData: undefined },
         "should contain correct data"
       );
     });
@@ -177,7 +115,7 @@ describe("helpers", () => {
         },
       ]);
       let expectedData = {
-        containsModule: true,
+        containsKeysModule: true,
         moduleData: {
           address: "module.ez_vpc.module.vpc",
         },
@@ -210,7 +148,7 @@ describe("helpers", () => {
       },
     ]);
     let expectedData = {
-      containsModule: true,
+      containsKeysModule: true,
       moduleData: {
         address: "module.ez_vpc.module.vpc.module.test_module.module.deep_test2",
       },
@@ -257,48 +195,6 @@ describe("helpers", () => {
   });
   describe("valueFunctionTest", () => {
     let valueFunctionTest = helpers.valueFunctionTest;
-    it("should throw an error if incorrect params are passed on function evaluation", () => {
-      let test = () => {
-        valueFunctionTest(() => {
-          return {
-            egg: "egg",
-          };
-        }, "egg");
-      };
-      assert.throws(
-        test,
-        "Value functions must have only two keys, `appendMessage` and `expectedData` got " +
-          []
-      );
-    });
-    it("should throw an error if function does not evaluate to boolean", () => {
-      let test = () => {
-        valueFunctionTest(() => {
-          return {
-            expectedData: "egg",
-            appendMessage: "egg",
-          };
-        }, "egg");
-      };
-      assert.throws(
-        test,
-        "Value functions must evaluate to either true or false got egg"
-      );
-    });
-    it("should throw an error if function appendMessage is not string", () => {
-      let test = () => {
-        valueFunctionTest(() => {
-          return {
-            expectedData: true,
-            appendMessage: 2345,
-          };
-        }, "egg");
-      };
-      assert.throws(
-        test,
-        "Value functions appendMessage must be string got number"
-      );
-    });
     it("should return bad results if everything is correct but data isn't found", () => {
       let data = valueFunctionTest((frog) => {
         return "uh-oh";
@@ -431,64 +327,28 @@ describe("helpers", () => {
   });
   describe("eachKey", () => {
     let eachKey = helpers.eachKey;
-    it("should throw an error if type of first arg passed is not object", () => {
-      let task = () => {
-        eachKey("test");
-      };
-      assert.throws(
-        task,
-        "eachKey expects the the first argument to be an Object got string"
-      );
-    });
-    it("should throw an error if type of first arg passed is an Array", () => {
-      let task = () => {
-        eachKey(["test"]);
-      };
-      assert.throws(
-        task,
-        "eachKey expects the the first argument to be an Object got Array"
-      );
-    });
-    it("should throw an error if callback is not function", () => {
-      let task = () => {
-        eachKey({}, "test");
-      };
-      assert.throws(
-        task,
-        "eachKey expects a function for callback, got string"
-      );
-    });
-    it("should throw an error if callback function has more than one parameter", () => {
-      let task = () => {
-        eachKey({}, function badFunction1(key, keykey, keykeykey) {});
-      };
-      assert.throws(
-        task,
-        'eachKey callback function accepts only one argument got ["key","keykey","keykeykey"]'
-      );
-    });
     it("should correctly run eachKey", () => {
       let testData = [];
       eachKey({ test: "test" }, (key) => testData.push(key));
       assert.deepEqual(testData, ["test"], "it should return correct data");
     });
   });
-  describe("containsModule", () => {
-    let containsModule = helpers.containsModule;
+  describe("containsKeysModule", () => {
+    let containsKeysModule = helpers.containsKeysModule;
     it("should return true if moduleData.address and address match", () => {
       assert.isTrue(
-        containsModule({ address: "test" }, "test"),
+        containsKeysModule({ address: "test" }, "test"),
         "should return true"
       );
     });
     it("should return false if not found", () => {
       assert.isFalse(
-        containsModule({ address: "test" }, "fail"),
+        containsKeysModule({ address: "test" }, "fail"),
         "should return true"
       );
     });
     it("should return properly formatted data when a child is found", () => {
-      let actualData = containsModule(
+      let actualData = containsKeysModule(
         {
           address: "test",
           child_modules: [
@@ -500,7 +360,7 @@ describe("helpers", () => {
         "child.test"
       );
       let expectedData = {
-        containsModule: true,
+        containsKeysModule: true,
         moduleData: {
           address: "test.child.test",
         },

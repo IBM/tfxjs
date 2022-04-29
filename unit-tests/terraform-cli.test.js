@@ -91,20 +91,6 @@ describe("terraformCli", () => {
         "it should return correct stements"
       );
     });
-    it("should throw error if array passed", () => {
-      let task = () => tf.setTfVarString([]);
-      assert.throws(
-        task,
-        "setTfVarString expected param of type object got Array"
-      );
-    });
-    it("should throw error if non object passed", () => {
-      let task = () => tf.setTfVarString("hi");
-      assert.throws(
-        task,
-        "setTfVarString expected param of type object got string"
-      );
-    });
   });
   describe("init", () => {
     it("should return correct promise with no vars", () => {
