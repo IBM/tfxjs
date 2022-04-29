@@ -1,6 +1,6 @@
 # Example Tests
 
-This module contains an example Terraform template using HashiCorp providers and example acceptence and end to end tests for each of them.
+This module containsKeys an example Terraform template using HashiCorp providers and example acceptence and end to end tests for each of them.
 
 ## Table of Contents
 
