@@ -205,4 +205,55 @@ describe("builders", () => {
       );
     });
   });
+  describe("textTemplate", () => {
+    let textTemplate = builders.textTemplate;
+    const resourceTemplate = `tfx.resource(\n  "$RESOURCE_NAME",\n  "$RESOURCE_ADDRESS",\n$VALUES\n),`;
+    it("should get all the args from a string teplate and set as templateArgs", () => {
+      let expectedData = ["$RESOURCE_NAME", "$RESOURCE_ADDRESS", "$VALUES"];
+      let actualData = new textTemplate(resourceTemplate).templateArgs;
+      assert.deepEqual(actualData, expectedData, "should have correct array");
+    });
+    describe("fill", () => {
+      it("should fill the template variable values", () => {
+        let expectedData = `tfx.resource(\n  "yes",\n  "hi",\nhello\n),`;
+        let actualData = new textTemplate(resourceTemplate).fill(
+          "yes",
+          "hi",
+          "hello"
+        );
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "It should return filled in template"
+        );
+      });
+    });
+    describe("set", () => {
+      it("should replace a value and return the object", () => {
+        let expectedData = `tfx.resource(\n  "$RESOURCE_NAME",\n  "$RESOURCE_ADDRESS",\nhi\n),`;
+        let actualData = new textTemplate(resourceTemplate).set(
+          "$VALUES",
+          "hi"
+        );
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "should return string template"
+        );
+      });
+    });
+    describe("clone", () => {
+      it("should create a new instance of the textTemplate instance", () => {
+        let original = new textTemplate(resourceTemplate);
+        let cloneTemplate = original.clone();
+        assert.deepEqual(original.str, cloneTemplate.str, "it should copy")
+      })
+      it("should not change the original when the clone is changed", () => {
+        let original = new textTemplate(resourceTemplate);
+        let cloneTemplate = original.clone();
+        cloneTemplate.set("$VALUES", "frog")
+        assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy")
+      })
+    })
+  });
 });

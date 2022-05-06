@@ -124,33 +124,39 @@ describe("helpers", () => {
     });
   });
   it("should search child modules of child modules of child_modules for address", () => {
-    let data = childArraySearch("module.ez_vpc.module.vpc.module.test_module.module.deep_test2", [
-      {
-        address: "module.ez_vpc",
-        child_modules: [
-          {
-            address: "module.ez_vpc.module.vpc",
-            child_modules: [
-              {
-                address: "module.ez_vpc.module.vpc.module.test_module",
-                child_modules: [
-                  {
-                    address: "module.ez_vpc.module.vpc.module.test_module.module.deep_test"
-                  },
-                  {
-                    address: "module.ez_vpc.module.vpc.module.test_module.module.deep_test2"
-                  }
-                ]
-              },
-            ]
-          },
-        ],
-      },
-    ]);
+    let data = childArraySearch(
+      "module.ez_vpc.module.vpc.module.test_module.module.deep_test2",
+      [
+        {
+          address: "module.ez_vpc",
+          child_modules: [
+            {
+              address: "module.ez_vpc.module.vpc",
+              child_modules: [
+                {
+                  address: "module.ez_vpc.module.vpc.module.test_module",
+                  child_modules: [
+                    {
+                      address:
+                        "module.ez_vpc.module.vpc.module.test_module.module.deep_test",
+                    },
+                    {
+                      address:
+                        "module.ez_vpc.module.vpc.module.test_module.module.deep_test2",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]
+    );
     let expectedData = {
       containsKeysModule: true,
       moduleData: {
-        address: "module.ez_vpc.module.vpc.module.test_module.module.deep_test2",
+        address:
+          "module.ez_vpc.module.vpc.module.test_module.module.deep_test2",
       },
     };
     assert.deepEqual(data, expectedData, "it should return correct data");
@@ -425,4 +431,95 @@ describe("helpers", () => {
       );
     });
   });
+  describe("capitalizeWords", () => {
+    it("should return capitalized words", () => {
+      let actualData = helpers.capitalizeWords(
+        "all lowercase words separated by spaces"
+      );
+      let expectedData = "All Lowercase Words Separated By Spaces";
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "It should correctly format the string"
+      );
+    });
+  });
+  describe("deepObjectIgnoreNullValues", () => {
+    let deepObjectIgnoreNullValues = helpers.deepObjectIgnoreNullValues;
+    it("should remove all null values from an object with sub object", () => {
+      let testData = {
+        test: {
+          test2: {
+            test3: null,
+            test4: "hello",
+          },
+          test23: {
+            test5: null,
+          },
+        },
+        test6: "world",
+      };
+      let actualData = deepObjectIgnoreNullValues(testData);
+      let expectedData = {
+        test: {
+          test2: {
+            test4: "hello",
+          },
+        },
+        test6: "world",
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "should return correct object"
+      );
+    });
+    it("should remove all null values top level when shallow", () => {
+      let testData = {
+        test: {
+          test2: {
+            test3: null,
+            test4: "hello",
+          },
+          test23: {
+            test5: null,
+          },
+        },
+        test6: "world",
+        top_level_null: null,
+      };
+      let actualData = deepObjectIgnoreNullValues(testData, true);
+      let expectedData = {
+        test: {
+          test2: {
+            test3: null,
+
+            test4: "hello",
+          },
+          test23: {
+            test5: null,
+          },
+        },
+        test6: "world",
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "should return correct object"
+      );
+    });
+  });
+  describe("formatModuleName", () => {
+    let formatModuleName = helpers.formatModuleName;
+    it("should create a name for a top level module", () => {
+      let actualData = formatModuleName("module.test_module")
+      let expectedData = "Test Module"
+      assert.deepEqual(actualData, expectedData, "it should return correct name")
+    })
+    it("should create a name for a child module", () => {
+      let actualData = formatModuleName("module.test_module[\"frog\"].module.child.module.deep_child")
+      let expectedData = "Deep Child"
+      assert.deepEqual(actualData, expectedData, "it should return correct name")
+    })
+  })
 });

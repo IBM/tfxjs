@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2022
+
+- Created generalized functions to make error handling easier
+- Moved `/lib/utils` to `/lib/tf-utils`
+- Created new `/lib/utils/` for additional utilities
+- Removed excess unit tests
+
 ## [0.5.0] - 2022-04-27
 
 - Added `clone` method to `tfxjs`. This allows users to run tests against a copy of the template for silmultanious tests.
