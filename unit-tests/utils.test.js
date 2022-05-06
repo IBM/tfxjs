@@ -8,6 +8,14 @@ const {
 const utils = require("../lib/utils");
 
 describe("utils", () => {
+  describe("eachKey", () => {
+    let eachKey = utils.eachKey;
+    it("should correctly run eachKey", () => {
+      let testData = [];
+      eachKey({ test: "test" }, (key) => testData.push(key));
+      assert.deepEqual(testData, ["test"], "it should return correct data");
+    });
+  });
   describe("containsKeys", () => {
     let containsKeys = utils.containsKeys;
     it("should return true if key exists in object", () => {

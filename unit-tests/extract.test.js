@@ -2,7 +2,6 @@ const extract = require("../lib/extract");
 const { assert } = require("chai");
 const YAML = require("json-to-pretty-yaml");
 const mocks = require("./tfx.mocks"); // import mocks
-const { json } = require("mocha/lib/reporters");
 let mock = new mocks(); // initialize mocks
 
 let exampleChildModule = {
@@ -375,7 +374,6 @@ tfx.plan("Template Name", () => {
       let expectedData = moduleTest(exampleChildModule, "tfx");
       let testData = moduleTest(exampleChildModule, "yaml");
       let actualData = extract.deyamilfy(testData)
-      // console.log(actualData)
       assert.deepEqual(actualData, expectedData, "it should create tfx fileData")
     })
   })

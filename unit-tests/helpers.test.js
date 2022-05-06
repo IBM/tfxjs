@@ -331,14 +331,6 @@ describe("helpers", () => {
         );
     });
   });
-  describe("eachKey", () => {
-    let eachKey = helpers.eachKey;
-    it("should correctly run eachKey", () => {
-      let testData = [];
-      eachKey({ test: "test" }, (key) => testData.push(key));
-      assert.deepEqual(testData, ["test"], "it should return correct data");
-    });
-  });
   describe("containsKeysModule", () => {
     let containsKeysModule = helpers.containsKeysModule;
     it("should return true if moduleData.address and address match", () => {
