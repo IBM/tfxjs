@@ -4,6 +4,9 @@ const {
   emptyCheck,
   arrTypeCheck,
   containsCheck,
+  flagTest,
+  getVerbActions,
+  containsAny,
 } = require("../lib/utils");
 const utils = require("../lib/utils");
 
@@ -138,12 +141,107 @@ describe("utils", () => {
   });
   describe("containsCheck", () => {
     it("should throw error if not in array", () => {
-      assert.throws(
-        () => {
-          containsCheck("should", ["frog", "string", "egg"], "4")
-        },
-        'should got 4'
-      );
+      assert.throws(() => {
+        containsCheck("should", ["frog", "string", "egg"], "4");
+      }, "should got 4");
+    });
+  });
+  describe("flagTest", () => {
+    it("should throw an error if duplicate flags are found", () => {
+      let task = () => {
+        flagTest(
+          "help",
+          {
+            "-h": "--help",
+            "--help": "-h",
+          },
+          "-h",
+          "-h"
+        );
+      };
+      assert.throws(task, "Invalid duplicate flag -h");
+    });
+    it("should throw an error if a flag is used with a synonym multiple times", () => {
+      let task = () => {
+        flagTest(
+          "help",
+          {
+            "-h": "--help",
+            "--help": "-h",
+          },
+          "-h",
+          "--help"
+        );
+      };
+      assert.throws(task, "Invalid duplicate flag --help");
+    });
+    it("should throw an error if a flag is not found in aliases", () => {
+      let task = () => {
+        flagTest(
+          "help",
+          {
+            "-h": "--help",
+            "--help": "-h",
+          },
+          "-h",
+          "-f"
+        );
+      };
+      assert.throws(task, "Invalid flag -f");
+    });
+    it("should not throw an error if reading an argument that does not have at least one hyphen", () => {
+      let task = () => {
+        flagTest(
+          "help",
+          {
+            "--in": "-i",
+            "-i": "--in"
+          },
+          "--in",
+          "filePath"
+        );
+      };
+      assert.doesNotThrow(task);
+    });
+    it("should throw an error if all needed flags are not provided", () => {
+      let task = () => {
+        flagTest("help",{ "--in": "-i", "-i": "--in", "-o": "--out","--out": "-o" }, "--in", "./filePath");
+      };
+      assert.throws(task, "Missing flags from command help --in --out")
+    });
+  });
+  describe("getVerbActions", () => {
+    it("should return correct alias map for a verb", () => {
+      let plan = {
+        requiredFlags: ["in", "out", "type"],
+      };
+      let tags = {
+        help: ["-h", "--help"],
+        in: ["-i", "--in"],
+        out: ["-o", "--out"],
+        type: ["-t", "--type"],
+        // extract -in path -out path -type tfx | yaml
+      };
+      let expectedData = {
+        "-i": "--in",
+        "--in": "-i",
+        "-o": "--out",
+        "--out": "-o",
+        "-t": "--type",
+        "--type": "-t",
+      };
+      let actualData = getVerbActions(plan, tags);
+      assert.deepEqual(expectedData, actualData);
+    });
+  });
+  describe("containsAny", () => {
+    it("should return false if no overlapping entries", () => {
+      let actualData = containsAny(["a"], ["b"]);
+      assert.isFalse(actualData, "should be false");
+    });
+    it("should return true if overlapping keys", () => {
+      let actualData = containsAny(["b"], ["b"]);
+      assert.isTrue(actualData, "should be true");
     });
   });
 });
