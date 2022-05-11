@@ -109,8 +109,8 @@ describe("extract", () => {
       };
       let actualData = planResourceTest(resource, "tfx");
       let expectedData = `tfx.resource(
-  "Count Example",
-  "null_resource.count_example[0]",
+  "Count Example 0",
+  'null_resource.count_example[0]',
   {
     "triggers": {
       "trigger_value": "example-acceptance"
@@ -144,8 +144,8 @@ describe("extract", () => {
       };
       let actualData = planResourceTest(resource, "tfx", true);
       let expectedData = `tfx.resource(
-  "Count Example",
-  "null_resource.count_example[0]",
+  "Count Example 0",
+  'null_resource.count_example[0]',
   {
     "triggers": {
       "trigger_value": "example-acceptance",
@@ -181,7 +181,7 @@ describe("extract", () => {
       let actualData = YAML.stringify(
         planResourceTest(resource, "yaml")
       );
-      let expectedData = `Count Example:\n  address: "null_resource.count_example[0]"\n  values:\n    - triggers:\n        trigger_value: "example-acceptance"\n`;
+      let expectedData = `Count Example 0:\n  address: "null_resource.count_example[0]"\n  values:\n    - triggers:\n        trigger_value: "example-acceptance"\n`;
       assert.deepEqual(
         actualData,
         expectedData,
@@ -197,16 +197,16 @@ describe("extract", () => {
       let expectedData = `
 tfx.module(
   "Root Module",
-  "root_module",
+  'root_module',
   {}
 );
 
 tfx.module(
   "Example Module Test",
-  "module.example_module["test"]",
+  'module.example_module["test"]',
   tfx.resource(
     "Random Example 1",
-    "random_pet.random_example_1",
+    'random_pet.random_example_1',
     {
       "length": 2,
       "prefix": "acceptance-module",
@@ -215,7 +215,7 @@ tfx.module(
   ),
   tfx.resource(
     "Random Example 2",
-    "random_pet.random_example",
+    'random_pet.random_example',
     {
       "length": 2,
       "prefix": "acceptance-module",
@@ -226,10 +226,10 @@ tfx.module(
 
 tfx.module(
   "Child",
-  "module.example_module["test"].module.child",
+  'module.example_module["test"].module.child',
   tfx.resource(
     "Random Example 1",
-    "random_pet.random_example_1",
+    'random_pet.random_example_1',
     {
       "length": 2,
       "prefix": "acceptance-module",
@@ -238,7 +238,7 @@ tfx.module(
   ),
   tfx.resource(
     "Random Example 2",
-    "random_pet.random_example",
+    'random_pet.random_example',
     {
       "length": 2,
       "prefix": "acceptance-module",
@@ -307,16 +307,16 @@ tfx.plan("Template Name", () => {
   
   tfx.module(
     "Root Module",
-    "root_module",
+    'root_module',
     {}
   );
   
   tfx.module(
     "Example Module Test",
-    "module.example_module["test"]",
+    'module.example_module["test"]',
     tfx.resource(
       "Random Example 1",
-      "random_pet.random_example_1",
+      'random_pet.random_example_1',
       {
         "length": 2,
         "prefix": "acceptance-module",
@@ -325,7 +325,7 @@ tfx.plan("Template Name", () => {
     ),
     tfx.resource(
       "Random Example 2",
-      "random_pet.random_example",
+      'random_pet.random_example',
       {
         "length": 2,
         "prefix": "acceptance-module",
@@ -336,10 +336,10 @@ tfx.plan("Template Name", () => {
   
   tfx.module(
     "Child",
-    "module.example_module["test"].module.child",
+    'module.example_module["test"].module.child',
     tfx.resource(
       "Random Example 1",
-      "random_pet.random_example_1",
+      'random_pet.random_example_1',
       {
         "length": 2,
         "prefix": "acceptance-module",
@@ -348,7 +348,7 @@ tfx.plan("Template Name", () => {
     ),
     tfx.resource(
       "Random Example 2",
-      "random_pet.random_example",
+      'random_pet.random_example',
       {
         "length": 2,
         "prefix": "acceptance-module",
