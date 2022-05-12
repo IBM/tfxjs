@@ -4,6 +4,7 @@ const {
   checkResourceTests,
   expectedResourceAddress,
   childArraySearch,
+  convertTfVarsFromTags,
 } = require("../lib/helpers");
 
 describe("helpers", () => {
@@ -512,6 +513,13 @@ describe("helpers", () => {
       let actualData = formatModuleName("module.test_module[\"frog\"].module.child.module.deep_child")
       let expectedData = "Deep Child"
       assert.deepEqual(actualData, expectedData, "it should return correct name")
+    })
+  })
+  describe("convertTfVarsFromTags", () => {
+    it("should return empty object when no planFlagValues.tfvars", () => {
+      let actualData = convertTfVarsFromTags({})
+      let expectedData = {}
+      assert.deepEqual(actualData, expectedData, "it should return empty object")
     })
   })
 });
