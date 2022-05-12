@@ -1,6 +1,8 @@
-const tfxjs = require("tfxjs");
+const tfxjs = require("../../lib/index");
 const template = new tfxjs("../", {
   trigger_value: "example-acceptance",
+},{
+  quiet: true
 });
 template.clone("../../clone-path", (tfx, done) => {
   tfx.plan("Hashicorp Provider Example Tests", () => {
