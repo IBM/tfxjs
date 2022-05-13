@@ -249,9 +249,7 @@ tfx.module(
     });
     it("should correctly return a terraform module from plan for yaml", () => {
       let actualData = moduleTest(exampleChildModule, "yaml");
-      let expectedData = `Root Module:
-  address: "root_module"
-  resources: []
+      let expectedData = `
 Example Module Test:
   address: "module.example_module[\\\"test\\\"]"
   resources:
@@ -353,7 +351,48 @@ tfx.plan("Template Name", () => {
         stdout: JSON.stringify({ "planned_values": exampleChildModule }),
       })
       let overrideExec = mockExec.promise;
-      return extract.planTfx("Template Name", "path", {}, overrideExec, (data) => {
+      return extract.planTfx("Template Name", "path", "tfx", {}, overrideExec, (data) => {
+        assert.deepEqual(data, expectedFile, "should return data")
+      })
+    });
+    it("should return correct yaml", () => {
+      let expectedFile = `
+Example Module Test:
+  address: "module.example_module[\\\"test\\\"]"
+  resources:
+    - Random Example 1:
+        address: "random_pet.random_example_1"
+        values:
+          - length: 2
+          - prefix: "acceptance-module"
+          - separator: "-"
+    - Random Example 2:
+        address: "random_pet.random_example"
+        values:
+          - length: 2
+          - prefix: "acceptance-module"
+          - separator: "-"
+Child:
+  address: "module.example_module[\\\"test\\\"].module.child"
+  resources:
+    - Random Example 1:
+        address: "random_pet.random_example_1"
+        values:
+          - length: 2
+          - prefix: "acceptance-module"
+          - separator: "-"
+    - Random Example 2:
+        address: "random_pet.random_example"
+        values:
+          - length: 2
+          - prefix: "acceptance-module"
+          - separator: "-"
+`
+      let mockExec = new mock.mockExec({
+        stdout: JSON.stringify({ "planned_values": exampleChildModule }),
+      })
+      let overrideExec = mockExec.promise;
+      return extract.planTfx("Template Name", "path", "yaml", {}, overrideExec, (data) => {
         assert.deepEqual(data, expectedFile, "should return data")
       })
     })
