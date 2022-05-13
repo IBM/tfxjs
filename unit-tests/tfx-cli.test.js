@@ -131,11 +131,11 @@ describe("cli", () => {
         'testValue3=3'
       );
       let actualData = [];
-      let expectedData = ["tfx Generated Plan", "./filePath", {
+      let expectedData = ["tfx Generated Plan", "./filePath", "tfx", {
         testVar1: true,
         testVar2: "true",
         testValue3: 3
-      }, "tfx"];
+      }];
       
       tfx.planTfx = (...args) => {
         let callback = args.pop(); // remove callback
