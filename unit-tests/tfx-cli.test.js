@@ -55,7 +55,7 @@ describe("cli", () => {
         stderr: "oops",
       };
       return tfx.runTest().catch((err) => {
-        assert.deepEqual(err.message, "oops", "should error");
+        assert.deepEqual(err, "oops", "should error");
       });
     });
   });
@@ -83,6 +83,16 @@ describe("cli", () => {
       };
       tfWithLogs.tfxcli();
       assert.deepEqual(actualData, help, "it should return correct data");
+    });
+    it("should throw error text if bad command", () => {
+      let tfWithLogs = new cli(exec.promise, "bad-command", "bad-command");
+      let task = () => {
+        tfWithLogs.tfxcli();
+      };
+      assert.throws(
+        task,
+        "Invalid tfx command. For a list of valid commands run `tfx --help`."
+      );
     });
     it("should throw an error if none commands passed", () => {
       tfx = new cli(exec.promise);
@@ -116,7 +126,7 @@ describe("cli", () => {
         "-v",
         "testVar1=true",
         "-v",
-        'testVar2="true"',
+        'testVar2="true"', 
         "-v",
         'testValue3=3'
       );
@@ -125,7 +135,8 @@ describe("cli", () => {
         testVar1: true,
         testVar2: "true",
         testValue3: 3
-      }];
+      }, "tfx"];
+      
       tfx.planTfx = (...args) => {
         let callback = args.pop(); // remove callback
         args.pop(); // remove child
