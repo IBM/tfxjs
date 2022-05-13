@@ -251,34 +251,34 @@ tfx.module(
       let actualData = moduleTest(exampleChildModule, "yaml");
       let expectedData = `
 Example Module Test:
-  address: "module.example_module[\\\"test\\\"]"
+  address: module.example_module["test"]
   resources:
     - Random Example 1:
-        address: "random_pet.random_example_1"
+        address: random_pet.random_example_1
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
     - Random Example 2:
-        address: "random_pet.random_example"
+        address: random_pet.random_example
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
 Child:
-  address: "module.example_module[\\\"test\\\"].module.child"
+  address: module.example_module["test"].module.child
   resources:
     - Random Example 1:
-        address: "random_pet.random_example_1"
+        address: random_pet.random_example_1
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
     - Random Example 2:
-        address: "random_pet.random_example"
+        address: random_pet.random_example
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
 `;
 
@@ -358,34 +358,34 @@ tfx.plan("Template Name", () => {
     it("should return correct yaml", () => {
       let expectedFile = `
 Example Module Test:
-  address: "module.example_module[\\\"test\\\"]"
+  address: module.example_module["test"]
   resources:
     - Random Example 1:
-        address: "random_pet.random_example_1"
+        address: random_pet.random_example_1
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
     - Random Example 2:
-        address: "random_pet.random_example"
+        address: random_pet.random_example
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
 Child:
-  address: "module.example_module[\\\"test\\\"].module.child"
+  address: module.example_module["test"].module.child
   resources:
     - Random Example 1:
-        address: "random_pet.random_example_1"
+        address: random_pet.random_example_1
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
     - Random Example 2:
-        address: "random_pet.random_example"
+        address: random_pet.random_example
         values:
           - length: 2
-          - prefix: "acceptance-module"
+          - prefix: acceptance-module
           - separator: "-"
 `
       let mockExec = new mock.mockExec({
