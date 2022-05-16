@@ -214,7 +214,7 @@ describe("utils", () => {
           "./filePath"
         );
       };
-      assert.throws(task, "Missing flags from command help --in --out");
+      assert.throws(task, "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`.");
     });
     it("should not throw an error if an optional flag is passed", () => {
       let task = () => {

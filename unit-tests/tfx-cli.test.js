@@ -29,7 +29,15 @@ To create tests from a terraform plan:
   $ tfx --in <terraform file path> --out <filepath> --type <tfx or yaml>
 
 Additional flags are also available:
+  -v | --tf-var
+      Inject a terraform.tfvar value into the plan. This flag can be added any number of times
 
+To create a nodejs test file from a YAML plan:
+  $ tfx decode <yaml file path> --out <filepath>
+
+Additional flags are also available:
+  -v | --tf-var
+  Inject a terraform.tfvar value into the plan. This flag can be added any number of times
 `;
 
 let exec = new mockExec({}, false);
@@ -113,6 +121,17 @@ describe("cli", () => {
       tfx.tfxcli();
       assert.isTrue(ranTest, "it ran the test");
     });
+    it("should run decode", () => {
+      tfx = new cli(exec.promise, "decode", "./filePath");
+      let returnedDecode = false;
+      tfx.decode = () => {
+        returnedDecode = true
+      }
+      tfx.tfxcli();
+      assert.isTrue(returnedDecode, "it should run the correct test")
+    })
+  });
+  describe("plan", () => {
     it("should run extract with correct commands and flags for plan and write data", () => {
       tfx = new cli(
         exec.promise,
@@ -152,5 +171,48 @@ describe("cli", () => {
       assert.deepEqual(actualData, expectedData, "it should return correct params")
       assert.deepEqual(actualCallback, expectedCallback, "it should run writeFileSync with correct params")
     });
-  });
+  })
+  describe("decode", () => {
+    it("should run extract with correct commands and flags for decode and write data", () => {
+      tfx = new cli(
+        exec.promise,
+        "decode",
+        "./filePath",
+        "--out",
+        "./out-file-path",
+        "-v",
+        "testVar1=true",
+        "-v",
+        'testVar2="true"', 
+        "-v",
+        'testValue3=3'
+      );
+      let expectedReadArg = ["./filePath"]
+      let expectedParams = [
+        undefined,
+        [
+          "testVar1=true",
+          "testVar2=\"true\"",
+          "testValue3=3"
+        ]
+      ]
+      let expectedFileData = ["./out-file-path", undefined]
+      let actualParams
+      let actualReadArg
+      let actualFileData
+      tfx.readFileSync = (...args) => {
+        actualReadArg = args;
+      }
+      tfx.deyamilfy = (...args) => {
+        actualParams = args;
+      }
+      tfx.writeFileSync = (...args) => {
+        actualFileData = args
+      }
+      tfx.decode();
+      assert.deepEqual(actualReadArg, expectedReadArg, "it should correctly read file data")
+      assert.deepEqual(actualParams, expectedParams, "it should return all params")
+      assert.deepEqual(actualFileData, expectedFileData, "it should return correct file data")
+    });
+  })
 });
