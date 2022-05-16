@@ -13,6 +13,7 @@ tfxjs is a terrafrom acceptance test framework built with [mocha](https://mochaj
 3. [Usage](#usage)
 4. [Example Usage](#example-usage)
 5. [Methods](#methods)
+5. [CLI](#cli)
 5. [Contributing](#contributing)
 6. [Code Test Coverage](#code-test-coverage)
 
@@ -32,12 +33,6 @@ npm install tfxjs -g
 - If [mocha](https://mochajs.org/) is not installed globally run:
 ```shell
 npm install mocha -g
-```
-
-## Usage
-
-```
-tfx <path to test file>
 ```
 
 ---
@@ -124,6 +119,47 @@ expect   | Test the value in a resource or instance against a function
 
 ---
 
+## CLI
+
+The tfx CLI allows users to run test files. Additionally, the tfx CLI now supports methods to automatically generate tfx test files from a terraform template directory
+
+## Usage
+
+### Running Test File
+
+```shell
+tfx <path to js test file>
+```
+
+### Generating a Plan Test File
+
+```shell
+tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>
+```
+
+Additionally the `-v | --tf-var` can be used any number of times to set variable within the terraform template. Currently only string, boolean, and numbers are accepted.
+
+```shell
+tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml> --tf-var example_variable="test"
+```
+
+YAML files cannot be read directly by using `tfx <path>` but they can be translated using the `tfx decode` command. Due to the size of file, YAML can be used to make code more human readable and uses fewer lines.
+
+### Decoding a tfx .yaml file
+
+```shell
+tfx decode <yaml file path> --out <filepath>
+```
+
+This code creates a valid `.test.js` file that can be used with `tfx <path>` command from a yaml plan file.
+
+Additionally the `-v | --tf-var` can be used any number of times to set variable within the terraform template. Currently only string, boolean, and numbers are accepted.
+
+```shell
+tfx decode <yaml file path> --out <filepath> --tf-var example_variable="test"
+```
+
+
 ## Contributing
 
 If you have any questions or issues you can create a new [issue here][issues]. See the full contribution guidelines [here](./CONTRIBUTING.md).
@@ -160,15 +196,17 @@ tfx e2e-tests/
 
 ### Current Test Coverage
 
-
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------|---------|----------|---------|---------|-------------------
-All files          |     100 |      100 |     100 |     100 | 🏆
- lib               |     100 |      100 |     100 |     100 | 🏆
-  builders.js      |     100 |      100 |     100 |     100 | 🏆
-  helpers.js       |     100 |      100 |     100 |     100 | 🏆
-  index.js         |     100 |      100 |     100 |     100 | 🏆
-  terraform-cli.js |     100 |      100 |     100 |     100 | 🏆
-  utils.js         |     100 |      100 |     100 |     100 | 🏆
- unit-tests        |     100 |      100 |     100 |     100 | 🏆
-  tfx.mocks.js     |     100 |      100 |     100 |     100 | 🏆
+All files          |     100 |      100 |     100 |     100 | 🏆                  
+ lib               |     100 |      100 |     100 |     100 | 🏆                  
+  builders.js      |     100 |      100 |     100 |     100 | 🏆                  
+  extract.js       |     100 |      100 |     100 |     100 | 🏆                  
+  helpers.js       |     100 |      100 |     100 |     100 | 🏆                  
+  index.js         |     100 |      100 |     100 |     100 | 🏆                  
+  terraform-cli.js |     100 |      100 |     100 |     100 | 🏆                  
+  tf-utils.js      |     100 |      100 |     100 |     100 | 🏆                  
+  tfx-cli.js       |     100 |      100 |     100 |     100 | 🏆                  
+  utils.js         |     100 |      100 |     100 |     100 | 🏆                  
+ unit-tests        |     100 |      100 |     100 |     100 | 🏆                  
+  tfx.mocks.js     |     100 |      100 |     100 |     100 | 🏆                  

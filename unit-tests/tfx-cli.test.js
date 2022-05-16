@@ -26,7 +26,7 @@ To test a .js file:
   $ tfx <file_path>
 
 To create tests from a terraform plan:
-  $ tfx --in <terraform file path> --out <filepath> --type <tfx or yaml>
+  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>
 
 Additional flags are also available:
   -v | --tf-var

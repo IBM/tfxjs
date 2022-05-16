@@ -2,12 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.6.0] - 2022
+## [0.6.0] - 2022-05-16
 
 - Created generalized functions to make error handling easier
 - Moved `/lib/utils` to `/lib/tf-utils`
 - Created new `/lib/utils/` for additional utilities
 - Removed excess unit tests
+- Changed CLI to be expandable
+- Added CLI methods to dynamically generate a plan test in either js or yaml
+- Added CLI method to convert yaml to js for testing
+- Better string templating
 
 ## [0.5.0] - 2022-04-27
 
