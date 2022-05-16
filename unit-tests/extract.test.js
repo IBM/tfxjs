@@ -357,7 +357,11 @@ tfx.plan("Template Name", () => {
       })
     });
     it("should return correct yaml", () => {
-      let expectedFile = `
+      let expectedFile = `tfxPlan:
+  template-path: "path"
+  template-name: "Template Name"
+  tfvars: {}
+
 Example Module Test:
   address: module.example_module["test"]
   resources:

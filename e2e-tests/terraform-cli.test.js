@@ -2,8 +2,6 @@ const { assert } = require("chai");
 const cli = require("../lib/terraform-cli");
 const jsutil = require("util"); // Utils to run child process
 const fs = require("fs");
-const { tdd } = require("mocha/lib/interfaces");
-const tfx = require("../lib/tfx-cli");
 const jsExec = jsutil.promisify(require("child_process").exec); // Exec from child process
 let tf;
 let tfLogs = [];
