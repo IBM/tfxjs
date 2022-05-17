@@ -13,6 +13,7 @@ function mockExec(data) {
   };
 }
 
+
 const help = `
 #############################################################################
 #                                                                           #
@@ -41,12 +42,13 @@ Additional flags are also available:
 `;
 
 let exec = new mockExec({}, false);
-let tfx = new cli(exec.promise);
+let spawn = new mockExec({}, false);
+let tfx = new cli(exec.promise, spawn.promise);
 
 describe("cli", () => {
   beforeEach(() => {
     exec = new mockExec({}, false);
-    tfx = new cli(exec.promise, "./filePath");
+    tfx = new cli(exec.promise, spawn.promise, "./filePath");
   });
   describe("runTest", () => {
     it("should print data when successful", () => {
@@ -59,7 +61,7 @@ describe("cli", () => {
       });
     });
     it("should throw an error when data has stderr", () => {
-      exec.data = {
+      spawn.data = {
         stderr: "oops",
       };
       return tfx.runTest().catch((err) => {
@@ -84,7 +86,7 @@ describe("cli", () => {
       tfx = new cli(exec.promise);
     });
     it("should return help text if a help flag", () => {
-      let tfWithLogs = new cli(exec.promise, "--help");
+      let tfWithLogs = new cli(exec.promise, spawn.promise, "--help");
       let actualData;
       tfWithLogs.log = (data) => {
         actualData = data;
@@ -93,7 +95,7 @@ describe("cli", () => {
       assert.deepEqual(actualData, help, "it should return correct data");
     });
     it("should throw error text if bad command", () => {
-      let tfWithLogs = new cli(exec.promise, "bad-command", "bad-command");
+      let tfWithLogs = new cli(exec.promise, spawn.promise, "bad-command", "bad-command");
       let task = () => {
         tfWithLogs.tfxcli();
       };
@@ -113,7 +115,7 @@ describe("cli", () => {
       );
     });
     it("should run runTest if one argument is passed", () => {
-      tfx = new cli(exec.promise, "./filePath");
+      tfx = new cli(exec.promise, spawn.promise, "./filePath");
       let ranTest = false;
       tfx.runTest = () => {
         ranTest = true;
@@ -122,7 +124,7 @@ describe("cli", () => {
       assert.isTrue(ranTest, "it ran the test");
     });
     it("should run decode", () => {
-      tfx = new cli(exec.promise, "decode", "./filePath");
+      tfx = new cli(exec.promise, spawn.promise, "decode", "./filePath");
       let returnedDecode = false;
       tfx.decode = () => {
         returnedDecode = true
@@ -134,7 +136,7 @@ describe("cli", () => {
   describe("plan", () => {
     it("should run extract with correct commands and flags for plan and write data", () => {
       tfx = new cli(
-        exec.promise,
+        exec.promise, spawn.promise,
         "plan",
         "--in",
         "./filePath",
@@ -175,7 +177,7 @@ describe("cli", () => {
   describe("decode", () => {
     it("should run extract with correct commands and flags for decode and write data", () => {
       tfx = new cli(
-        exec.promise,
+        exec.promise, spawn.promise,
         "decode",
         "./filePath",
         "--out",

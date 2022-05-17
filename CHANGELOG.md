@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.1] - 2022-05-17
+
+- Fixed issue preventing `tfx <file path>` commang from running
+
 ## [0.6.0] - 2022-05-16
 
 - Created generalized functions to make error handling easier
