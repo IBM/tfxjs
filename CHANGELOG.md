@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.3] - 2022-05-17
+
+- Fixed issue preventing `tfx plan` command from correctly interpreting data resources when creating tests.
+
 ## [0.6.2] - 2022-05-17
 
 - Fixed issue preventing `tfx plan` command from correctly interpreting string variables that contain numbers.

@@ -189,6 +189,45 @@ describe("extract", () => {
         "it should return correct string"
       );
     });
+    it("should return correct data for a data resource", () => {
+      let expectedData = `tfx.resource(
+  "Cloud Init",
+  'data.template_cloudinit_config.cloud_init',
+  {
+    "base64_encode": false,
+    "gzip": false,
+    "part": [
+      {
+        "content_type": null,
+        "filename": null,
+        "merge_type": null
+      }
+    ]
+  }
+),`
+      let testData =                   {
+        "address": "module.acceptance_tests.module.landing-zone.module.teleport_config[0].data.template_cloudinit_config.cloud_init",
+        "mode": "data",
+        "type": "template_cloudinit_config",
+        "name": "cloud_init",
+        "provider_name": "registry.terraform.io/hashicorp/template",
+        "schema_version": 0,
+        "values": {
+          "base64_encode": false,
+          "gzip": false,
+          "part": [
+            {
+              "content_type": null,
+              "filename": null,
+              "merge_type": null
+            }
+          ]
+        }
+      };
+      let actualData = planResourceTest(testData, "tfx");
+      console.log(actualData)
+      assert.deepEqual(actualData, expectedData, "should print expected data")
+    })
   });
   describe("moduleTest", () => {
     let moduleTest = extract.moduleTest;
