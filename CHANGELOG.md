@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.2] - 2022-05-17
+
+- Fixed issue preventing `tfx plan` command from correctly interpreting string variables that contain numbers.
+
 ## [0.6.1] - 2022-05-17
 
-- Fixed issue preventing `tfx <file path>` commang from running
+- Fixed issue preventing `tfx <file path>` command from running
 
 ## [0.6.0] - 2022-05-16
 
