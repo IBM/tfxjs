@@ -1,0 +1,215 @@
+{
+  "root_module": {
+    "resources": [
+      {
+        "address": "null_resource.count_example[0]",
+        "mode": "managed",
+        "type": "null_resource",
+        "name": "count_example",
+        "index": 0,
+        "provider_name": "registry.terraform.io/hashicorp/null",
+        "schema_version": 0,
+        "values": {
+          "triggers": {
+            "trigger_value": "example-acceptance"
+          }
+        },
+        "sensitive_values": {
+          "triggers": {}
+        }
+      },
+      {
+        "address": "null_resource.count_example[1]",
+        "mode": "managed",
+        "type": "null_resource",
+        "name": "count_example",
+        "index": 1,
+        "provider_name": "registry.terraform.io/hashicorp/null",
+        "schema_version": 0,
+        "values": {
+          "triggers": {
+            "trigger_value": "example-acceptance"
+          }
+        },
+        "sensitive_values": {
+          "triggers": {}
+        }
+      },
+      {
+        "address": "null_resource.count_example[2]",
+        "mode": "managed",
+        "type": "null_resource",
+        "name": "count_example",
+        "index": 2,
+        "provider_name": "registry.terraform.io/hashicorp/null",
+        "schema_version": 0,
+        "values": {
+          "triggers": {
+            "trigger_value": "example-acceptance"
+          }
+        },
+        "sensitive_values": {
+          "triggers": {}
+        }
+      },
+      {
+        "address": "null_resource.map_example[\"example\"]",
+        "mode": "managed",
+        "type": "null_resource",
+        "name": "map_example",
+        "index": "example",
+        "provider_name": "registry.terraform.io/hashicorp/null",
+        "schema_version": 0,
+        "values": {
+          "triggers": {
+            "trigger_value": "example-acceptance"
+          }
+        },
+        "sensitive_values": {
+          "triggers": {}
+        }
+      },
+      {
+        "address": "null_resource.map_example[\"test\"]",
+        "mode": "managed",
+        "type": "null_resource",
+        "name": "map_example",
+        "index": "test",
+        "provider_name": "registry.terraform.io/hashicorp/null",
+        "schema_version": 0,
+        "values": {
+          "triggers": {
+            "trigger_value": "example-acceptance"
+          }
+        },
+        "sensitive_values": {
+          "triggers": {}
+        }
+      },
+      {
+        "address": "null_resource.map_example[\"value\"]",
+        "mode": "managed",
+        "type": "null_resource",
+        "name": "map_example",
+        "index": "value",
+        "provider_name": "registry.terraform.io/hashicorp/null",
+        "schema_version": 0,
+        "values": {
+          "triggers": {
+            "trigger_value": "example-acceptance"
+          }
+        },
+        "sensitive_values": {
+          "triggers": {}
+        }
+      },
+      {
+        "address": "random_pet.random_example",
+        "mode": "managed",
+        "type": "random_pet",
+        "name": "random_example",
+        "provider_name": "registry.terraform.io/hashicorp/random",
+        "schema_version": 0,
+        "values": {
+          "keepers": null,
+          "length": 3,
+          "prefix": "example-acceptance",
+          "separator": "-"
+        },
+        "sensitive_values": {}
+      },
+      {
+        "address": "random_shuffle.shuffle_example[\"list_1\"]",
+        "mode": "managed",
+        "type": "random_shuffle",
+        "name": "shuffle_example",
+        "index": "list_1",
+        "provider_name": "registry.terraform.io/hashicorp/random",
+        "schema_version": 0,
+        "values": {
+          "input": [
+            "ponder",
+            "consider",
+            "opt",
+            "preordain",
+            "brainstorm",
+            "portent"
+          ],
+          "keepers": {
+            "shuffle_count": "2"
+          },
+          "result_count": 2,
+          "seed": null
+        },
+        "sensitive_values": {
+          "input": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "keepers": {},
+          "result": []
+        }
+      },
+      {
+        "address": "random_shuffle.shuffle_example[\"list_2\"]",
+        "mode": "managed",
+        "type": "random_shuffle",
+        "name": "shuffle_example",
+        "index": "list_2",
+        "provider_name": "registry.terraform.io/hashicorp/random",
+        "schema_version": 0,
+        "values": {
+          "input": [
+            "scout",
+            "slinger",
+            "warrior",
+            "builder",
+            "settler"
+          ],
+          "keepers": {
+            "shuffle_count": "2"
+          },
+          "result_count": 2,
+          "seed": null
+        },
+        "sensitive_values": {
+          "input": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "keepers": {},
+          "result": []
+        }
+      }
+    ],
+    "child_modules": [
+      {
+        "resources": [
+          {
+            "address": "module.example_module.random_pet.random_example",
+            "mode": "managed",
+            "type": "random_pet",
+            "name": "random_example",
+            "provider_name": "registry.terraform.io/hashicorp/random",
+            "schema_version": 0,
+            "values": {
+              "keepers": null,
+              "length": 2,
+              "prefix": "acceptance-module",
+              "separator": "-"
+            },
+            "sensitive_values": {}
+          }
+        ],
+        "address": "module.example_module"
+      }
+    ]
+  }
+}

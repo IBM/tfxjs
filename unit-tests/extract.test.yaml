@@ -1,0 +1,15 @@
+tfxPlan:
+  template-path: ".path-to-file"
+  template-name: "Template Name"
+  tfvars:
+    frog: true
+Landing Zone:
+  address: module.acceptance_tests.module.landing-zone
+  resources:
+    - Urls 0:
+        address: ibm_appid_redirect_urls.urls[0]
+        values:
+          - urls:
+              - https://at-test-bastion-1.domain.com:3080/v1/webapi/oidc/callback
+              - https://at-test-bastion-2.domain.com:3080/v1/webapi/oidc/callback
+              - https://at-test-bastion-3.domain.com:3080/v1/webapi/oidc/callback
