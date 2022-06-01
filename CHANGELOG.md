@@ -46,7 +46,7 @@ All notable changes to this project will be documented in this file.
 - The `tfxjs` constructor can take `quiet` as a boolean in the `options` when initializing the constructor. 
     - This option will prevent terraform commands from outputting during test runtime.
 - [End to end tests](./e2e-tests/) have been added to ensure CLI commands run return correct results
-- Removed `jq` dependency
+- Removed `jq` dependency from terraform commands (`jq` is still needed to run the example tests)
 - The ability to run `terraform destroy` has been added as part of the CLI commands but is not yet implemented in the [main tfx module](./lib/index.js)
 - `tfxjs` when initialized now has more methods to allow for easier creation of tests
     - `tfx.module` can now take mulitple resources as arfs
