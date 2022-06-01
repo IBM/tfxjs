@@ -1,5 +1,4 @@
 const { assert } = require("chai");
-const { it } = require("mocha");
 const cli = require("../lib/terraform-cli");
 
 function mockExec(data) {
