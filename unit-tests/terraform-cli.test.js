@@ -199,7 +199,7 @@ describe("terraformCli", () => {
       }
 
       return tf
-        .plan({}, () => { }, false)
+        .plan({}, () => { throw {message: "This should not execute"}}, false)
         .catch((err) => {
           assert.deepEqual(err.message, "Error: Terraform initialized in empty directory ../directory");
         });
