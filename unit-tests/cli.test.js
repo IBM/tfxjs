@@ -1,36 +1,63 @@
-const { assert, expect } = require("chai");
-const tfx = require("tfxjs");
+const { assert } = require("chai");
 const cli = require("../lib/cli");
-// const mockTfx = require("../lib/cli.js")
-// const tfx = require("../lib/tfx-cli")
 
-// function mockExec(data) {
-//     this.data = data;
-//     this.commandList = [];
-//     this.promise = (command) => {
-//       this.commandList.push(command);
-//       return new Promise((resolve, reject) => {
-//         if (this.data?.stderr) reject(this.data);
-//         else resolve(this.data);
-//       });
-//     };
-//   }
+let commandArgsStore;
 
-let exec = ''; //doesn't matter, never used
-let spawn = '';//doesn't matter, never used
+/**
+ * Mock tfx function to pass in args 
+ * @param {*} exec - arbirtrary for this
+ * @param {*} spawn - arbitrary
+ * @param  {...any} commandArgs - args to pass in
+ */
+const mockTfx = function (exec, spawn, ...commandArgs) {
+  this.tfxcli = function () {
+    commandArgsStore = commandArgs;
+  };
+};
+
+/**
+ * Mock tfx function used to throw an error
+ */
+const mockTfxError = function () {
+  this.tfxcli = function () {
+    throw "this is an error";
+  };
+};
+
+// stores the console log 
+let logStore;
+// object that mocks the console 
+const mockConsole = {
+  log: function (str) {
+    logStore = str;
+  },
+};
 
 describe("cli", () => {
-   it("infrastructure test", () => {
-       assert.equal(true, true);
-   });
-   it("should run the correct commands with no args ", () => {
-       expect(()=>{cli.cli(cli.mockTfx, exec, spawn)}).to.not.throw();
-   });
-   it("should run the correct commands with one arg", () => {
-    let tfxInst = new cli.mockTfx(exec, spawn, '--help');
-    tfxInst.tfxcli()
-    expect(()=>{cli.cli(cli.mockTfx, exec, spawn)}).to.not.throw(); 
-    assert.deepEqual(tfxInst.commandArgs, ['--help'])
-   });
-
+  it("infrastructure test", () => {
+    assert.equal(true, true);
+  });
+  it("should call cmd.tfxcli() with no args", () => {
+    let expectedData = [];
+    cli(mockTfx, "", "", mockConsole, ["nodepath", "filepath"]);
+    let actualData = commandArgsStore;
+    assert.deepEqual(actualData, expectedData, "should return expected data");
+  });
+  it("should call cmd.tfxcli() with more than 2 args", () => {
+    let expectedData = ["argument1", "argument2"];
+    cli(mockTfx, "", "", mockConsole, [
+      "nodepath",
+      "filepath",
+      "argument1",
+      "argument2",
+    ]);
+    let actualData = commandArgsStore;
+    assert.deepEqual(actualData, expectedData, "should return expected data");
+  });
+  it("should run console log with thrown error text", () => {
+    let expectedData = "this is an error";
+    cli(mockTfxError, "", "", mockConsole, ["nodepath", "filepath"]);
+    let actualData = logStore;
+    assert.deepEqual(actualData, expectedData, "should return expected data");
+  });
 });
