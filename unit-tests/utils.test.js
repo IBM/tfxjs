@@ -1,5 +1,4 @@
 const { assert } = require("chai");
-const { it } = require("mocha");
 const {
   keyCheck,
   emptyCheck,
@@ -104,12 +103,6 @@ describe("utils", () => {
   });
   describe("contains", () => {
     let contains = utils.contains;
-    it("should return true if string in string", () => {
-      assert.isTrue(contains("test", "es"), "should be true");
-    });
-    it("should return false if string not in string", () => {
-      assert.isFalse(contains("test", "frog"), "should be false");
-    });
     it("should return true if item in array", () => {
       assert.isTrue(contains(["test"], "test"), "should be true");
     });
