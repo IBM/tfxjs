@@ -1,6 +1,7 @@
 const { assert } = require("chai");
 const cli = require("../lib/cli");
 
+// stores the commandArgs that will be compared to later
 let commandArgsStore;
 
 /**
@@ -24,7 +25,7 @@ const mockTfxError = function () {
   };
 };
 
-// stores the console log 
+// stores the console log that will be compared to later
 let logStore;
 // object that mocks the console 
 const mockConsole = {
