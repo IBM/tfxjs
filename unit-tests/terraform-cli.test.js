@@ -128,7 +128,7 @@ describe("terraformCli", () => {
       };
 
       return tf
-        .plan({}, () => { }, false)
+        .plan({}, () => {}, false)
         .then(() => {
           assert.deepEqual(
             exec.commandList,
@@ -147,7 +147,7 @@ describe("terraformCli", () => {
       };
 
       return tf
-        .plan({}, () => { }, {
+        .plan({}, () => {}, {
           cleanup: true,
         })
         .then(() => {
@@ -169,7 +169,7 @@ describe("terraformCli", () => {
       };
 
       return tf
-        .plan({}, () => { }, {
+        .plan({}, () => {}, {
           no_output: true,
         })
         .then(() => {
@@ -189,7 +189,7 @@ describe("terraformCli", () => {
       };
 
       return tf
-        .plan({}, () => { }, false)
+        .plan({}, () => {}, false)
         .catch((err) => {
           assert.deepEqual(err.message, chalk.red("Error in ../directory/main.tf"));
         });
