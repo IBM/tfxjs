@@ -3,6 +3,7 @@ const tfUnitTestUtils = require("../lib/tf-utils.js"); // Import utils
 const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
+const chalk = require("chalk");
 let mock = new mocks(); // initialize mocks
 process.env.API_KEY = "test";
 
@@ -230,7 +231,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          "\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform plan`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n",
+          chalk.yellow("\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform plan`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n"),
         ],
         "it should print out the correct data"
       );
@@ -252,7 +253,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          "\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform apply`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n",
+          chalk.yellow("\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform apply`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n"),
         ],
         "it should print out the correct data"
       );

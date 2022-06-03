@@ -1,5 +1,6 @@
 const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
+const chalk = require("chalk");
 
 function mockExec(data) {
   this.data = data;
@@ -14,7 +15,7 @@ function mockExec(data) {
 }
 
 
-const help = `
+const help = chalk.blueBright(`
 #############################################################################
 #                                                                           #
 #                                   tfxjs                                   #
@@ -35,11 +36,7 @@ Additional flags are also available:
 
 To create a nodejs test file from a YAML plan:
   $ tfx decode <yaml file path> --out <filepath>
-
-Additional flags are also available:
-  -v | --tf-var
-  Inject a terraform.tfvar value into the plan. This flag can be added any number of times
-`;
+`);
 
 let exec = new mockExec({}, false);
 let spawn = new mockExec({}, false);
