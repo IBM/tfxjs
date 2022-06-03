@@ -1,5 +1,6 @@
 const { assert } = require("chai");
 const cli = require("../lib/terraform-cli");
+const chalk = require("chalk");
 
 function mockExec(data) {
   this.data = data;
@@ -189,7 +190,7 @@ describe("terraformCli", () => {
       return tf
         .plan({}, () => {}, false)
         .catch((err) => {
-          assert.deepEqual(err.message, "Error in ../directory/main.tf");
+          assert.deepEqual(err.message, chalk.red("Error in ../directory/main.tf"));
         });
     });
   });
