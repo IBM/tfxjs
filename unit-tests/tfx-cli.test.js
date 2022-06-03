@@ -1,6 +1,5 @@
 const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
-const chalk = require("chalk");
 
 function mockExec(data) {
   this.data = data;
@@ -15,28 +14,7 @@ function mockExec(data) {
 }
 
 
-const help = chalk.blueBright(`
-#############################################################################
-#                                                                           #
-#                                   tfxjs                                   #
-#                                                                           #
-#############################################################################
-
-tfxjs cli tool allows you to run tfxjs tests.
-
-To test a .js file:
-  $ tfx <file_path>
-
-To create tests from a terraform plan:
-  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>
-
-Additional flags are also available:
-  -v | --tf-var
-      Inject a terraform.tfvar value into the plan. This flag can be added any number of times
-
-To create a nodejs test file from a YAML plan:
-  $ tfx decode <yaml file path> --out <filepath>
-`);
+const help = "\u001b[94m\u001b[39m\n\u001b[94m#############################################################################\u001b[39m\n\u001b[94m#                                                                           #\u001b[39m\n\u001b[94m#                                   tfxjs                                   #\u001b[39m\n\u001b[94m#                                                                           #\u001b[39m\n\u001b[94m#############################################################################\u001b[39m\n\u001b[94m\u001b[39m\n\u001b[94mtfxjs cli tool allows you to run tfxjs tests.\u001b[39m\n\u001b[94m\u001b[39m\n\u001b[94mTo test a .js file:\u001b[39m\n\u001b[94m  $ tfx <file_path>\u001b[39m\n\u001b[94m\u001b[39m\n\u001b[94mTo create tests from a terraform plan:\u001b[39m\n\u001b[94m  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>\u001b[39m\n\u001b[94m\u001b[39m\n\u001b[94mAdditional flags are also available:\u001b[39m\n\u001b[94m  -v | --tf-var\u001b[39m\n\u001b[94m      Inject a terraform.tfvar value into the plan. This flag can be added any number of times\u001b[39m\n\u001b[94m\u001b[39m\n\u001b[94mTo create a nodejs test file from a YAML plan:\u001b[39m\n\u001b[94m  $ tfx decode <yaml file path> --out <filepath>\u001b[39m\n\u001b[94m\u001b[39m";
 
 let exec = new mockExec({}, false);
 let spawn = new mockExec({}, false);

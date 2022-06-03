@@ -3,7 +3,6 @@ const tfUnitTestUtils = require("../lib/tf-utils.js"); // Import utils
 const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
-const chalk = require("chalk");
 let mock = new mocks(); // initialize mocks
 process.env.API_KEY = "test";
 
@@ -231,7 +230,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          chalk.yellow("\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform plan`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n"),
+          "\u001b[33m\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m* tfxjs testing\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m#  Running `terraform plan`\u001b[39m\n\u001b[33m#  Teplate File:\u001b[39m\n\u001b[33m#     ./mock_path\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m\u001b[39m",
         ],
         "it should print out the correct data"
       );
@@ -253,7 +252,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          chalk.yellow("\n\n* tfxjs testing\n\n##############################################################################\n# \n#  Running `terraform apply`\n#  Teplate File:\n#     ./mock_path\n# \n##############################################################################\n"),
+          "\u001b[33m\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m* tfxjs testing\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m#  Running `terraform apply`\u001b[39m\n\u001b[33m#  Teplate File:\u001b[39m\n\u001b[33m#     ./mock_path\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m\u001b[39m",
         ],
         "it should print out the correct data"
       );
