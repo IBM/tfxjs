@@ -9,7 +9,7 @@ let tfLogs = [];
 describe("example-test terraformCli", () => {
   beforeEach(() => {
     tfLogs = [];
-    tf = new cli("./example-tests", jsExec, true);
+    tf = new cli("../example-tests", jsExec, true);
     tf.log = (log) => {
       tfLogs.push(log);
     };
@@ -22,9 +22,10 @@ describe("example-test terraformCli", () => {
           shuffle_count: 2,
         },
         (data) => {
+          fs.writeFileSync("./data-files/plan-logs.txt", tfLogs[1])
           assert.deepEqual(
             tfLogs[1],
-            fs.readFileSync("./e2e-tests/data-files/plan-logs.txt", "utf8"),
+            fs.readFileSync("./data-files/plan-logs.txt", "utf8"),
             "it should product correct logs"
           );
           assert.deepEqual(
@@ -108,7 +109,7 @@ describe("example-test terraformCli", () => {
           cloneLs = lsData;
         })
         .then(() => {
-          return tf.execPromise("ls ./example-tests");
+          return tf.execPromise("ls ../example-tests");
         })
         .then(expectedData => {
           assert.deepEqual(cloneLs, expectedData)
