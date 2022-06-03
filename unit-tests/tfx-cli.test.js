@@ -2,6 +2,7 @@ const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
 const chalk = require("chalk");
 const constants = require("../lib/constants");
+const { getType } = require("../lib/utils");
 
 function mockExec(data) {
   this.data = data;
@@ -205,6 +206,7 @@ describe("cli", () => {
       ];
 
       tfx.planTfx = (...args) => {
+        
         let callback = args.pop(); // remove callback
         let shallow = args.pop(); // remove child
         args.pop();
