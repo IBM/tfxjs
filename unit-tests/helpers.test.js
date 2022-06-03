@@ -6,6 +6,7 @@ const {
   childArraySearch,
   convertTfVarsFromTags,
 } = require("../lib/helpers");
+const chalk = require("chalk");
 
 describe("helpers", () => {
   describe("keycontainsKeys", () => {
@@ -420,7 +421,7 @@ describe("helpers", () => {
       };
       assert.throws(
         task,
-        "Expected type of string, number, or boolean for one got string\nExpected type of string, number, or boolean for two got string"
+        chalk.red("Expected type of string, number, or boolean for one got string\nExpected type of string, number, or boolean for two got string")
       );
     });
   });
