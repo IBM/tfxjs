@@ -200,31 +200,9 @@ describe("terraformCli", () => {
       }
 
       return tf
-        .plan({}, () => { }, false)
-        .catch((err) => {
-          assert.deepEqual(err.message, "Error: Terraform initialized in empty directory ../directory");
-        });
-    });
-    it("should throw an error when terraform init is called in an empty directory", () => {
-      exec.data = {
-        stdout: "The directory has no Terraform configuration files."
-      }
-
-      return tf
-        .plan({}, () => { }, false)
-        .catch((err) => {
-          assert.deepEqual(err.message, "Error: Terraform initialized in empty directory ../directory");
-        });
-    });
-    it("should throw an error when terraform init is called in an empty directory", () => {
-      exec.data = {
-        stdout: "The directory has no Terraform configuration files."
-      }
-
-      return tf
         .plan({}, () => { throw {message: "This should not execute"}}, false)
         .catch((err) => {
-          assert.deepEqual(err.message, "Error: Terraform initialized in empty directory ../directory");
+          assert.deepEqual(err.message, chalk.red("Error: Terraform initialized in empty directory ../directory"));
         });
     });
   });
