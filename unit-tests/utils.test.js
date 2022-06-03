@@ -11,6 +11,7 @@ const {
   replaceOptionalFlags,
 } = require("../lib/utils");
 const utils = require("../lib/utils");
+const chalk = require("chalk");
 
 describe("utils", () => {
   describe("eachKey", () => {
@@ -214,7 +215,7 @@ describe("utils", () => {
           "./filePath"
         );
       };
-      assert.throws(task, "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`.");
+      assert.throws(task, chalk.red("\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`."));
     });
     it("should not throw an error if an optional flag is passed", () => {
       let task = () => {
