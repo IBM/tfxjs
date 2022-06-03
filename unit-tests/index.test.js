@@ -3,8 +3,11 @@ const tfUnitTestUtils = require("../lib/tf-utils.js"); // Import utils
 const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
+const chalk = require("chalk");
 let mock = new mocks(); // initialize mocks
 process.env.API_KEY = "test";
+
+
 
 // initialize mock tfx
 let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
@@ -227,10 +230,21 @@ describe("tfxjs", () => {
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.plan("describe", () => {});
+      console.log(JSON.stringify(chalk.white(`
+
+      * tfxjs testing
+      
+      `) + chalk.bold(`##############################################################################
+      # 
+      #`) + chalk.blue("  Running `terraform plan`\n") + chalk.bold(`#`) + chalk.white(`  Teplate File:
+      `) + chalk.bold(`#`) + chalk.blue(`     ./mock_path
+      `) + chalk.bold(`# 
+      ##############################################################################
+      `)));
       assert.deepEqual(
         mock.logList,
         [
-          "\u001b[33m\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m* tfxjs testing\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m#  Running `terraform plan`\u001b[39m\n\u001b[33m#  Teplate File:\u001b[39m\n\u001b[33m#     ./mock_path\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m\u001b[39m",
+          "\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m* tfxjs testing\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m##############################################################################\u001b[22m\n\u001b[1m# \u001b[22m\n\u001b[1m#\u001b[22m\u001b[34m  Running `terraform plan`\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m#\u001b[22m\u001b[37m  Teplate File:\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m#\u001b[22m\u001b[34m     ./mock_path\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m# \u001b[22m\n\u001b[1m##############################################################################\u001b[22m\n\u001b[1m\u001b[22m",
         ],
         "it should print out the correct data"
       );
@@ -252,7 +266,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          "\u001b[33m\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m* tfxjs testing\u001b[39m\n\u001b[33m\u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m#  Running `terraform apply`\u001b[39m\n\u001b[33m#  Teplate File:\u001b[39m\n\u001b[33m#     ./mock_path\u001b[39m\n\u001b[33m# \u001b[39m\n\u001b[33m##############################################################################\u001b[39m\n\u001b[33m\u001b[39m",
+          "\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m* tfxjs testing\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m##############################################################################\u001b[22m\n\u001b[1m# \u001b[22m\n\u001b[1m#\u001b[22m\u001b[34m  Running `terraform apply`\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m#\u001b[22m\u001b[37m  Teplate File:\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m#\u001b[22m\u001b[34m     ./mock_path\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m# \u001b[22m\n\u001b[1m##############################################################################\u001b[22m\n\u001b[1m\u001b[22m",
         ],
         "it should print out the correct data"
       );
