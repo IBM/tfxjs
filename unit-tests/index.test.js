@@ -230,17 +230,17 @@ describe("tfxjs", () => {
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.plan("describe", () => {});
-      console.log(JSON.stringify(chalk.white(`
+      // console.log(JSON.stringify(chalk.white(`
 
-      * tfxjs testing
+      // * tfxjs testing
       
-      `) + chalk.bold(`##############################################################################
-      # 
-      #`) + chalk.blue("  Running `terraform plan`\n") + chalk.bold(`#`) + chalk.white(`  Teplate File:
-      `) + chalk.bold(`#`) + chalk.blue(`     ./mock_path
-      `) + chalk.bold(`# 
-      ##############################################################################
-      `)));
+      // `) + chalk.bold(`##############################################################################
+      // # 
+      // #`) + chalk.blue("  Running `terraform plan`\n") + chalk.bold(`#`) + chalk.white(`  Teplate File:
+      // `) + chalk.bold(`#`) + chalk.blue(`     ./mock_path
+      // `) + chalk.bold(`# 
+      // ##############################################################################
+      // `)));
       assert.deepEqual(
         mock.logList,
         [
