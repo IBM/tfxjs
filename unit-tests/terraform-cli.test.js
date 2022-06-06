@@ -2,6 +2,9 @@ const { assert } = require("chai");
 const { it } = require("mocha");
 const cli = require("../lib/terraform-cli");
 
+const ansiRed = "\u001b[31m"
+const ansiDefaultForeground = "\u001b[39m"
+
 function mockExec(data) {
   this.data = data;
   this.commandList = [];
@@ -189,7 +192,7 @@ describe("terraformCli", () => {
       return tf
         .plan({}, () => { }, false)
         .catch((err) => {
-          assert.deepEqual(err.message, "\u001b[31mError in ../directory/main.tf\u001b[39m");
+          assert.deepEqual(err.message, `${ansiRed}Error in ../directory/main.tf${ansiDefaultForeground}`);
         });
     });
     it("should throw an error when terraform init is called in an empty directory", () => {
@@ -199,7 +202,7 @@ describe("terraformCli", () => {
       return tf
         .plan({}, () => { throw {message: "This should not execute"}}, false)
         .catch((err) => {
-          assert.deepEqual(err.message, "\u001b[31m\u001b[39m\n\u001b[31mError: Terraform initialized in empty directory ../directory\u001b[39m\n\u001b[31m\u001b[39m\n\u001b[31mInsert Terraform configuration files into the directory and try again\u001b[39m\n\u001b[31m\u001b[39m");
+          assert.deepEqual(err.message, `${ansiRed}${ansiDefaultForeground}\n${ansiRed}Error: Terraform initialized in empty directory ../directory${ansiDefaultForeground}\n${ansiRed}${ansiDefaultForeground}\n${ansiRed}Insert Terraform configuration files into the directory and try again${ansiDefaultForeground}\n${ansiRed}${ansiDefaultForeground}`);
         });
     });
   });
