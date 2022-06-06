@@ -50,7 +50,9 @@ describe("cli", () => {
     assert(argSpy.calledOnceWith(["argument1", "argument2"]))
   });
   it("should run console log with thrown error text", () => {
-    let expectedData = "\u001b[31mthis is an error\u001b[39m";
+    const ansiRed = "\u001b[31m"
+    const ansiDefaultForeground = "\u001b[39m"
+    let expectedData = `${ansiRed}this is an error${ansiDefaultForeground}`;
     cli(mockTfxError, "", "", mockConsole, ["nodepath", "filepath"]);
     assert(mockConsole.log.calledOnceWith("this is an error"));
   });
