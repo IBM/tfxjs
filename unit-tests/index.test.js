@@ -7,7 +7,11 @@ const chalk = require("chalk");
 let mock = new mocks(); // initialize mocks
 process.env.API_KEY = "test";
 
-
+const ansiBold = "\u001b[1m"
+const ansiResetDim = "\u001b[22m"
+const ansiBlue = "\u001b[34m"
+const ansiLtGray = "\u001b[37m"
+const ansiDefaultForeground = "\u001b[39m"
 
 // initialize mock tfx
 let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
@@ -244,7 +248,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          "\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m* tfxjs testing\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m##############################################################################\u001b[22m\n\u001b[1m# \u001b[22m\n\u001b[1m#\u001b[22m\u001b[34m  Running `terraform plan`\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m#\u001b[22m\u001b[37m  Teplate File:\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m#\u001b[22m\u001b[34m     ./mock_path\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m# \u001b[22m\n\u001b[1m##############################################################################\u001b[22m\n\u001b[1m\u001b[22m",
+          `${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}* tfxjs testing${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}# ${ansiResetDim}\n${ansiBold}#${ansiResetDim}${ansiBlue}  Running \`terraform plan\`${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiLtGray}  Teplate File:${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiBlue}     ./mock_path${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}# ${ansiResetDim}\n${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}${ansiResetDim}`,
         ],
         "it should print out the correct data"
       );
@@ -266,7 +270,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          "\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m* tfxjs testing\u001b[39m\n\u001b[37m\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m##############################################################################\u001b[22m\n\u001b[1m# \u001b[22m\n\u001b[1m#\u001b[22m\u001b[34m  Running `terraform apply`\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m#\u001b[22m\u001b[37m  Teplate File:\u001b[39m\n\u001b[37m\u001b[39m\u001b[1m#\u001b[22m\u001b[34m     ./mock_path\u001b[39m\n\u001b[34m\u001b[39m\u001b[1m# \u001b[22m\n\u001b[1m##############################################################################\u001b[22m\n\u001b[1m\u001b[22m",
+          `${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}* tfxjs testing${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}# ${ansiResetDim}\n${ansiBold}#${ansiResetDim}${ansiBlue}  Running \`terraform apply\`${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiLtGray}  Teplate File:${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiBlue}     ./mock_path${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}# ${ansiResetDim}\n${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}${ansiResetDim}`,
         ],
         "it should print out the correct data"
       );

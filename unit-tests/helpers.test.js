@@ -7,6 +7,9 @@ const {
   convertTfVarsFromTags,
 } = require("../lib/helpers");
 
+const ansiRed = "\u001b[31m"
+const ansiDefaultForeground = "\u001b[39m"
+
 describe("helpers", () => {
   describe("keycontainsKeys", () => {
     it("should return true if key is found in object", () => {
@@ -420,7 +423,7 @@ describe("helpers", () => {
       };
       assert.throws(
         task,
-        "\u001b[31mExpected type of string, number, or boolean for one got string\u001b[39m\n\u001b[31mExpected type of string, number, or boolean for two got string\u001b[39m"
+        `${ansiRed}Expected type of string, number, or boolean for one got string${ansiDefaultForeground}\n${ansiRed}Expected type of string, number, or boolean for two got string${ansiDefaultForeground}`
       );
     });
   });
