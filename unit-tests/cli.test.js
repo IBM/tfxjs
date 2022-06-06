@@ -56,7 +56,7 @@ describe("cli", () => {
     assert.deepEqual(actualData, expectedData, "should return expected data");
   });
   it("should run console log with thrown error text", () => {
-    let expectedData = "this is an error";
+    let expectedData = "\u001b[31mthis is an error\u001b[39m";
     cli(mockTfxError, "", "", mockConsole, ["nodepath", "filepath"]);
     let actualData = logStore;
     assert.deepEqual(actualData, expectedData, "should return expected data");
