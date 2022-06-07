@@ -73,7 +73,12 @@ describe("cli", () => {
       assert.deepEqual(actualData, help, "it should return correct data");
     });
     it("should throw error text if bad command", () => {
-      let tfWithLogs = new cli(exec.promise, spawn.promise, "bad-command", "bad-command");
+      let tfWithLogs = new cli(
+        exec.promise,
+        spawn.promise,
+        "bad-command",
+        "bad-command"
+      );
       let task = () => {
         tfWithLogs.tfxcli();
       };
@@ -105,16 +110,17 @@ describe("cli", () => {
       tfx = new cli(exec.promise, spawn.promise, "decode", "./filePath");
       let returnedDecode = false;
       tfx.decode = () => {
-        returnedDecode = true
-      }
+        returnedDecode = true;
+      };
       tfx.tfxcli();
-      assert.isTrue(returnedDecode, "it should run the correct test")
-    })
+      assert.isTrue(returnedDecode, "it should run the correct test");
+    });
   });
   describe("plan", () => {
     it("should run extract with correct commands and flags for plan and write data", () => {
       tfx = new cli(
-        exec.promise, spawn.promise,
+        exec.promise,
+        spawn.promise,
         "plan",
         "--in",
         "./filePath",
@@ -125,37 +131,107 @@ describe("cli", () => {
         "-v",
         "testVar1=true",
         "-v",
-        'testVar2="true"', 
+        'testVar2="true"',
         "-v",
-        'testValue3=3'
+        "testValue3=3"
       );
       let actualData = [];
-      let expectedData = ["tfx Generated Plan", "./filePath", "tfx", {
-        testVar1: true,
-        testVar2: "true",
-        testValue3: 3
-      }];
-      
+      let expectedData = [
+        "tfx Generated Plan",
+        "./filePath",
+        "tfx",
+        {
+          testVar1: true,
+          testVar2: "true",
+          testValue3: 3,
+        },
+        false,
+      ];
+
       tfx.planTfx = (...args) => {
         let callback = args.pop(); // remove callback
         args.pop(); // remove child
         actualData = args;
-        callback("fileData")
-      }
+        callback("fileData");
+      };
       let actualCallback = [];
       let expectedCallback = ["./out-file-path", "fileData"];
       tfx.writeFileSync = (filePath, data) => {
-        actualCallback = [filePath, data]
-      }
+        actualCallback = [filePath, data];
+      };
       tfx.tfxcli();
-      assert.deepEqual(actualData, expectedData, "it should return correct params")
-      assert.deepEqual(actualCallback, expectedCallback, "it should run writeFileSync with correct params")
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct params"
+      );
+      assert.deepEqual(
+        actualCallback,
+        expectedCallback,
+        "it should run writeFileSync with correct params"
+      );
     });
-  })
+    it("should run extract with correct commands and flags for plan and write data when shallow", () => {
+      tfx = new cli(
+        exec.promise,
+        spawn.promise,
+        "plan",
+        "--in",
+        "./filePath",
+        "--out",
+        "./out-file-path",
+        "-s",
+        "--type",
+        "tfx",
+        "-v",
+        "testVar1=true",
+        "-v",
+        'testVar2="true"',
+        "-v",
+        "testValue3=3"
+      );
+      let actualData = [];
+      let expectedData = [
+        "tfx Generated Plan",
+        "./filePath",
+        "tfx",
+        {
+          testVar1: true,
+          testVar2: "true",
+          testValue3: 3,
+        },
+        true,
+      ];
+
+      tfx.planTfx = (...args) => {
+        let callback = args.pop(); // remove callback
+        args.pop(); // remove child
+        actualData = args;
+        callback("fileData");
+      };
+      let actualCallback = [];
+      let expectedCallback = ["./out-file-path", "fileData"];
+      tfx.writeFileSync = (filePath, data) => {
+        actualCallback = [filePath, data];
+      };
+      tfx.tfxcli();
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct params"
+      );
+      assert.deepEqual(
+        actualCallback,
+        expectedCallback,
+        "it should run writeFileSync with correct params"
+      );
+    });
+  });
   describe("decode", () => {
     it("should run extract with correct commands and flags for decode and write data", () => {
       tfx = new cli(
-        exec.promise, spawn.promise,
+        exec.promise,
+        spawn.promise,
         "decode",
         "./filePath",
         "--out",
@@ -163,36 +239,44 @@ describe("cli", () => {
         "-v",
         "testVar1=true",
         "-v",
-        'testVar2="true"', 
+        'testVar2="true"',
         "-v",
-        'testValue3=3'
+        "testValue3=3"
       );
-      let expectedReadArg = ["./filePath"]
+      let expectedReadArg = ["./filePath"];
       let expectedParams = [
         undefined,
-        [
-          "testVar1=true",
-          "testVar2=\"true\"",
-          "testValue3=3"
-        ]
-      ]
-      let expectedFileData = ["./out-file-path", undefined]
-      let actualParams
-      let actualReadArg
-      let actualFileData
+        ["testVar1=true", 'testVar2="true"', "testValue3=3"],
+      ];
+      let expectedFileData = ["./out-file-path", undefined];
+      let actualParams;
+      let actualReadArg;
+      let actualFileData;
       tfx.readFileSync = (...args) => {
         actualReadArg = args;
-      }
+      };
       tfx.deyamilfy = (...args) => {
         actualParams = args;
-      }
+      };
       tfx.writeFileSync = (...args) => {
-        actualFileData = args
-      }
+        actualFileData = args;
+      };
       tfx.decode();
-      assert.deepEqual(actualReadArg, expectedReadArg, "it should correctly read file data")
-      assert.deepEqual(actualParams, expectedParams, "it should return all params")
-      assert.deepEqual(actualFileData, expectedFileData, "it should return correct file data")
+      assert.deepEqual(
+        actualReadArg,
+        expectedReadArg,
+        "it should correctly read file data"
+      );
+      assert.deepEqual(
+        actualParams,
+        expectedParams,
+        "it should return all params"
+      );
+      assert.deepEqual(
+        actualFileData,
+        expectedFileData,
+        "it should return correct file data"
+      );
     });
-  })
+  });
 });

@@ -221,7 +221,10 @@ describe("utils", () => {
           "./filePath"
         );
       };
-      assert.throws(task, "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`.");
+      assert.throws(
+        task,
+        "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`."
+      );
     });
     it("should not throw an error if an optional flag is passed", () => {
       let task = () => {
@@ -256,7 +259,7 @@ describe("utils", () => {
           "-v",
           'testVar2="true"'
         );
-        assert.doesNotThrow(task)
+        assert.doesNotThrow(task);
       };
     });
   });
@@ -264,7 +267,6 @@ describe("utils", () => {
     it("should return correct alias map for a verb", () => {
       let plan = {
         requiredFlags: ["in", "out", "type"],
-
       };
       let tags = {
         help: ["-h", "--help"],
@@ -284,6 +286,16 @@ describe("utils", () => {
       let actualData = getVerbActions(plan, tags);
       assert.deepEqual(expectedData, actualData);
     });
+    it("should remove optional flags with no needed key values", () => {
+      let tags = {
+        help: ["-h", "--help"],
+        in: ["-i", "--in"],
+        out: ["-o", "--out"],
+        type: ["-t", "--type"],
+        shallow: ["-s", "--shallow"],
+        // extract -in path -out path -type tfx | yaml
+      };
+    });
     it("should return correct alias map for a verb with optional multiple tags", () => {
       let plan = {
         requiredFlags: ["in", "out", "type"],
@@ -299,7 +311,7 @@ describe("utils", () => {
         in: ["-i", "--in"],
         out: ["-o", "--out"],
         type: ["-t", "--type"],
-        tfvar: ["-v", "--tf-var"]
+        tfvar: ["-v", "--tf-var"],
         // extract -in path -out path -type tfx | yaml
       };
       let expectedData = {
@@ -309,8 +321,8 @@ describe("utils", () => {
         "--out": "-o",
         "-t": "--type",
         "--type": "-t",
-        "?*-v" : "?*--tf-var",
-        "?*--tf-var" : "?*-v"
+        "?*-v": "?*--tf-var",
+        "?*--tf-var": "?*-v",
       };
       let actualData = getVerbActions(plan, tags);
       assert.deepEqual(expectedData, actualData);
@@ -329,7 +341,7 @@ describe("utils", () => {
         in: ["-i", "--in"],
         out: ["-o", "--out"],
         type: ["-t", "--type"],
-        tfvar: ["-v", "--tf-var"]
+        tfvar: ["-v", "--tf-var"],
         // extract -in path -out path -type tfx | yaml
       };
       let expectedData = {
@@ -339,8 +351,8 @@ describe("utils", () => {
         "--out": "-o",
         "-t": "--type",
         "--type": "-t",
-        "?-v" : "?--tf-var",
-        "?--tf-var" : "?-v"
+        "?-v": "?--tf-var",
+        "?--tf-var": "?-v",
       };
       let actualData = getVerbActions(plan, tags);
       assert.deepEqual(expectedData, actualData);
@@ -358,28 +370,36 @@ describe("utils", () => {
   });
   describe("replaceOptionalFlags", () => {
     it("should return command if none optional flags", () => {
-      let actualData = replaceOptionalFlags({requiredFlags: ["one"]}, {}, "hi")
-      assert.deepEqual(actualData, ["hi"], "it should return commands")
-    })
+      let actualData = replaceOptionalFlags(
+        { requiredFlags: ["one"] },
+        {},
+        "hi"
+      );
+      assert.deepEqual(actualData, ["hi"], "it should return commands");
+    });
     it("should replace optional flags that do not accept multiple arguments", () => {
       let actualData = replaceOptionalFlags(
         {
           optionalFlags: [
             {
-              name: "optional"
-            }
-          ]
+              name: "optional",
+            },
+          ],
         },
         {
-          optional: ["-o", "--ooo"]
+          optional: ["-o", "--ooo"],
         },
         "-o",
         "frog"
-      )
+      );
       let expectedData = ["?-o", "frog"];
-      assert.deepEqual(actualData, expectedData, "it should return correct data")
-    })
-  })
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct data"
+      );
+    });
+  });
   describe("flagValues", () => {
     it("should return key value pair of flag values", () => {
       let actualData = flagValues(
@@ -415,12 +435,54 @@ describe("utils", () => {
         in: "./in-file-path/",
         out: "./out-file.test.js",
         type: "tfx",
-        tfvars: [
-          'testVar1=true',
-          'testVar2="true"'
-        ]
-      }
-      assert.deepEqual(actualData, expectedData, "should return correct data")
+        tfvars: ["testVar1=true", 'testVar2="true"'],
+      };
+      assert.deepEqual(actualData, expectedData, "should return correct data");
+    });
+    it("should not assign a value to optional flags with no matching key = true", () => {
+      let expectedData = {
+        in: "./in-file-path/",
+        out: "./out-file.test.js",
+        type: "tfx",
+        tfvars: ["testVar1=true", 'testVar2="true"'],
+        shallow: true,
+      };
+      let actualData = flagValues(
+        "plan",
+        {
+          requiredFlags: ["in", "out", "type"],
+          optionalFlags: [
+            {
+              name: "tfvars",
+              allowMultiple: true,
+            },
+            {
+              name: "shallow",
+              noMatchingValue: true,
+            },
+          ],
+        },
+        {
+          help: ["-h", "--help"],
+          in: ["-i", "--in"],
+          out: ["-o", "--out"],
+          type: ["-t", "--type"],
+          tfvars: ["-v", "--tf-var"],
+          shallow: ["-s", "--shallow"],
+        },
+        "-i",
+        "./in-file-path/",
+        "-o",
+        "./out-file.test.js",
+        "-s",
+        "-t",
+        "tfx",
+        "-v",
+        "testVar1=true",
+        "-v",
+        'testVar2="true"'
+      );
+      assert.deepEqual(actualData, expectedData, "should return correct data");
     });
   });
 });
