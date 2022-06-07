@@ -214,6 +214,15 @@ describe("terraformCli", () => {
       tfWithLogs.print("frog");
       assert.deepEqual(actualData, "frog", "it should return exact data");
     });
+    it("should not run log if enableLogs is false", () => {
+      let tfWithLogs = new cli("../", exec.promise, false);
+      let actualData;
+      tfWithLogs.log = (data) => {
+        actualData = data;
+      };
+      tfWithLogs.print("frog");
+      assert.deepEqual(actualData, undefined, "it should return exact data");
+    });
   });
   describe("apply", () => {
     it("should run the correct commands with no tfvars and no callback", () => {
