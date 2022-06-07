@@ -8,9 +8,6 @@ const {
 } = require("../lib/helpers");
 const constants = require("../lib/constants");
 
-const ansiRed = "\u001b[31m"
-const ansiDefaultForeground = "\u001b[39m"
-
 describe("helpers", () => {
   describe("keycontainsKeys", () => {
     it("should return true if key is found in object", () => {
