@@ -3,15 +3,10 @@ const tfUnitTestUtils = require("../lib/tf-utils.js"); // Import utils
 const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
-const chalk = require("chalk");
+const constants = require("../lib/constants")
 let mock = new mocks(); // initialize mocks
 process.env.API_KEY = "test";
 
-const ansiBold = "\u001b[1m"
-const ansiResetDim = "\u001b[22m"
-const ansiBlue = "\u001b[34m"
-const ansiLtGray = "\u001b[37m"
-const ansiDefaultForeground = "\u001b[39m"
 
 // initialize mock tfx
 let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
@@ -248,7 +243,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          `${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}* tfxjs testing${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}# ${ansiResetDim}\n${ansiBold}#${ansiResetDim}${ansiBlue}  Running \`terraform plan\`${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiLtGray}  Teplate File:${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiBlue}     ./mock_path${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}# ${ansiResetDim}\n${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}${ansiResetDim}`,
+          `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}* tfxjs testing${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}  Running \`terraform plan\`${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiLtGray}  Teplate File:${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}     ./mock_path${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}`,
         ],
         "it should print out the correct data"
       );
@@ -270,7 +265,7 @@ describe("tfxjs", () => {
       assert.deepEqual(
         mock.logList,
         [
-          `${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}* tfxjs testing${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}# ${ansiResetDim}\n${ansiBold}#${ansiResetDim}${ansiBlue}  Running \`terraform apply\`${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiLtGray}  Teplate File:${ansiDefaultForeground}\n${ansiLtGray}${ansiDefaultForeground}${ansiBold}#${ansiResetDim}${ansiBlue}     ./mock_path${ansiDefaultForeground}\n${ansiBlue}${ansiDefaultForeground}${ansiBold}# ${ansiResetDim}\n${ansiBold}##############################################################################${ansiResetDim}\n${ansiBold}${ansiResetDim}`,
+          `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}* tfxjs testing${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}  Running \`terraform apply\`${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiLtGray}  Teplate File:${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}     ./mock_path${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}`,
         ],
         "it should print out the correct data"
       );

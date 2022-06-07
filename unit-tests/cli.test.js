@@ -1,5 +1,6 @@
 const { assert } = require("chai");
 const cli = require("../lib/cli");
+const constants = require("../lib/constants");
 
 // stores the commandArgs that will be compared to later
 let commandArgsStore;
@@ -56,9 +57,7 @@ describe("cli", () => {
     assert.deepEqual(actualData, expectedData, "should return expected data");
   });
   it("should run console log with thrown error text", () => {
-    const ansiRed = "\u001b[31m"
-    const ansiDefaultForeground = "\u001b[39m"
-    let expectedData = `${ansiRed}this is an error${ansiDefaultForeground}`;
+    let expectedData = `${constants.ansiRed}this is an error${constants.ansiDefaultForeground}`;
     cli(mockTfxError, "", "", mockConsole, ["nodepath", "filepath"]);
     let actualData = logStore;
     assert.deepEqual(actualData, expectedData, "should return expected data");
