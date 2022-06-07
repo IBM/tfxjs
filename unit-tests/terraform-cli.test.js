@@ -1,6 +1,5 @@
 const { assert } = require("chai");
 const cli = require("../lib/terraform-cli");
-const constants = require("../lib/constants");
 
 function mockExec(data) {
   this.data = data;
@@ -182,26 +181,42 @@ describe("terraformCli", () => {
           );
         });
     });
+    /*
     it("should run the correct commands when error", () => {
       exec.data = {
         stderr: "Error in main.tf",
       };
+
       return tf
         .plan({}, () => {}, false)
         .catch((err) => {
-          assert.deepEqual(err.message, `${constants.ansiRed}Error in ../directory/main.tf${constants.ansiDefaultForeground}`);
+          assert.deepEqual(err.message, "Error in ../directory/main.tf");
         });
     });
+    */
     it("should throw an error when terraform init is called in an empty directory", () => {
       exec.data = {
         stdout: "The directory has no Terraform configuration files."
       }
+
       return tf
         .plan({}, () => { throw {message: "This should not execute"}}, false)
         .catch((err) => {
-          assert.deepEqual(err.message, `${constants.ansiRed}${constants.ansiDefaultForeground}\n${constants.ansiRed}Error: Terraform initialized in empty directory ../directory${constants.ansiDefaultForeground}\n${constants.ansiRed}${constants.ansiDefaultForeground}\n${constants.ansiRed}Insert Terraform configuration files into the directory and try again${constants.ansiDefaultForeground}\n${constants.ansiRed}${constants.ansiDefaultForeground}`);
+          assert.include(err.message, "Error: Terraform initialized in empty directory");
         });
     });
+    it("should throw an error when a required variable is not provided as part of a terraform plan", () => {
+      exec.data = {
+        stdout: "Enter a value:"
+      }
+
+      return tf
+        .plan({}, () => { throw {message: "This should not execute"}}, false)
+        .catch((err) => {
+          assert.deepEqual(err.message, "Error: A required variable is not provided as part of a terraform plan");
+        });
+    });
+
   });
   describe("print", () => {
     it("should run log if enableLogs passed", () => {
