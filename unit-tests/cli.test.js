@@ -1,20 +1,18 @@
 const { assert } = require("chai");
 const cli = require("../lib/cli");
-
-// stores the commandArgs that will be compared to later
-let commandArgsStore;
+const sinon = require("sinon");
 
 /**
- * Mock tfx function to pass in args 
- * @param {*} exec - arbirtrary for this
- * @param {*} spawn - arbitrary
- * @param  {...any} commandArgs - args to pass in
+ * Constructor that returns mock tfx constructor
+ * @param {sinon.spy} spy Sinon Spy
  */
-const mockTfx = function (exec, spawn, ...commandArgs) {
-  this.tfxcli = function () {
-    commandArgsStore = commandArgs;
-  };
-};
+const spyMockTfx = function(spy) {
+  this.mockTfx = function (exec, spawn, ...commandArgs) {
+    this.tfxcli = () => {
+      spy(commandArgs)
+    };
+  }
+}
 
 /**
  * Mock tfx function used to throw an error
@@ -25,13 +23,9 @@ const mockTfxError = function () {
   };
 };
 
-// stores the console log that will be compared to later
-let logStore;
 // object that mocks the console 
 const mockConsole = {
-  log: function (str) {
-    logStore = str;
-  },
+  log: new sinon.spy()
 };
 
 describe("cli", () => {
@@ -39,26 +33,24 @@ describe("cli", () => {
     assert.equal(true, true);
   });
   it("should call cmd.tfxcli() with no args", () => {
-    let expectedData = [];
-    cli(mockTfx, "", "", mockConsole, ["nodepath", "filepath"]);
-    let actualData = commandArgsStore;
-    assert.deepEqual(actualData, expectedData, "should return expected data");
+    let noArgSpy = sinon.spy();
+    let spyMock = new spyMockTfx(noArgSpy)
+    cli(spyMock.mockTfx, "", "", mockConsole, ["nodepath", "filepath"]);
+    assert.isTrue(noArgSpy.calledOnceWith([]));
   });
   it("should call cmd.tfxcli() with more than 2 args", () => {
-    let expectedData = ["argument1", "argument2"];
-    cli(mockTfx, "", "", mockConsole, [
+    let argSpy = sinon.spy();
+    let spyMock = new spyMockTfx(argSpy)
+    cli(spyMock.mockTfx, "", "", mockConsole, [
       "nodepath",
       "filepath",
       "argument1",
       "argument2",
     ]);
-    let actualData = commandArgsStore;
-    assert.deepEqual(actualData, expectedData, "should return expected data");
+    assert(argSpy.calledOnceWith(["argument1", "argument2"]))
   });
   it("should run console log with thrown error text", () => {
-    let expectedData = "this is an error";
     cli(mockTfxError, "", "", mockConsole, ["nodepath", "filepath"]);
-    let actualData = logStore;
-    assert.deepEqual(actualData, expectedData, "should return expected data");
+    assert(mockConsole.log.calledOnceWith("this is an error"));
   });
 });
