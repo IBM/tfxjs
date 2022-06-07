@@ -47,19 +47,27 @@ describe("axiosMocks", () => {
                     assert.deepEqual(data, "success");
                 })
             });
-            it("should be rejected when err is false", () => {
+            it("should be rejected when err is caught", () => {
                 return aDotReject.post('', '', '').catch((data) => {
                     assert.deepEqual(data, {stderr: "Gotcha! Promise rejected!"});
                 })
             });
         });
         describe("delete", () => {
-            it("should return the correct data when err is false");
-            it("should be rejected when err is false");
+            it("should return the correct data when err is false", () => {
+                return aDotResolve.delete('', '').then((data) => {
+                    assert.deepEqual(data, "success");
+                })
+            });
+            it("should be rejected when err is caught", () => {
+                return aDotReject.delete('', '').catch((data) => {
+                    assert.deepEqual(data, {stderr: "Gotcha! Promise rejected!"});
+                })
+            });
         });
         describe("put", () => {
             it("should return the correct data when err is false");
-            it("should be rejected when err is false");
+            it("should be rejected when err is caught");
         });
     });
 });
