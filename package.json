@@ -15,12 +15,13 @@
   },
   "authors": [
     "Jennifer Valle",
+    "Lucas Franke",
     "Taha Jafry",
     "Walter Tang"
   ],
   "license": "ISC",
   "dependencies": {
-    "chai": "^4.3.6",
+    "chalk": "^4.1.2",
     "dotenv": "^16.0.0",
     "js-yaml": "^4.1.0",
     "json-to-pretty-yaml": "^1.2.2",
