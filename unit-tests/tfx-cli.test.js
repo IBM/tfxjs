@@ -1,6 +1,5 @@
 const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
-const { getType } = require("../lib/utils");
 
 function mockExec(data) {
   this.data = data;
@@ -166,7 +165,6 @@ describe("cli", () => {
           testVar1: true,
           testVar2: "true",
           testValue3: 3,
-          
         },
         false,
       ];
@@ -222,13 +220,11 @@ describe("cli", () => {
           testVar1: true,
           testVar2: "true",
           testValue3: 3,
-          
         },
         true,
       ];
 
       tfx.planTfx = (...args) => {
-        
         let callback = args.pop(); // remove callback
         args.pop(); // remove child
         actualData = args;
