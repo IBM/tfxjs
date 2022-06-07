@@ -15,7 +15,8 @@
   },
   "authors": [
     "Jennifer Valle",
-    "Taha Jafry"
+    "Taha Jafry",
+    "Walter Tang"
   ],
   "license": "ISC",
   "dependencies": {
@@ -23,7 +24,6 @@
     "dotenv": "^16.0.0",
     "js-yaml": "^4.1.0",
     "json-to-pretty-yaml": "^1.2.2",
-    "mocha": "^9.2.2",
     "tfxjs": "^0.6.0"
   },
   "devDependencies": {
