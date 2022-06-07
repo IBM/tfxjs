@@ -1,5 +1,7 @@
 const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
+const chalk = require("chalk");
+const constants = require("../lib/constants");
 
 function mockExec(data) {
   this.data = data;
@@ -13,32 +15,9 @@ function mockExec(data) {
   };
 }
 
-const help = `
-#############################################################################
-#                                                                           #
-#                                   tfxjs                                   #
-#                                                                           #
-#############################################################################
 
-tfxjs cli tool allows you to run tfxjs tests.
+const help = `${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#############################################################################${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                   tfxjs                                   #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#############################################################################${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}tfxjs cli tool allows you to run tfxjs tests.${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To test a .js file:${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx <file_path>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}To create tests from a terraform plan:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To create a nodejs test file from a YAML plan:${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx decode <yaml file path> --out <filepath>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}`;
 
-To test a .js file:
-  $ tfx <file_path>
-
-To create tests from a terraform plan:
-  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>
-
-Additional flags are also available:
-  -v | --tf-var
-      Inject a terraform.tfvar value into the plan. This flag can be added any number of times
-
-To create a nodejs test file from a YAML plan:
-  $ tfx decode <yaml file path> --out <filepath>
-
-Additional flags are also available:
-  -v | --tf-var
-  Inject a terraform.tfvar value into the plan. This flag can be added any number of times
-`;
 
 let exec = new mockExec({}, false);
 let spawn = new mockExec({}, false);

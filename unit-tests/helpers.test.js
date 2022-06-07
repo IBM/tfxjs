@@ -6,6 +6,7 @@ const {
   childArraySearch,
   convertTfVarsFromTags,
 } = require("../lib/helpers");
+const constants = require("../lib/constants");
 
 describe("helpers", () => {
   describe("keycontainsKeys", () => {
@@ -420,7 +421,7 @@ describe("helpers", () => {
       };
       assert.throws(
         task,
-        "Expected type of string, number, or boolean for one got string\nExpected type of string, number, or boolean for two got string"
+        `${constants.ansiRed}Expected type of string, number, or boolean for one got string${constants.ansiDefaultForeground}\n${constants.ansiRed}Expected type of string, number, or boolean for two got string${constants.ansiDefaultForeground}`
       );
     });
   });
