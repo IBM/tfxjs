@@ -19,4 +19,8 @@ variable "shuffle_count" {
   }
 }
 
+variable "required_variable" {
+  description = "moose"
+  type = string
+}
 ##############################################################################
