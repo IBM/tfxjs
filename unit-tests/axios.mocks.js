@@ -14,7 +14,7 @@ module.exports = {
         });
       };
     },
-    axiosDot: function(optionReturnVariable, err) {
+    axiosDot: function(optionReturnVariable, data, err) {
         return {
           get: function(url, options) {
             optionReturnVariable.set({
