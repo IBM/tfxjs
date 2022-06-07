@@ -66,8 +66,16 @@ describe("axiosMocks", () => {
             });
         });
         describe("put", () => {
-            it("should return the correct data when err is false");
-            it("should be rejected when err is caught");
+            it("should return the correct data when err is false", () => {
+                return aDotResolve.put('', '', '').then((data) => {
+                    assert.deepEqual(data, "success");
+                })
+            });
+            it("should be rejected when err is caught", () => {
+                return aDotReject.put('', '', '').catch((data) => {
+                    assert.deepEqual(data, {stderr: "Gotcha! Promise rejected!"});
+                })
+            });
         });
     });
 });
