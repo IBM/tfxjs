@@ -213,6 +213,8 @@ describe("terraformCli", () => {
       return tf
         .plan({}, () => { throw {message: "This should not execute"}}, false)
         .catch((err) => {
+          console.log(err.message);
+          console.log(err.message === "Error: A required variable is not provided as part of a terraform plan");
           assert.deepEqual(err.message, "Error: A required variable is not provided as part of a terraform plan");
         });
     });
