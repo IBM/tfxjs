@@ -206,7 +206,6 @@ describe("cli", () => {
       ];
 
       tfx.planTfx = (...args) => {
-        
         let callback = args.pop(); // remove callback
         let shallow = args.pop(); // remove child
         args.pop();
