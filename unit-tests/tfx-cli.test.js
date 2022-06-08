@@ -15,9 +15,7 @@ function mockExec(data) {
   };
 }
 
-
 const help = `${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#############################################################################${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                   tfxjs                                   #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#############################################################################${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}tfxjs cli tool allows you to run tfxjs tests.${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To test a .js file:${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx <file_path>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}To create tests from a terraform plan:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To create a nodejs test file from a YAML plan:${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx decode <yaml file path> --out <filepath>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}`;
-
 
 let exec = new mockExec({}, false);
 let spawn = new mockExec({}, false);
@@ -56,6 +54,15 @@ describe("cli", () => {
       };
       tfWithLogs.print("frog");
       assert.deepEqual(actualData, "frog", "it should return exact data");
+    });
+    it("should not print with quiet flag", () => {
+      let tfWithLogs = new cli(exec.promise, spawn.promise, "--quiet");
+      let actualData;
+      tfWithLogs.log = (data) => {
+        actualData = data;
+      };
+      tfWithLogs.print("frog");
+      assert.deepEqual(actualData, undefined, "it should not return anything");
     });
   });
   describe("tfxcli", () => {
