@@ -150,8 +150,9 @@ describe("cli", () => {
 
       tfx.planTfx = (...args) => {
         let callback = args.pop(); // remove callback
-        args.pop(); // remove child
-        actualData = args;
+        let shallow = args.pop(); // remove child
+        args.pop();
+        actualData = args.concat([shallow]);
         callback("fileData");
       };
       let actualCallback = [];
@@ -205,8 +206,9 @@ describe("cli", () => {
 
       tfx.planTfx = (...args) => {
         let callback = args.pop(); // remove callback
-        args.pop(); // remove child
-        actualData = args;
+        let shallow = args.pop(); // remove child
+        args.pop();
+        actualData = args.concat([shallow]);
         callback("fileData");
       };
       let actualCallback = [];
