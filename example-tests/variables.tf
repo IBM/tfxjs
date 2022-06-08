@@ -18,10 +18,5 @@ variable "shuffle_count" {
     condition     = var.shuffle_count > 0
   }
 }
-/*
-variable "required_variable" {
-  description = "moose"
-  type = string
-}
-*/
+
 ##############################################################################
