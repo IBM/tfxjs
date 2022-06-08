@@ -1,5 +1,4 @@
 const { assert } = require("chai");
-const { it } = require("mocha");
 const cli = require("../lib/terraform-cli");
 const constants = require("../lib/constants");
 
@@ -190,7 +189,7 @@ describe("terraformCli", () => {
       return tf
         .plan({}, () => { }, false)
         .catch((err) => {
-          assert.deepEqual(err.message, `${constants.ansiRed}Error in ../directory/main.tf${constants.ansiDefaultForeground}`);
+          assert.deepEqual(err, `Error in ../directory/main.tf\n`);
         });
     });
     it("should throw an error when terraform init is called in an empty directory", () => {
@@ -198,9 +197,9 @@ describe("terraformCli", () => {
         stdout: "The directory has no Terraform configuration files."
       }
       return tf
-        .plan({}, () => { throw {message: "This should not execute"}}, false)
+        .plan({}, () => { throw {stderr: "This should not execute"}}, false)
         .catch((err) => {
-          assert.deepEqual(err.message, `${constants.ansiRed}${constants.ansiDefaultForeground}\n${constants.ansiRed}Error: Terraform initialized in empty directory ../directory${constants.ansiDefaultForeground}\n${constants.ansiRed}${constants.ansiDefaultForeground}\n${constants.ansiRed}Insert Terraform configuration files into the directory and try again${constants.ansiDefaultForeground}\n${constants.ansiRed}${constants.ansiDefaultForeground}`);
+          assert.deepEqual(err,`Error: Terraform initialized in empty directory ../directory\n\nEnsure you are targeting the correct directory and try again\n`);
         });
     });
   });
