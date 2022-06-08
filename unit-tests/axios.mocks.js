@@ -1,8 +1,7 @@
 module.exports = {
 
-    axiosMain: function(optionReturnVariable, data, err) {
+    axiosMain: function(data, err) {
       return function(options) {
-        optionReturnVariable.set(options);
         return new Promise((resolve, reject) => {
           if (err) {
             reject(err);
@@ -14,15 +13,9 @@ module.exports = {
         });
       };
     },
-    axiosDot: function(optionReturnVariable, data, err) {
+    axiosDot: function(data, err) {
         return {
           get: function(url, options) {
-            optionReturnVariable.set({
-              url: url,
-              body: null,
-              options: options,
-              method: "get"
-            });
             return new Promise((resolve, reject) => {
               if (err) {
                 reject(err);
@@ -34,12 +27,6 @@ module.exports = {
             });
           },
           post: function(url, body, options) {
-            optionReturnVariable.set({
-              url: url,
-              body: body,
-              options: options,
-              method: "post"
-            });
             return new Promise((resolve, reject) => {
               if (err) {
                 reject(err);
@@ -49,12 +36,6 @@ module.exports = {
             });
           },
           delete: function(url, options) {
-            optionReturnVariable.set({
-              url: url,
-              body: null,
-              options: options,
-              method: "delete"
-            });
             return new Promise((resolve, reject) => {
               if (err) {
                 reject(err);
@@ -64,12 +45,6 @@ module.exports = {
             });
           },
           put: function(url, body, options) {
-            optionReturnVariable.set({
-              url: url,
-              body: body,
-              options: options,
-              method: "put"
-            });
             return new Promise((resolve, reject) => {
               if (err) {
                 reject(err);
