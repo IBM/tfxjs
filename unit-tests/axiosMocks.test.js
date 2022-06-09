@@ -1,6 +1,7 @@
 const { assert } = require("chai");
 const { axiosMain, axiosDot } = require("./axios.mocks");
 const sinon = require("sinon");
+const { it } = require("mocha");
 
 let aDotReject, aDotResolve;
 
@@ -10,6 +11,12 @@ describe("axiosMocks", () => {
       let aMain = axiosMain("test", false);
       return aMain("testing", "test").then((data) => {
         assert.deepEqual(data, { data: "test" });
+      });
+    });
+    it("should resolve when no data is passed", () => {
+      let aMain = axiosMain();
+      return aMain().then((data) => {
+        assert.deepEqual(data, { data: {} });
       });
     });
     it("should return a Promise that rejects when err is caught", () => {
@@ -51,6 +58,20 @@ describe("axiosMocks", () => {
           .finally(() => {
             assert.isTrue(
               aDotResolve.get.calledOnceWith("the url", "the options")
+            );
+          });
+      });
+      it("should resolve when no data is passed", () => {
+        let datalessDot = axiosDot();
+        datalessDot.get = sinon.spy(datalessDot, "get");
+        return datalessDot
+          .get("the url", "the options")
+          .then((data) => {
+            assert.deepEqual(data, { data: {} });
+          })
+          .finally(() => {
+            assert.isTrue(
+              datalessDot.get.calledOnceWith("the url", "the options")
             );
           });
       });
