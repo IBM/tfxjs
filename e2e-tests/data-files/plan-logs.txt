@@ -1,6 +1,11 @@
 [0m[1mdata.external.example: Reading...[0m[0m
+<<<<<<< Updated upstream
 [0m[1mdata.local_file.lists["list_1"]: Reading...[0m[0m
 [0m[1mdata.local_file.lists["list_2"]: Reading...[0m[0m
+=======
+[0m[1mdata.local_file.lists["list_2"]: Reading...[0m[0m
+[0m[1mdata.local_file.lists["list_1"]: Reading...[0m[0m
+>>>>>>> Stashed changes
 [0m[1mdata.local_file.lists["list_1"]: Read complete after 0s [id=a48eb33e75d9fddbd716a126fb3fb52f0ca07613][0m
 [0m[1mdata.local_file.lists["list_2"]: Read complete after 0s [id=a994e19704ace6b7540ce5a2ce8842cdcdd815dd][0m
 [0m[1mdata.external.example: Read complete after 0s [id=-][0m
