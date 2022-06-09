@@ -3,10 +3,10 @@ const tfUnitTestUtils = require("../lib/tf-utils.js"); // Import utils
 const tfxjs = require("../lib/index"); // import main constructor
 const mocks = require("./tfx.mocks"); // import mocks
 const tfx = new tfxjs("./mock_path"); // initialize tfx
-const constants = require("../lib/constants")
+const constants = require("../lib/constants");
+const sinon = require("sinon");
 let mock = new mocks(); // initialize mocks
 process.env.API_KEY = "test";
-
 
 // initialize mock tfx
 let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
@@ -14,7 +14,7 @@ let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
   overrideDescribe: mock.describe,
   overrideIt: mock.it,
   quiet: true,
-  overrideExec: new mock.mockExec({}).promise
+  overrideExec: new mock.mockExec({}).promise,
 });
 
 describe("tfxjs", () => {
@@ -107,16 +107,21 @@ describe("tfxjs", () => {
       });
     });
     it("should send correct string to console log", () => {
-      let data = "";
-      overrideTfx.log = (str) => {
-        data = str;
-      };
+      // let data = "";
+      // overrideTfx.log = (str) => {
+      //   data = str;
+      // };
+      overrideTfx.log = new sinon.spy();
       overrideTfx.print("string");
-      assert.deepEqual(
-        data,
-        "string",
+      assert.isTrue(
+        overrideTfx.log.calledOnceWith("string"),
         "should send correct function to console log"
       );
+      // assert.deepEqual(
+      //   data,
+      //   "string",
+      //   "should send correct function to console log"
+      // );
     });
     it("should by default have console.log set to this.log", () => {
       assert.deepEqual(
@@ -223,7 +228,7 @@ describe("tfxjs", () => {
         overrideBefore: mock.before,
         overrideDescribe: mock.describe,
         overrideIt: mock.it,
-        overrideExec: new mock.mockExec({}).promise
+        overrideExec: new mock.mockExec({}).promise,
       });
       overrideTfx.print = mock.log;
     });
@@ -232,12 +237,12 @@ describe("tfxjs", () => {
       // console.log(JSON.stringify(chalk.white(`
 
       // * tfxjs testing
-      
+
       // `) + chalk.bold(`##############################################################################
-      // # 
+      // #
       // #`) + chalk.blue("  Running `terraform plan`\n") + chalk.bold(`#`) + chalk.white(`  Teplate File:
       // `) + chalk.bold(`#`) + chalk.blue(`     ./mock_path
-      // `) + chalk.bold(`# 
+      // `) + chalk.bold(`#
       // ##############################################################################
       // `)));
       assert.deepEqual(
@@ -302,18 +307,15 @@ describe("tfxjs", () => {
         overrideDescribe: mock.describe,
         overrideIt: mock.it,
         quiet: true,
-        overrideExec: new mock.mockExec({}).promise
+        overrideExec: new mock.mockExec({}).promise,
       });
       overrideTfx.print = mock.log;
-      overrideTfx.tfplan = "arbitraty_data"
+      overrideTfx.tfplan = "arbitraty_data";
     });
     it("should run tfutils with correct params", () => {
-      let testModuleArgs;
-      overrideTfx.tfutils.testModule = function (...args) {
-        testModuleArgs = args;
-      };
+      overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.module("test", "test", []);
-      assert.deepEqual(testModuleArgs, [
+      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
         {
           address: "test",
           moduleName: "test",
@@ -323,12 +325,27 @@ describe("tfxjs", () => {
       ]);
     });
     it("should run tfutils with correct params using spread operator", () => {
-      let testModuleArgs;
-      overrideTfx.tfutils.testModule = function (...args) {
-        testModuleArgs = args;
-      };
+      // let testModuleArgs;
+      // overrideTfx.tfutils.testModule = function (...args) {
+      //   testModuleArgs = args;
+      // };
+      overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.module("test", "test", { name: "test", address: "test" });
-      assert.deepEqual(testModuleArgs, [
+      // assert.deepEqual(testModuleArgs, [
+      //   {
+      //     address: "test",
+      //     moduleName: "test",
+      //     testList: [
+      //       {
+      //         address: "test",
+      //         name: "test",
+      //         values: {},
+      //       },
+      //     ],
+      //     tfData: "arbitraty_data",
+      //   },
+      // ]);
+      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
         {
           address: "test",
           moduleName: "test",
@@ -379,12 +396,13 @@ describe("tfxjs", () => {
   });
   describe("state", () => {
     it("should run tfutils with correct params", () => {
-      let testModuleArgs;
-      overrideTfx.tfutils.testModule = function (...args) {
-        testModuleArgs = args;
-      };
+      // let testModuleArgs;
+      // overrideTfx.tfutils.testModule = function (...args) {
+      //   testModuleArgs = args;
+      // };
+      overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.state("test", [{ test: "test" }]);
-      assert.deepEqual(testModuleArgs, [
+      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
         {
           isApply: true,
           moduleName: "test",
@@ -398,14 +416,29 @@ describe("tfxjs", () => {
           },
         },
       ]);
+      // assert.deepEqual(testModuleArgs, [
+      //   {
+      //     isApply: true,
+      //     moduleName: "test",
+      //     testList: [
+      //       {
+      //         test: "test",
+      //       },
+      //     ],
+      //     tfData: {
+      //       planned_values: "success",
+      //     },
+      //   },
+      // ]);
     });
     it("should run tfutils with correct params using multiple objects", () => {
-      let testModuleArgs;
-      overrideTfx.tfutils.testModule = function (...args) {
-        testModuleArgs = args;
-      };
+      // let testModuleArgs;
+      // overrideTfx.tfutils.testModule = function (...args) {
+      //   testModuleArgs = args;
+      // };
+      overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.state("test", "test", { test: "test" }, { test: "test" });
-      assert.deepEqual(testModuleArgs, [
+      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
         {
           isApply: true,
           moduleName: "test",
@@ -433,17 +466,20 @@ describe("tfxjs", () => {
           overrideBefore: mock.before,
           overrideDescribe: mock.describe,
           overrideIt: mock.it,
-          overrideExec: new mock.mockExec("ff").promise
+          overrideExec: new mock.mockExec("ff").promise,
         });
         overrideTfx.print = mock.log;
-
       });
       it("should create a clone with correct template path", () => {
         overrideTfx.clone("test", (cloneTfx, done) => {
-          assert.deepEqual(cloneTfx.templatePath, "test", "it should have correct path")
-          assert.isTrue(done instanceof Function, "it should be a function")
-        })
-      })
-    })
+          assert.deepEqual(
+            cloneTfx.templatePath,
+            "test",
+            "it should have correct path"
+          );
+          assert.isTrue(done instanceof Function, "it should be a function");
+        });
+      });
+    });
   });
 });
