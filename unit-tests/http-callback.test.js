@@ -1,43 +1,27 @@
 const { assert } = require("chai");
-const { axiosDot } = require("./axios.mocks");
+const { axiosMain } = require("./axios.mocks");
 const sinon = require("sinon");
-const httpCallBuild = require("../lib/http-callback");
+const outsideRequests = require("../lib/http-callback");
 
-const axios = axiosDot("test", false);
-const errAxios = axiosDot("test", { stderr: "Gotcha! Promise rejected!" });
+const mockAxios = axiosMain("test", false);
+const mockErrAxios = axiosMain("test", { stderr: "Gotcha! Promise rejected!" });
 
-let httpCall, errHttpCall;
+let httpCall, errHttpCall, assertionSpy;
 
 describe("httpCallback", () => {
   beforeEach(() => {
-    httpCall = new httpCallBuild(axios);
-    errHttpCall = new httpCallBuild(errAxios);
-
-    httpCall.get = sinon.spy(httpCall, "get");
-    errHttpCall.get = sinon.spy(errHttpCall, "get");
+    httpCall = new outsideRequests(mockAxios);
+    errHttpCall = new outsideRequests(mockErrAxios);
+    assertionSpy = new sinon.spy();
   });
-
-  // let getSuccess = new httpCallBuild(axiosDot(new optionTracker, "test", false)).get;
-  // let getFail = new httpCallBuild(axiosDot(new optionTracker, "test", {stderr: "Gotcha! Promise rejected!"})).get;
-
-  it("should fail when the get request is rejected", () => {
-    return errHttpCall
-      .get("the url", "the options")
-      .catch((data) => {
-        assert.deepEqual(data, { stderr: "Gotcha! Promise rejected!" });
-      })
-      .finally(() => {
-        assert.isTrue(errHttpCall.get.calledOnceWith("the url", "the options"));
-      });
+  it("should run assertion on data returned from axios", () => {
+    return httpCall.axiosGet({}, assertionSpy).then(() => {
+      assert.isTrue(assertionSpy.calledOnceWith({ data: "test" }));
+    });
   });
-  it("should succeed when the get request is resolved", () => {
-    return httpCall
-      .get("the url", "the options")
-      .then((data) => {
-        assert.deepEqual(data, { data: "test" });
-      })
-      .finally(() => {
-        assert.isTrue(httpCall.get.calledOnceWith("the url", "the options"));
-      });
+  it("should run assertion on err returned from axios", () => {
+    return errHttpCall.axiosGet({}, assertionSpy).catch(() => {
+      assert.isTrue(assertionSpy.calledOnceWith({ data: "test" }));
+    });
   });
 });

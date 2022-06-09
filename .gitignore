@@ -20,3 +20,4 @@ tfplan.json
 example-tests/acceptance-tests/package-lock.json
 example-tests/acceptance-tests/node_modules
 goals.md
+.vscode
