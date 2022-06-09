@@ -1,5 +1,6 @@
 const { assert } = require("chai");
 const cli = require("../lib/terraform-cli");
+const constants = require("../lib/constants");
 
 function mockExec(data) {
   this.data = data;
@@ -185,22 +186,20 @@ describe("terraformCli", () => {
       exec.data = {
         stderr: "Error in main.tf",
       };
-
       return tf
         .plan({}, () => { }, false)
         .catch((err) => {
-          assert.deepEqual(err.message, "Error in ../directory/main.tf");
+          assert.deepEqual(err, `Error in ../directory/main.tf\n`);
         });
     });
     it("should throw an error when terraform init is called in an empty directory", () => {
       exec.data = {
         stdout: "The directory has no Terraform configuration files."
       }
-
       return tf
-        .plan({}, () => { throw {message: "This should not execute"}}, false)
+        .plan({}, () => { throw {stderr: "This should not execute"}}, false)
         .catch((err) => {
-          assert.deepEqual(err.message, "Error: Terraform initialized in empty directory ../directory");
+          assert.deepEqual(err,`Error: Terraform initialized in empty directory ../directory\n\nEnsure you are targeting the correct directory and try again\n`);
         });
     });
   });
