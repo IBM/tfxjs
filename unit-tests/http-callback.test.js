@@ -20,8 +20,10 @@ describe("httpCallback", () => {
     });
   });
   it("should run assertion on err returned from axios", () => {
-    return errHttpCall.axiosGet({}, assertionSpy).catch(() => {
-      assert.isTrue(assertionSpy.calledOnceWith({ data: "test" }));
+    return errHttpCall.axiosGet({}, assertionSpy).then(() => {
+      assert.isTrue(
+        assertionSpy.calledOnceWith({ stderr: "Gotcha! Promise rejected!" })
+      );
     });
   });
 });
