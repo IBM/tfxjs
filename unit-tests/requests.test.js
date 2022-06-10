@@ -6,15 +6,14 @@ const outsideRequests = require("../lib/requests");
 const mockAxios = axiosMain("test", false);
 const mockErrAxios = axiosMain("test", { stderr: "Gotcha! Promise rejected!" });
 
-let httpCall, errHttpCall, assertionSpy;
+let assertionSpy;
 
 describe("httpCallback", () => {
   beforeEach(() => {
-    httpCall = new outsideRequests(mockAxios);
-    errHttpCall = new outsideRequests(mockErrAxios);
     assertionSpy = new sinon.spy();
   });
   it("should run assertion on data returned from axios", () => {
+    let httpCall = new outsideRequests(mockAxios);
     return httpCall.axiosGet({}, assertionSpy).then(() => {
       assert.isTrue(
         assertionSpy.calledOnceWith({ data: "test" }),
@@ -23,6 +22,7 @@ describe("httpCallback", () => {
     });
   });
   it("should run assertion on err returned from axios", () => {
+    let errHttpCall = new outsideRequests(mockErrAxios);
     return errHttpCall.axiosGet({}, assertionSpy).then(() => {
       assert.isTrue(
         assertionSpy.calledOnceWith({ stderr: "Gotcha! Promise rejected!" }),
