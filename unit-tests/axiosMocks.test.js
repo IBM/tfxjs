@@ -41,22 +41,11 @@ describe("axiosMocks", () => {
     beforeEach(() => {
       aDotReject = axiosDot("test", { stderr: "Gotcha! Promise rejected!" });
       aDotResolve = axiosDot("test", false);
-
-      aDotReject.get = sinon.spy(aDotReject, "get");
-      aDotResolve.get = sinon.spy(aDotResolve, "get");
-
-      aDotReject.post = sinon.spy(aDotReject, "post");
-      aDotResolve.post = sinon.spy(aDotResolve, "post");
-
-      aDotReject.delete = sinon.spy(aDotReject, "delete");
-      aDotResolve.delete = sinon.spy(aDotResolve, "delete");
-
-      aDotReject.put = sinon.spy(aDotReject, "put");
-      aDotResolve.put = sinon.spy(aDotResolve, "put");
     });
 
     describe("get", () => {
       it("should return the correct data when err is false", () => {
+        aDotResolve.get = sinon.spy(aDotResolve, "get");
         return aDotResolve
           .get("the url", "the options")
           .then((data) => {
@@ -93,6 +82,7 @@ describe("axiosMocks", () => {
           });
       });
       it("should be rejected when err is caught", () => {
+        aDotReject.get = sinon.spy(aDotReject, "get");
         return aDotReject
           .get("the url", "the options")
           .catch((data) => {
@@ -112,6 +102,7 @@ describe("axiosMocks", () => {
     });
     describe("post", () => {
       it("should return the correct data when err is false", () => {
+        aDotResolve.post = sinon.spy(aDotResolve, "post");
         return aDotResolve
           .post("the url", "the body", "the options")
           .then((data) => {
@@ -129,6 +120,7 @@ describe("axiosMocks", () => {
           });
       });
       it("should be rejected when err is caught", () => {
+        aDotReject.post = sinon.spy(aDotReject, "post");
         return aDotReject
           .post("the url", "the body", "the options")
           .catch((data) => {
@@ -152,6 +144,7 @@ describe("axiosMocks", () => {
     });
     describe("delete", () => {
       it("should return the correct data when err is false", () => {
+        aDotResolve.delete = sinon.spy(aDotResolve, "delete");
         return aDotResolve
           .delete("the url", "the options")
           .then((data) => {
@@ -165,6 +158,7 @@ describe("axiosMocks", () => {
           });
       });
       it("should be rejected when err is caught", () => {
+        aDotReject.delete = sinon.spy(aDotReject, "delete");
         return aDotReject
           .delete("the url", "the options")
           .catch((data) => {
@@ -184,6 +178,7 @@ describe("axiosMocks", () => {
     });
     describe("put", () => {
       it("should return the correct data when err is false", () => {
+        aDotResolve.put = sinon.spy(aDotResolve, "put");
         return aDotResolve
           .put("the url", "the body", "the options")
           .then((data) => {
@@ -201,6 +196,7 @@ describe("axiosMocks", () => {
           });
       });
       it("should be rejected when err is caught", () => {
+        aDotReject.put = sinon.spy(aDotReject, "put");
         return aDotReject
           .put("the url", "the body", "the options")
           .catch((data) => {
