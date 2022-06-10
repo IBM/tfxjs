@@ -9,13 +9,21 @@ describe("axiosMocks", () => {
     it("should return a Promise that resolves when no err", () => {
       let aMain = axiosMain("test", false);
       return aMain("testing", "test").then((data) => {
-        assert.deepEqual(data, { data: "test" }, "should return data passed to axiosMain");
+        assert.deepEqual(
+          data,
+          { data: "test" },
+          "should return data passed to axiosMain"
+        );
       });
     });
     it("should resolve when no data is passed", () => {
       let aMain = axiosMain();
       return aMain().then((data) => {
-        assert.deepEqual(data, { data: {} }, "should return empty object for data");
+        assert.deepEqual(
+          data,
+          { data: {} },
+          "should return empty object for data"
+        );
       });
     });
     it("should return a Promise that rejects when err is caught", () => {
@@ -52,11 +60,16 @@ describe("axiosMocks", () => {
         return aDotResolve
           .get("the url", "the options")
           .then((data) => {
-            assert.deepEqual(data, { data: "test" }, "should return data passed to axiosDot");
+            assert.deepEqual(
+              data,
+              { data: "test" },
+              "should return data passed to axiosDot"
+            );
           })
           .finally(() => {
             assert.isTrue(
-              aDotResolve.get.calledOnceWith("the url", "the options"), "should have been called with correct params"
+              aDotResolve.get.calledOnceWith("the url", "the options"),
+              "should have been called with correct params"
             );
           });
       });
@@ -66,11 +79,16 @@ describe("axiosMocks", () => {
         return datalessDot
           .get("the url", "the options")
           .then((data) => {
-            assert.deepEqual(data, { data: {} }, "should return empty object for data");
+            assert.deepEqual(
+              data,
+              { data: {} },
+              "should return empty object for data"
+            );
           })
           .finally(() => {
             assert.isTrue(
-              datalessDot.get.calledOnceWith("the url", "the options"), "should have been called with correct params"
+              datalessDot.get.calledOnceWith("the url", "the options"),
+              "should have been called with correct params"
             );
           });
       });
@@ -78,11 +96,16 @@ describe("axiosMocks", () => {
         return aDotReject
           .get("the url", "the options")
           .catch((data) => {
-            assert.deepEqual(data, { stderr: "Gotcha! Promise rejected!" }, "should return error object passed to axiosDot");
+            assert.deepEqual(
+              data,
+              { stderr: "Gotcha! Promise rejected!" },
+              "should return error object passed to axiosDot"
+            );
           })
           .finally(() => {
             assert.isTrue(
-              aDotReject.get.calledOnceWith("the url", "the options"), "should have been called with correct params"
+              aDotReject.get.calledOnceWith("the url", "the options"),
+              "should have been called with correct params"
             );
           });
       });
@@ -109,7 +132,11 @@ describe("axiosMocks", () => {
         return aDotReject
           .post("the url", "the body", "the options")
           .catch((data) => {
-            assert.deepEqual(data, { stderr: "Gotcha! Promise rejected!" }, "should return error object passed to axiosDot");
+            assert.deepEqual(
+              data,
+              { stderr: "Gotcha! Promise rejected!" },
+              "should return error object passed to axiosDot"
+            );
           })
           .finally(() => {
             assert.isTrue(
@@ -141,7 +168,11 @@ describe("axiosMocks", () => {
         return aDotReject
           .delete("the url", "the options")
           .catch((data) => {
-            assert.deepEqual(data, { stderr: "Gotcha! Promise rejected!" }, "should return error object passed to axiosDot");
+            assert.deepEqual(
+              data,
+              { stderr: "Gotcha! Promise rejected!" },
+              "should return error object passed to axiosDot"
+            );
           })
           .finally(() => {
             assert.isTrue(
@@ -173,7 +204,11 @@ describe("axiosMocks", () => {
         return aDotReject
           .put("the url", "the body", "the options")
           .catch((data) => {
-            assert.deepEqual(data, { stderr: "Gotcha! Promise rejected!" }, "should return error object passed to axiosDot");
+            assert.deepEqual(
+              data,
+              { stderr: "Gotcha! Promise rejected!" },
+              "should return error object passed to axiosDot"
+            );
           })
           .finally(() => {
             assert.isTrue(

@@ -16,13 +16,17 @@ describe("httpCallback", () => {
   });
   it("should run assertion on data returned from axios", () => {
     return httpCall.axiosGet({}, assertionSpy).then(() => {
-      assert.isTrue(assertionSpy.calledOnceWith({ data: "test" }), "should have been called with data passed to axiosMain");
+      assert.isTrue(
+        assertionSpy.calledOnceWith({ data: "test" }),
+        "should have been called with data passed to axiosMain"
+      );
     });
   });
   it("should run assertion on err returned from axios", () => {
     return errHttpCall.axiosGet({}, assertionSpy).then(() => {
       assert.isTrue(
-        assertionSpy.calledOnceWith({ stderr: "Gotcha! Promise rejected!" }), "should have been called with error object passed to axiosMain"
+        assertionSpy.calledOnceWith({ stderr: "Gotcha! Promise rejected!" }),
+        "should have been called with error object passed to axiosMain"
       );
     });
   });
