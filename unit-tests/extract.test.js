@@ -797,9 +797,6 @@ tfx.plan("Template Name", () => {
   describe("planTfx", () => {
     it("should call plantfx", () => {
       let fileDataCallbackSpy = new sinon.spy();
-      // let actualData = planTfx()
-      // create a new let var for extract for plan tfx, set fileDataCallback to be a spy
-      // in a then a statement after plantfx promise check if callback was called
       let mockExec = new mock.mockExec({
         stdout: JSON.stringify({ planned_values: exampleChildModule }),
       });
