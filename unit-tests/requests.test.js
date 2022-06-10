@@ -1,7 +1,7 @@
 const { assert } = require("chai");
 const { axiosMain } = require("./axios.mocks");
 const sinon = require("sinon");
-const outsideRequests = require("../lib/http-callback");
+const outsideRequests = require("../lib/requests");
 
 const mockAxios = axiosMain("test", false);
 const mockErrAxios = axiosMain("test", { stderr: "Gotcha! Promise rejected!" });
@@ -16,13 +16,13 @@ describe("httpCallback", () => {
   });
   it("should run assertion on data returned from axios", () => {
     return httpCall.axiosGet({}, assertionSpy).then(() => {
-      assert.isTrue(assertionSpy.calledOnceWith({ data: "test" }));
+      assert.isTrue(assertionSpy.calledOnceWith({ data: "test" }), "should have been called with data passed to axiosMain");
     });
   });
   it("should run assertion on err returned from axios", () => {
     return errHttpCall.axiosGet({}, assertionSpy).then(() => {
       assert.isTrue(
-        assertionSpy.calledOnceWith({ stderr: "Gotcha! Promise rejected!" })
+        assertionSpy.calledOnceWith({ stderr: "Gotcha! Promise rejected!" }), "should have been called with error object passed to axiosMain"
       );
     });
   });
