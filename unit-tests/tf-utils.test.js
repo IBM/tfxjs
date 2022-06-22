@@ -6,6 +6,7 @@ const {
 } = require("../lib/builders.js");
 const tfUnitTestUtils = require("../lib/tf-utils.js");
 const mocks = require("./tfx.mocks");
+const sinon = require("sinon");
 
 // Initialize mocks for unit testing
 let mock = new mocks();
@@ -67,10 +68,10 @@ describe("tfUnitTestUtils", () => {
     });
   });
   describe("buildResourceTest", () => {
-    let buildResourceTest = tfutils.buildResourceTest;
+    let buildResourceTest = new sinon.spy(tfutils, "buildResourceTest");
     it("should return describe and tests", () => {
-      let actualData = buildResourceTest("test", {}, "test.test", {});
-      let expectedData = {
+      buildResourceTest("test", {}, "test.test", {});
+      assert.isTrue(buildResourceTest.returned({
         describe: "test",
         tests: [
           notFalseTest("Module undefined should contain resource test.test", [
@@ -78,15 +79,25 @@ describe("tfUnitTestUtils", () => {
             "Expected undefined contain the test resource.",
           ]),
         ],
-      };
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return the correct tests"
-      );
+      }),
+      "it should return the correct tests");
+      // let expectedData = {
+      //   describe: "test",
+      //   tests: [
+      //     notFalseTest("Module undefined should contain resource test.test", [
+      //       false,
+      //       "Expected undefined contain the test resource.",
+      //     ]),
+      //   ],
+      // };
+      // assert.deepEqual(
+      //   actualData,
+      //   expectedData,
+      //   "it should return the correct tests"
+      // );
     });
     it("should return tests for each key if the resourceData has values and planValues is passed and resource exists in root module", () => {
-      let actualData = buildResourceTest(
+      buildResourceTest(
         "test",
         {
           address: "root_module",
@@ -104,7 +115,7 @@ describe("tfUnitTestUtils", () => {
           test_value: 3,
         }
       );
-      let expectedData = {
+      assert.isTrue(buildResourceTest.returned( {
         describe: "test",
         tests: [
           notFalseTest("Module root_module should contain resource test.test", [
@@ -117,15 +128,16 @@ describe("tfUnitTestUtils", () => {
             "Expected test.test to have correct value for test_value.",
           ]),
         ],
-      };
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return the correct tests"
-      );
+      }),
+      "it should return the correct tests");
+      // assert.deepEqual(
+      //   actualData,
+      //   expectedData,
+      //   "it should return the correct tests"
+      // );
     });
     it("should return tests for each key if the resourceData has values and planValues is passed and resource exists in child module", () => {
-      let actualData = buildResourceTest(
+      buildResourceTest(
         "test",
         {
           address: "module.test",
@@ -146,7 +158,7 @@ describe("tfUnitTestUtils", () => {
           test_value: 3,
         }
       );
-      let expectedData = {
+      assert.isTrue(buildResourceTest.returned( {
         describe: "test",
         tests: [
           notFalseTest("Module module.test should contain resource test.test", [
@@ -159,18 +171,19 @@ describe("tfUnitTestUtils", () => {
             "Expected test.test to have correct value for test_value.",
           ]),
         ],
-      };
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return the correct tests"
-      );
+      }),
+      "it should return the correct tests");
+      // assert.deepEqual(
+      //   actualData,
+      //   expectedData,
+      //   "it should return the correct tests"
+      // );
     });
   });
   describe("buildModuleTest", () => {
-    let buildModuleTest = tfutils.buildModuleTest;
+    let buildModuleTest = new sinon.spy(tfutils, "buildModuleTest");
     it("should build tests for a correctly formatted module", () => {
-      let actualData = buildModuleTest(
+      buildModuleTest(
         "moduleName",
         "root_module",
         {
@@ -193,7 +206,7 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      let expectedData = {
+      assert.isTrue(buildModuleTest.returned( {
         describe: "Module moduleName",
         tests: [
           isTrueTest("Plan should contain the module root_module", [
@@ -219,11 +232,12 @@ describe("tfUnitTestUtils", () => {
             "The module root_module should not contain any resources in addition to ones passed",
           ]),
         ],
-      };
-      assert.deepEqual(actualData, expectedData, "should return correct data");
+      }),
+      "should return correct data");
+      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted module with no tests", () => {
-      let actualData = buildModuleTest(
+      buildModuleTest(
         "moduleName",
         "root_module",
         {
@@ -238,7 +252,7 @@ describe("tfUnitTestUtils", () => {
         },
         []
       );
-      let expectedData = {
+      assert.isTrue(buildModuleTest.returned( {
         describe: "Module moduleName",
         tests: [
           isTrueTest("Plan should contain the module root_module", [
@@ -251,11 +265,11 @@ describe("tfUnitTestUtils", () => {
             "The module root_module should not contain any resources in addition to ones passed",
           ]),
         ],
-      };
-      assert.deepEqual(actualData, expectedData, "should return correct data");
+      }), "should return correct data");
+      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted child module", () => {
-      let actualData = buildModuleTest(
+      buildModuleTest(
         "moduleName",
         "module.child",
         {
@@ -294,7 +308,7 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      let expectedData = {
+      assert.isTrue(buildModuleTest.returned({
         describe: "Module moduleName",
         tests: [
           isTrueTest("Plan should contain the module module.child", [
@@ -324,11 +338,12 @@ describe("tfUnitTestUtils", () => {
             ]
           ),
         ],
-      };
-      assert.deepEqual(actualData, expectedData, "should return correct data");
+      }),
+      "should return correct data");
+      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted child module with no resources", () => {
-      let actualData = buildModuleTest(
+      buildModuleTest(
         "moduleName",
         "module.child",
         {
@@ -359,7 +374,7 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      let expectedData = {
+      assert.isTrue(buildModuleTest.returned({
         describe: "Module moduleName",
         tests: [
           isTrueTest("Plan should contain the module module.child", [
@@ -385,11 +400,11 @@ describe("tfUnitTestUtils", () => {
             "The module module.child should contain all resources expected",
           ]),
         ],
-      };
-      assert.deepEqual(actualData, expectedData, "should return correct data");
+      }));
+      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for unfound module", () => {
-      let actualData = buildModuleTest(
+      buildModuleTest(
         "moduleName",
         "module.missing",
         {
@@ -428,7 +443,7 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      let expectedData = {
+      assert.isTrue(buildModuleTest.returned({
         describe: "Module moduleName",
         tests: [
           isTrueTest("Plan should contain the module module.missing", [
@@ -436,13 +451,15 @@ describe("tfUnitTestUtils", () => {
             "The module module.missing should exist in the terraform plan.",
           ]),
         ],
-      };
-      assert.deepEqual(actualData, expectedData, "should return correct data");
+      }),
+      "should return correct data");
+      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
   });
   describe("buildInstanceTest", () => {
+    let buildInstanceTest = new sinon.spy(tfutils, "buildInstanceTest");
     it("should return the correct test for a function for unfound attribute of instance at index 0", () => {
-      let actualData = tfutils.buildInstanceTest(
+      buildInstanceTest(
         "module.landing_zone.ibm_atracker_target.atracker_target",
 
         {
@@ -473,7 +490,7 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      let expectedData = {
+      assert.isTrue(buildInstanceTest.returned( {
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -498,11 +515,10 @@ describe("tfUnitTestUtils", () => {
             ]
           ),
         ],
-      };
-      assert.deepEqual(actualData, expectedData);
+      }));
     });
     it("should return the correct test for an object nested in an array with only one object where it exists", () => {
-      let actualData = tfutils.buildInstanceTest(
+      buildInstanceTest(
         "module.landing_zone.ibm_atracker_target.atracker_target",
         {
           resources: [
@@ -534,7 +550,7 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      let expectedData = {
+      assert.isTrue(buildInstanceTest.returned({
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -567,11 +583,10 @@ describe("tfUnitTestUtils", () => {
             ]
           ),
         ],
-      };
-      assert.deepEqual(actualData, expectedData);
+      }));
     });
     it("should return the correct test for an object nested in an array with only one object where it exists and the value is evaluated with a function", () => {
-      let actualData = tfutils.buildInstanceTest(
+      buildInstanceTest(
         "module.landing_zone.ibm_atracker_target.atracker_target",
         {
           resources: [
@@ -608,7 +623,7 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      let expectedData = {
+      assert.isTrue(buildInstanceTest.returned({
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -640,11 +655,10 @@ describe("tfUnitTestUtils", () => {
             ]
           ),
         ],
-      };
-      assert.deepEqual(actualData, expectedData);
+      }));
     });
     it("should return the correct test for an object nested in an array with only one object where it exists and the value is evaluated with a function", () => {
-      let actualData = tfutils.buildInstanceTest(
+      buildInstanceTest(
         "module.landing_zone.ibm_atracker_target.atracker_target",
         {
           resources: [
@@ -669,7 +683,7 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      let expectedData = {
+      assert.isTrue(buildInstanceTest.returned({
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           {
@@ -685,11 +699,11 @@ describe("tfUnitTestUtils", () => {
             [undefined, `Expected instances to be present.`]
           ),
         ],
-      };
-      assert.deepEqual(actualData, expectedData);
+      }));
     });
   });
   describe("buildStateTest", () => {
+    let buildStateTest = new sinon.spy(tfutils, "buildStateTest");
     it("should return a list of instance tests based on the module name, tfstate, and instance tests", () => {
       let tfstate = {
         resources: [
@@ -723,7 +737,7 @@ describe("tfUnitTestUtils", () => {
           },
         ],
       };
-      let actualData = tfutils.buildStateTest("Landing Zone", tfstate, [
+      buildStateTest("Landing Zone", tfstate, [
         {
           name: "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
           address:
@@ -742,7 +756,7 @@ describe("tfUnitTestUtils", () => {
           ],
         },
       ]);
-      let expectedData = {
+      assert.isTrue(buildStateTest.returned({
         describe: "Landing Zone",
         tests: [
           {
@@ -796,13 +810,13 @@ describe("tfUnitTestUtils", () => {
             ],
           },
         ],
-      };
-
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "It should return correct instance test data"
-      );
+      }),
+      "It should return correct instance test data");
+      // assert.deepEqual(
+      //   actualData,
+      //   expectedData,
+      //   "It should return correct instance test data"
+      // );
     });
     it("should correctly return a list of tests for resources in root_module", () => {
       let tfstate = {
@@ -830,7 +844,7 @@ describe("tfUnitTestUtils", () => {
           },
         ],
       };
-      let actualData = tfutils.buildStateTest("External Data Source", tfstate, [
+      buildStateTest("External Data Source", tfstate, [
         {
           name: "External Data Source",
           address: "data.external.example",
@@ -845,7 +859,7 @@ describe("tfUnitTestUtils", () => {
           ],
         },
       ]);
-      let expectedData = {
+      assert.isTrue(buildStateTest.returned({
         describe: "External Data Source",
         tests: [
           {
@@ -901,12 +915,13 @@ describe("tfUnitTestUtils", () => {
             ],
           },
         ],
-      };
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return correct data"
-      );
+      }),
+      "it should return correct data");
+      // assert.deepEqual(
+      //   actualData,
+      //   expectedData,
+      //   "it should return correct data"
+      // );
     });
   });
   describe("testModule", () => {
