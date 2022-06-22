@@ -14,10 +14,14 @@ let mock = new mocks();
 // Initialize mocks to test against `mock`
 let tfUtilMocks = new mocks();
 
+//Initialize spies
+let describeSpy = new sinon.spy();
+let itSpy = new sinon.spy();
+
 // create new tfutils overriding describe, it, and assert for unit testing
 const tfutils = new tfUnitTestUtils({
-  overrideDescribe: tfUtilMocks.describe,
-  overrideIt: tfUtilMocks.it,
+  overrideDescribe: (definition, callback) => {describeSpy(definition); return callback()},//tfUtilMocks.describe,
+  overrideIt: (definition, callback) => {itSpy(definition); return callback()}, //tfUtilMocks.it,
   overrideAssert: assert,
 });
 
@@ -46,16 +50,16 @@ describe("tfUnitTestUtils", () => {
       );
     });
     it("should not use the chai it function if override option passed", () => {
-      assert.deepEqual(
+      assert.notDeepEqual(
         tfutils.it.toString(),
-        mock.it.toString(),
+        it.toString(),
         "it should have correct it function"
       );
     });
     it("should not use the chai describe function if override option passed", () => {
-      assert.deepEqual(
+      assert.notDeepEqual(
         tfutils.describe.toString(),
-        mock.describe.toString(),
+        describe.toString(),
         "it should have correct describe function"
       );
     });
@@ -925,7 +929,7 @@ describe("tfUnitTestUtils", () => {
     });
   });
   describe("testModule", () => {
-    beforeEach(() => (mock = new mocks()));
+    // beforeEach(() => (mock = new mocks()));
     it("should throw an error if options does not have tfData", () => {
       let task = () => {
         tfutils.testModule({});
@@ -970,18 +974,18 @@ describe("tfUnitTestUtils", () => {
       };
       tfutils.testModule(options);
       assert.deepEqual(
-        tfUtilMocks.itList,
+        itSpy.args,
         [
-          "Plan should contain the module module.test",
-          "Module module.test should contain resource test",
-          "test should have the correct test value",
-          "module.test should not contain additional resources",
+          ["Plan should contain the module module.test"],
+          ["Module module.test should contain resource test"],
+          ["test should have the correct test value"],
+          ["module.test should not contain additional resources"],
         ],
         "should return correct it function were run"
       );
       assert.deepEqual(
-        tfUtilMocks.definitionList,
-        ["Module test", "test"],
+        describeSpy.args,
+        [["Module test"], ["test"]],
         "should return correct it function were run"
       );
       assert.isTrue(callbackDone, "it should execute the callback");
@@ -1044,27 +1048,27 @@ describe("tfUnitTestUtils", () => {
       };
       tfutils.testModule(options);
       assert.deepEqual(
-        tfUtilMocks.itList,
+        itSpy.args,
         [
-          "Plan should contain the module module.test",
-          "Module module.test should contain resource test",
-          "test should have the correct test value",
-          "module.test should not contain additional resources",
-          "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
-          "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
-          "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-          "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
-          "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          ["Plan should contain the module module.test"],
+          ["Module module.test should contain resource test"],
+          ["test should have the correct test value"],
+          ["module.test should not contain additional resources"],
+          ["Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate"],
+          ["Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name."],
+          ["Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions"],
+          ["Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name."],
+          ["Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions"],
         ],
         "should return correct it function were run"
       );
       assert.deepEqual(
-        tfUtilMocks.definitionList,
+        describeSpy.args,
         [
-          "Module test",
-          "test",
-          "Cluster Versions",
-          "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          ["Module test"],
+          ["test"],
+          ["Cluster Versions"],
+          ["module.landing_zone.data.ibm_container_cluster_versions.cluster_versions"],
         ],
         "should return correct it function were run"
       );
