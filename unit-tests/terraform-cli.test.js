@@ -34,7 +34,7 @@ describe("terraformCli", () => {
         assert.deepEqual(
           exec.commandList,
           [
-            "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
+            "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfvars' --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
           ],
           "should return correct commands"
         );
@@ -48,7 +48,7 @@ describe("terraformCli", () => {
           assert.deepEqual(
             exec.commandList,
             [
-              "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
+              "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfvars' --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
               "rm -rf ../directory",
             ],
             "should return correct commands"
