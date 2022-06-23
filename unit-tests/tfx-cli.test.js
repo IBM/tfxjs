@@ -1,11 +1,7 @@
 const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
 const constants = require("../lib/constants");
-<<<<<<< HEAD
-const { getType } = require("../lib/utils");
-=======
 const sinon = require("sinon");
->>>>>>> d5a714d1e1c7fc764433e3b8da33fd29d4cad385
 
 function mockExec(data) {
   this.data = data;
