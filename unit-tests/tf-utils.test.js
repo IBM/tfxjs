@@ -5,14 +5,7 @@ const {
   isTrueTest,
 } = require("../lib/builders.js");
 const tfUnitTestUtils = require("../lib/tf-utils.js");
-const mocks = require("./tfx.mocks");
 const sinon = require("sinon");
-
-// Initialize mocks for unit testing
-let mock = new mocks();
-
-// Initialize mocks to test against `mock`
-let tfUtilMocks = new mocks();
 
 //Initialize spies
 let describeSpy = new sinon.spy();
@@ -925,6 +918,10 @@ describe("tfUnitTestUtils", () => {
     });
   });
   describe("testModule", () => {
+    beforeEach(()=> {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+    });
     it("should throw an error if options does not have tfData", () => {
       let task = () => {
         tfutils.testModule({});
@@ -1045,10 +1042,6 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(
         itSpy.args,
         [
-          ["Plan should contain the module module.test"],
-          ["Module module.test should contain resource test"],
-          ["test should have the correct test value"],
-          ["module.test should not contain additional resources"],
           [
             "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
           ],
@@ -1070,8 +1063,6 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(
         describeSpy.args,
         [
-          ["Module test"],
-          ["test"],
           ["Cluster Versions"],
           [
             "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
