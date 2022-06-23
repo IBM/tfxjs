@@ -20,8 +20,14 @@ let itSpy = new sinon.spy();
 
 // create new tfutils overriding describe, it, and assert for unit testing
 const tfutils = new tfUnitTestUtils({
-  overrideDescribe: (definition, callback) => {describeSpy(definition); return callback()},//tfUtilMocks.describe,
-  overrideIt: (definition, callback) => {itSpy(definition); return callback()}, //tfUtilMocks.it,
+  overrideDescribe: (definition, callback) => {
+    describeSpy(definition);
+    return callback();
+  }, //tfUtilMocks.describe,
+  overrideIt: (definition, callback) => {
+    itSpy(definition);
+    return callback();
+  }, //tfUtilMocks.it,
   overrideAssert: assert,
 });
 
@@ -75,16 +81,18 @@ describe("tfUnitTestUtils", () => {
     let buildResourceTest = new sinon.spy(tfutils, "buildResourceTest");
     it("should return describe and tests", () => {
       buildResourceTest("test", {}, "test.test", {});
-      assert.isTrue(buildResourceTest.returned({
-        describe: "test",
-        tests: [
-          notFalseTest("Module undefined should contain resource test.test", [
-            false,
-            "Expected undefined contain the test resource.",
-          ]),
-        ],
-      }),
-      "it should return the correct tests");
+      assert.isTrue(
+        buildResourceTest.returned({
+          describe: "test",
+          tests: [
+            notFalseTest("Module undefined should contain resource test.test", [
+              false,
+              "Expected undefined contain the test resource.",
+            ]),
+          ],
+        }),
+        "it should return the correct tests"
+      );
       // let expectedData = {
       //   describe: "test",
       //   tests: [
@@ -119,21 +127,23 @@ describe("tfUnitTestUtils", () => {
           test_value: 3,
         }
       );
-      assert.isTrue(buildResourceTest.returned( {
-        describe: "test",
-        tests: [
-          notFalseTest("Module root_module should contain resource test.test", [
-            true,
-            "Expected root_module contain the test resource.",
-          ]),
-          deepEqualTest("test should have the correct test_value value", [
-            3,
-            3,
-            "Expected test.test to have correct value for test_value.",
-          ]),
-        ],
-      }),
-      "it should return the correct tests");
+      assert.isTrue(
+        buildResourceTest.returned({
+          describe: "test",
+          tests: [
+            notFalseTest(
+              "Module root_module should contain resource test.test",
+              [true, "Expected root_module contain the test resource."]
+            ),
+            deepEqualTest("test should have the correct test_value value", [
+              3,
+              3,
+              "Expected test.test to have correct value for test_value.",
+            ]),
+          ],
+        }),
+        "it should return the correct tests"
+      );
       // assert.deepEqual(
       //   actualData,
       //   expectedData,
@@ -162,21 +172,23 @@ describe("tfUnitTestUtils", () => {
           test_value: 3,
         }
       );
-      assert.isTrue(buildResourceTest.returned( {
-        describe: "test",
-        tests: [
-          notFalseTest("Module module.test should contain resource test.test", [
-            true,
-            "Expected module.test contain the test resource.",
-          ]),
-          deepEqualTest("test should have the correct test_value value", [
-            3,
-            3,
-            "Expected test.test to have correct value for test_value.",
-          ]),
-        ],
-      }),
-      "it should return the correct tests");
+      assert.isTrue(
+        buildResourceTest.returned({
+          describe: "test",
+          tests: [
+            notFalseTest(
+              "Module module.test should contain resource test.test",
+              [true, "Expected module.test contain the test resource."]
+            ),
+            deepEqualTest("test should have the correct test_value value", [
+              3,
+              3,
+              "Expected test.test to have correct value for test_value.",
+            ]),
+          ],
+        }),
+        "it should return the correct tests"
+      );
       // assert.deepEqual(
       //   actualData,
       //   expectedData,
@@ -210,34 +222,39 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      assert.isTrue(buildModuleTest.returned( {
-        describe: "Module moduleName",
-        tests: [
-          isTrueTest("Plan should contain the module root_module", [
-            true,
-            "The module root_module should exist in the terraform plan.",
-          ]),
-          {
-            describe: "test",
-            tests: [
-              notFalseTest("Module root_module should contain resource test", [
-                true,
-                "Expected root_module contain the test resource.",
-              ]),
-              notFalseTest("test should have the correct test value", [
-                false,
-                "Expected test to have correct value for test got undefined.",
-              ]),
-            ],
-          },
-          deepEqualTest("root_module should not contain additional resources", [
-            ["test"],
-            ["test"],
-            "The module root_module should not contain any resources in addition to ones passed",
-          ]),
-        ],
-      }),
-      "should return correct data");
+      assert.isTrue(
+        buildModuleTest.returned({
+          describe: "Module moduleName",
+          tests: [
+            isTrueTest("Plan should contain the module root_module", [
+              true,
+              "The module root_module should exist in the terraform plan.",
+            ]),
+            {
+              describe: "test",
+              tests: [
+                notFalseTest(
+                  "Module root_module should contain resource test",
+                  [true, "Expected root_module contain the test resource."]
+                ),
+                notFalseTest("test should have the correct test value", [
+                  false,
+                  "Expected test to have correct value for test got undefined.",
+                ]),
+              ],
+            },
+            deepEqualTest(
+              "root_module should not contain additional resources",
+              [
+                ["test"],
+                ["test"],
+                "The module root_module should not contain any resources in addition to ones passed",
+              ]
+            ),
+          ],
+        }),
+        "should return correct data"
+      );
       // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted module with no tests", () => {
@@ -256,20 +273,26 @@ describe("tfUnitTestUtils", () => {
         },
         []
       );
-      assert.isTrue(buildModuleTest.returned( {
-        describe: "Module moduleName",
-        tests: [
-          isTrueTest("Plan should contain the module root_module", [
-            true,
-            "The module root_module should exist in the terraform plan.",
-          ]),
-          deepEqualTest("root_module should not contain additional resources", [
-            ["test"],
-            [],
-            "The module root_module should not contain any resources in addition to ones passed",
-          ]),
-        ],
-      }), "should return correct data");
+      assert.isTrue(
+        buildModuleTest.returned({
+          describe: "Module moduleName",
+          tests: [
+            isTrueTest("Plan should contain the module root_module", [
+              true,
+              "The module root_module should exist in the terraform plan.",
+            ]),
+            deepEqualTest(
+              "root_module should not contain additional resources",
+              [
+                ["test"],
+                [],
+                "The module root_module should not contain any resources in addition to ones passed",
+              ]
+            ),
+          ],
+        }),
+        "should return correct data"
+      );
       // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted child module", () => {
@@ -312,38 +335,40 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      assert.isTrue(buildModuleTest.returned({
-        describe: "Module moduleName",
-        tests: [
-          isTrueTest("Plan should contain the module module.child", [
-            true,
-            "The module module.child should exist in the terraform plan.",
-          ]),
-          {
-            describe: "test",
-            tests: [
-              notFalseTest("Module module.child should contain resource test", [
-                true,
-                "Expected module.child contain the test resource.",
-              ]),
-              deepEqualTest("test should have the correct test value", [
-                false,
-                false,
-                "Expected test to have correct value for test.",
-              ]),
-            ],
-          },
-          deepEqualTest(
-            "module.child should not contain additional resources",
-            [
-              ["module.child.test"],
-              ["module.child.test"],
-              "The module module.child should not contain any resources in addition to ones passed",
-            ]
-          ),
-        ],
-      }),
-      "should return correct data");
+      assert.isTrue(
+        buildModuleTest.returned({
+          describe: "Module moduleName",
+          tests: [
+            isTrueTest("Plan should contain the module module.child", [
+              true,
+              "The module module.child should exist in the terraform plan.",
+            ]),
+            {
+              describe: "test",
+              tests: [
+                notFalseTest(
+                  "Module module.child should contain resource test",
+                  [true, "Expected module.child contain the test resource."]
+                ),
+                deepEqualTest("test should have the correct test value", [
+                  false,
+                  false,
+                  "Expected test to have correct value for test.",
+                ]),
+              ],
+            },
+            deepEqualTest(
+              "module.child should not contain additional resources",
+              [
+                ["module.child.test"],
+                ["module.child.test"],
+                "The module module.child should not contain any resources in addition to ones passed",
+              ]
+            ),
+          ],
+        }),
+        "should return correct data"
+      );
       // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted child module with no resources", () => {
@@ -378,33 +403,35 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      assert.isTrue(buildModuleTest.returned({
-        describe: "Module moduleName",
-        tests: [
-          isTrueTest("Plan should contain the module module.child", [
-            true,
-            "The module module.child should exist in the terraform plan.",
-          ]),
-          {
-            describe: "test",
-            tests: [
-              notFalseTest("Module module.child should contain resource test", [
-                false,
-                "Expected module.child contain the test resource.",
-              ]),
-              notFalseTest("test should have the correct test value", [
-                false,
-                "Expected test to have correct value for test got undefined.",
-              ]),
-            ],
-          },
-          deepEqualTest("module.child should contain specified resources", [
-            [],
-            ["module.child.test"],
-            "The module module.child should contain all resources expected",
-          ]),
-        ],
-      }));
+      assert.isTrue(
+        buildModuleTest.returned({
+          describe: "Module moduleName",
+          tests: [
+            isTrueTest("Plan should contain the module module.child", [
+              true,
+              "The module module.child should exist in the terraform plan.",
+            ]),
+            {
+              describe: "test",
+              tests: [
+                notFalseTest(
+                  "Module module.child should contain resource test",
+                  [false, "Expected module.child contain the test resource."]
+                ),
+                notFalseTest("test should have the correct test value", [
+                  false,
+                  "Expected test to have correct value for test got undefined.",
+                ]),
+              ],
+            },
+            deepEqualTest("module.child should contain specified resources", [
+              [],
+              ["module.child.test"],
+              "The module module.child should contain all resources expected",
+            ]),
+          ],
+        })
+      );
       // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for unfound module", () => {
@@ -447,16 +474,18 @@ describe("tfUnitTestUtils", () => {
           },
         ]
       );
-      assert.isTrue(buildModuleTest.returned({
-        describe: "Module moduleName",
-        tests: [
-          isTrueTest("Plan should contain the module module.missing", [
-            false,
-            "The module module.missing should exist in the terraform plan.",
-          ]),
-        ],
-      }),
-      "should return correct data");
+      assert.isTrue(
+        buildModuleTest.returned({
+          describe: "Module moduleName",
+          tests: [
+            isTrueTest("Plan should contain the module module.missing", [
+              false,
+              "The module module.missing should exist in the terraform plan.",
+            ]),
+          ],
+        }),
+        "should return correct data"
+      );
       // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
   });
@@ -494,32 +523,34 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      assert.isTrue(buildInstanceTest.returned( {
-        describe: "module.landing_zone.ibm_atracker_target.atracker_target",
-        tests: [
-          notFalseTest(
-            "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ]
-          ),
-          isTrueTest(
-            "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for name.",
-            [
-              false,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] name to exist in module, got undefined.",
-            ]
-          ),
-          isTrueTest(
-            "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            [
-              true,
-              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
-            ]
-          ),
-        ],
-      }));
+      assert.isTrue(
+        buildInstanceTest.returned({
+          describe: "module.landing_zone.ibm_atracker_target.atracker_target",
+          tests: [
+            notFalseTest(
+              "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+              [
+                true,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
+              ]
+            ),
+            isTrueTest(
+              "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for name.",
+              [
+                false,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] name to exist in module, got undefined.",
+              ]
+            ),
+            isTrueTest(
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+              [
+                true,
+                "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
+              ]
+            ),
+          ],
+        })
+      );
     });
     it("should return the correct test for an object nested in an array with only one object where it exists", () => {
       buildInstanceTest(
@@ -554,40 +585,42 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      assert.isTrue(buildInstanceTest.returned({
-        describe: "module.landing_zone.ibm_atracker_target.atracker_target",
-        tests: [
-          notFalseTest(
-            "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ]
-          ),
-          isTrueTest(
-            "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            [
-              true,
-              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
-            ]
-          ),
-          notFalseTest(
-            "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
-            [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist",
-            ]
-          ),
-          deepEqualTest(
-            "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
-            [
-              "REDACTED",
-              "REDACTED",
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be REDACTED",
-            ]
-          ),
-        ],
-      }));
+      assert.isTrue(
+        buildInstanceTest.returned({
+          describe: "module.landing_zone.ibm_atracker_target.atracker_target",
+          tests: [
+            notFalseTest(
+              "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+              [
+                true,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
+              ]
+            ),
+            isTrueTest(
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+              [
+                true,
+                "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
+              ]
+            ),
+            notFalseTest(
+              "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
+              [
+                true,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist",
+              ]
+            ),
+            deepEqualTest(
+              "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
+              [
+                "REDACTED",
+                "REDACTED",
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be REDACTED",
+              ]
+            ),
+          ],
+        })
+      );
     });
     it("should return the correct test for an object nested in an array with only one object where it exists and the value is evaluated with a function", () => {
       buildInstanceTest(
@@ -627,39 +660,41 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      assert.isTrue(buildInstanceTest.returned({
-        describe: "module.landing_zone.ibm_atracker_target.atracker_target",
-        tests: [
-          notFalseTest(
-            "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ]
-          ),
-          isTrueTest(
-            "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
-            [
-              true,
-              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
-            ]
-          ),
-          notFalseTest(
-            "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
-            [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist",
-            ]
-          ),
-          isTrueTest(
-            "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
-            [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be equal to REDACTED",
-            ]
-          ),
-        ],
-      }));
+      assert.isTrue(
+        buildInstanceTest.returned({
+          describe: "module.landing_zone.ibm_atracker_target.atracker_target",
+          tests: [
+            notFalseTest(
+              "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+              [
+                true,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
+              ]
+            ),
+            isTrueTest(
+              "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target",
+              [
+                true,
+                "Expected instance with key 0 to exist at module.landing_zone.ibm_atracker_target.atracker_target.instances",
+              ]
+            ),
+            notFalseTest(
+              "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have value for cos_endpoint",
+              [
+                true,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint to exist",
+              ]
+            ),
+            isTrueTest(
+              "Expected resource module.landing_zone.ibm_atracker_target.atracker_target[0] to have correct value for cos_endpoint[0].api_key",
+              [
+                true,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target[0] attribute cos_endpoint[0].api_key to be equal to REDACTED",
+              ]
+            ),
+          ],
+        })
+      );
     });
     it("should return the correct test for an object nested in an array with only one object where it exists and the value is evaluated with a function", () => {
       buildInstanceTest(
@@ -687,23 +722,25 @@ describe("tfUnitTestUtils", () => {
           },
         }
       );
-      assert.isTrue(buildInstanceTest.returned({
-        describe: "module.landing_zone.ibm_atracker_target.atracker_target",
-        tests: [
-          {
-            name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
-            assertionType: "isNotFalse",
-            assertionArgs: [
-              true,
-              "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
-            ],
-          },
-          isTrueTest(
-            "Expected module.landing_zone.ibm_atracker_target.atracker_target to contain instance data got undefined",
-            [undefined, `Expected instances to be present.`]
-          ),
-        ],
-      }));
+      assert.isTrue(
+        buildInstanceTest.returned({
+          describe: "module.landing_zone.ibm_atracker_target.atracker_target",
+          tests: [
+            {
+              name: "Resource module.landing_zone.ibm_atracker_target.atracker_target should be in tfstate",
+              assertionType: "isNotFalse",
+              assertionArgs: [
+                true,
+                "Expected module.landing_zone.ibm_atracker_target.atracker_target resource to be included in tfstate",
+              ],
+            },
+            isTrueTest(
+              "Expected module.landing_zone.ibm_atracker_target.atracker_target to contain instance data got undefined",
+              [undefined, `Expected instances to be present.`]
+            ),
+          ],
+        })
+      );
     });
   });
   describe("buildStateTest", () => {
@@ -760,62 +797,64 @@ describe("tfUnitTestUtils", () => {
           ],
         },
       ]);
-      assert.isTrue(buildStateTest.returned({
-        describe: "Landing Zone",
-        tests: [
-          {
-            describe:
-              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-            tests: [
-              notFalseTest(
-                "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
-                [
-                  true,
-                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions resource to be included in tfstate",
-                ]
-              ),
-              deepEqualTest(
-                "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
-                [
-                  "name-one",
-                  "name-one",
-                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] name to have value name-one",
-                ]
-              ),
-              isTrueTest(
-                "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                [
-                  true,
-                  "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
-                ]
-              ),
-              deepEqualTest(
-                "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
-                [
-                  "name-two",
-                  "name-two",
-                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] name to have value name-two",
-                ]
-              ),
-              isTrueTest(
-                "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                [
-                  true,
-                  "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
-                ]
-              ),
-              isTrueTest(
-                "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                [
-                  false,
-                  "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
-                ]
-              ),
-            ],
-          },
-        ],
-      }),
-      "It should return correct instance test data");
+      assert.isTrue(
+        buildStateTest.returned({
+          describe: "Landing Zone",
+          tests: [
+            {
+              describe:
+                "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+              tests: [
+                notFalseTest(
+                  "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
+                  [
+                    true,
+                    "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions resource to be included in tfstate",
+                  ]
+                ),
+                deepEqualTest(
+                  "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
+                  [
+                    "name-one",
+                    "name-one",
+                    "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] name to have value name-one",
+                  ]
+                ),
+                isTrueTest(
+                  "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                  [
+                    true,
+                    "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
+                  ]
+                ),
+                deepEqualTest(
+                  "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
+                  [
+                    "name-two",
+                    "name-two",
+                    "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] name to have value name-two",
+                  ]
+                ),
+                isTrueTest(
+                  "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                  [
+                    true,
+                    "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
+                  ]
+                ),
+                isTrueTest(
+                  "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                  [
+                    false,
+                    "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
+                  ]
+                ),
+              ],
+            },
+          ],
+        }),
+        "It should return correct instance test data"
+      );
       // assert.deepEqual(
       //   actualData,
       //   expectedData,
@@ -863,64 +902,66 @@ describe("tfUnitTestUtils", () => {
           ],
         },
       ]);
-      assert.isTrue(buildStateTest.returned({
-        describe: "External Data Source",
-        tests: [
-          {
-            describe: "data.external.example",
-            tests: [
-              {
-                name: "Resource data.external.example should be in tfstate",
-                assertionType: "isNotFalse",
-                assertionArgs: [
-                  true,
-                  "Expected data.external.example resource to be included in tfstate",
-                ],
-              },
-              {
-                name: "Expected resource data.external.example[0] to have correct value for id.",
-                assertionType: "deepEqual",
-                assertionArgs: [
-                  "-",
-                  "-",
-                  "Expected data.external.example[0] id to have value -",
-                ],
-              },
-              {
-                name: "Expected resource data.external.example[0] to have correct value for program.",
-                assertionType: "deepEqual",
-                assertionArgs: [
-                  ["sh", "./test-output.sh", "example", "test"],
-                  ["sh", "./test-output.sh", "example", "test"],
-                  'Expected data.external.example[0] program to have value ["sh","./test-output.sh","example","test"]',
-                ],
-              },
-              {
-                name: "Expected resource data.external.example[0] to have correct value for result.",
-                assertionType: "deepEqual",
-                assertionArgs: [
-                  {
-                    data: "example-test-value",
-                  },
-                  {
-                    data: "example-test-value",
-                  },
-                  'Expected data.external.example[0] result to have value {"data":"example-test-value"}',
-                ],
-              },
-              {
-                name: "Expected instance with key 0 to exist at data.external.example",
-                assertionType: "isTrue",
-                assertionArgs: [
-                  true,
-                  "Expected instance with key 0 to exist at data.external.example.instances",
-                ],
-              },
-            ],
-          },
-        ],
-      }),
-      "it should return correct data");
+      assert.isTrue(
+        buildStateTest.returned({
+          describe: "External Data Source",
+          tests: [
+            {
+              describe: "data.external.example",
+              tests: [
+                {
+                  name: "Resource data.external.example should be in tfstate",
+                  assertionType: "isNotFalse",
+                  assertionArgs: [
+                    true,
+                    "Expected data.external.example resource to be included in tfstate",
+                  ],
+                },
+                {
+                  name: "Expected resource data.external.example[0] to have correct value for id.",
+                  assertionType: "deepEqual",
+                  assertionArgs: [
+                    "-",
+                    "-",
+                    "Expected data.external.example[0] id to have value -",
+                  ],
+                },
+                {
+                  name: "Expected resource data.external.example[0] to have correct value for program.",
+                  assertionType: "deepEqual",
+                  assertionArgs: [
+                    ["sh", "./test-output.sh", "example", "test"],
+                    ["sh", "./test-output.sh", "example", "test"],
+                    'Expected data.external.example[0] program to have value ["sh","./test-output.sh","example","test"]',
+                  ],
+                },
+                {
+                  name: "Expected resource data.external.example[0] to have correct value for result.",
+                  assertionType: "deepEqual",
+                  assertionArgs: [
+                    {
+                      data: "example-test-value",
+                    },
+                    {
+                      data: "example-test-value",
+                    },
+                    'Expected data.external.example[0] result to have value {"data":"example-test-value"}',
+                  ],
+                },
+                {
+                  name: "Expected instance with key 0 to exist at data.external.example",
+                  assertionType: "isTrue",
+                  assertionArgs: [
+                    true,
+                    "Expected instance with key 0 to exist at data.external.example.instances",
+                  ],
+                },
+              ],
+            },
+          ],
+        }),
+        "it should return correct data"
+      );
       // assert.deepEqual(
       //   actualData,
       //   expectedData,
@@ -1054,11 +1095,21 @@ describe("tfUnitTestUtils", () => {
           ["Module module.test should contain resource test"],
           ["test should have the correct test value"],
           ["module.test should not contain additional resources"],
-          ["Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate"],
-          ["Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name."],
-          ["Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions"],
-          ["Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name."],
-          ["Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions"],
+          [
+            "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
+          ],
+          [
+            "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
+          ],
+          [
+            "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          ],
+          [
+            "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
+          ],
+          [
+            "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          ],
         ],
         "should return correct it function were run"
       );
@@ -1068,14 +1119,19 @@ describe("tfUnitTestUtils", () => {
           ["Module test"],
           ["test"],
           ["Cluster Versions"],
-          ["module.landing_zone.data.ibm_container_cluster_versions.cluster_versions"],
+          [
+            "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          ],
         ],
         "should return correct it function were run"
       );
     });
     it("should throw an error if no tf data", () => {
       let task = () => tfutils.testModule({ frog: "frog" });
-      assert.throws(task, `options must be passed with key ["tfData"] got ["frog"]`);
+      assert.throws(
+        task,
+        `options must be passed with key ["tfData"] got ["frog"]`
+      );
     });
   });
 });

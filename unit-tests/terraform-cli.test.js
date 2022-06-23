@@ -3,11 +3,13 @@ const cli = require("../lib/terraform-cli");
 const constants = require("../lib/constants");
 const sinon = require("sinon");
 
-function mockExec(data) {
+function mockExec(data, spy) {
   this.data = data;
-  this.commandList = [];
+  // this.commandList = [];
+  this.spy = spy;
   this.promise = (command) => {
-    this.commandList.push(command);
+    // this.commandList.push(command);
+    this.spy(command);
     return new Promise((resolve, reject) => {
       if (this.data?.stderr) reject(this.data);
       else resolve(this.data);
@@ -15,12 +17,14 @@ function mockExec(data) {
   };
 }
 
-let exec = new mockExec({}, false);
+let execSpy = new sinon.spy();
+let exec = new mockExec({}, execSpy);
 let tf = new cli("../directory", exec.promise);
 
 describe("terraformCli", () => {
   beforeEach(() => {
-    exec = new mockExec({}, false);
+    execSpy = new sinon.spy();
+    exec = new mockExec({}, execSpy);
     tf = new cli("../directory", exec.promise);
   });
   describe("clone", () => {
@@ -32,9 +36,11 @@ describe("terraformCli", () => {
           "it should return correct path"
         );
         assert.deepEqual(
-          exec.commandList,
+          execSpy.args,
           [
-            "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
+            [
+              "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
+            ],
           ],
           "should return correct commands"
         );
@@ -46,10 +52,12 @@ describe("terraformCli", () => {
       return tf.clone("./.tmp-clone-template").then(() => {
         return tf.purgeClone().then(() => {
           assert.deepEqual(
-            exec.commandList,
+            execSpy.args,
             [
-              "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
-              "rm -rf ../directory",
+              [
+                "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
+              ],
+              ["rm -rf ../directory"],
             ],
             "should return correct commands"
           );
@@ -61,8 +69,8 @@ describe("terraformCli", () => {
     it("should return correct promise", () => {
       return tf.execPromise("command").then(() => {
         assert.deepEqual(
-          exec.commandList,
-          ["command"],
+          execSpy.args,
+          [["command"]],
           "it should run the correct command"
         );
       });
@@ -72,8 +80,8 @@ describe("terraformCli", () => {
     it("should return correct promise", () => {
       return tf.cdAndExec("command").then(() => {
         assert.deepEqual(
-          exec.commandList,
-          ["cd ../directory\ncommand"],
+          execSpy.args,
+          [["cd ../directory\ncommand"]],
           "it should run the correct command"
         );
       });
@@ -98,8 +106,8 @@ describe("terraformCli", () => {
     it("should return correct promise with no vars", () => {
       return tf.init().then(() => {
         assert.deepEqual(
-          exec.commandList,
-          ["cd ../directory\nterraform init"],
+          execSpy.args,
+          [["cd ../directory\nterraform init"]],
           "it should run the correct command"
         );
       });
@@ -112,9 +120,11 @@ describe("terraformCli", () => {
         })
         .then(() => {
           assert.deepEqual(
-            exec.commandList,
+            execSpy.args,
             [
-              "cd ../directory\nexport TF_VAR_ibmcloud_api_key=test\nexport TF_VAR_number=12\nterraform init",
+              [
+                "cd ../directory\nexport TF_VAR_ibmcloud_api_key=test\nexport TF_VAR_number=12\nterraform init",
+              ],
             ],
             "it should run the correct command"
           );
@@ -131,11 +141,11 @@ describe("terraformCli", () => {
         .plan({}, () => {}, false)
         .then(() => {
           assert.deepEqual(
-            exec.commandList,
+            execSpy.args,
             [
-              "cd ../directory\nterraform init",
-              "cd ../directory\nterraform plan -out=tfplan -input=false",
-              "cd ../directory\nterraform show -json tfplan",
+              ["cd ../directory\nterraform init"],
+              ["cd ../directory\nterraform plan -out=tfplan -input=false"],
+              ["cd ../directory\nterraform show -json tfplan"],
             ],
             "it should run the correct command"
           );
@@ -152,12 +162,14 @@ describe("terraformCli", () => {
         })
         .then(() => {
           assert.deepEqual(
-            exec.commandList,
+            execSpy.args,
             [
-              "cd ../directory\nterraform init",
-              "cd ../directory\nterraform plan -out=tfplan -input=false",
-              "cd ../directory\nterraform show -json tfplan",
-              "cd ../directory\nrm -rf tfplan .terraform/ .terraform.lock.hcl",
+              ["cd ../directory\nterraform init"],
+              ["cd ../directory\nterraform plan -out=tfplan -input=false"],
+              ["cd ../directory\nterraform show -json tfplan"],
+              [
+                "cd ../directory\nrm -rf tfplan .terraform/ .terraform.lock.hcl",
+              ],
             ],
             "it should run the correct command"
           );
@@ -174,10 +186,10 @@ describe("terraformCli", () => {
         })
         .then(() => {
           assert.deepEqual(
-            exec.commandList,
+            execSpy.args,
             [
-              "cd ../directory\nterraform init",
-              "cd ../directory\nterraform plan",
+              ["cd ../directory\nterraform init"],
+              ["cd ../directory\nterraform plan"],
             ],
             "it should run the correct command"
           );
@@ -217,11 +229,10 @@ describe("terraformCli", () => {
     it("should run log if enableLogs passed", () => {
       let tfWithLogs = new cli("../", exec.promise, true);
       let actualData;
-      tfWithLogs.log = (data) => {
-        actualData = data;
-      };
+      tfWithLogs.log = new sinon.spy();
       tfWithLogs.print("frog");
-      assert.deepEqual(actualData, "frog", "it should return exact data");
+      assert.isTrue(tfWithLogs.log.calledOnceWith("frog"));
+      // assert.deepEqual(actualData, "frog", "it should return exact data");
     });
     it("should not run log if enableLogs is false", () => {
       let tfWithLogsSpy = sinon.spy();
@@ -238,12 +249,12 @@ describe("terraformCli", () => {
       };
       return tf.apply({}).then(() => {
         assert.deepEqual(
-          exec.commandList,
+          execSpy.args,
           [
-            "cd ../directory\nterraform init",
-            "cd ../directory\nterraform plan",
-            'cd ../directory\necho "yes" | terraform apply',
-            "cd ../directory\ncat terraform.tfstate",
+            ["cd ../directory\nterraform init"],
+            ["cd ../directory\nterraform plan"],
+            ['cd ../directory\necho "yes" | terraform apply'],
+            ["cd ../directory\ncat terraform.tfstate"],
           ],
           "it should run the correct command"
         );
@@ -267,13 +278,15 @@ describe("terraformCli", () => {
       };
       return tf.apply({}, false, true).then(() => {
         assert.deepEqual(
-          exec.commandList,
+          execSpy.args,
           [
-            "cd ../directory\nterraform init",
-            "cd ../directory\nterraform plan",
-            'cd ../directory\necho "yes" | terraform apply',
-            "cd ../directory\ncat terraform.tfstate",
-            'cd ../directory\necho "yes" | terraform destroy\nrm -rf .terraform/ .terraform.lock.hcl terraform.tfstate terraform.tfstate.backup',
+            ["cd ../directory\nterraform init"],
+            ["cd ../directory\nterraform plan"],
+            ['cd ../directory\necho "yes" | terraform apply'],
+            ["cd ../directory\ncat terraform.tfstate"],
+            [
+              'cd ../directory\necho "yes" | terraform destroy\nrm -rf .terraform/ .terraform.lock.hcl terraform.tfstate terraform.tfstate.backup',
+            ],
           ],
           "it should run the correct command"
         );
