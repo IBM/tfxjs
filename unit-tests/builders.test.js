@@ -1,6 +1,5 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
-const sinon = require("sinon");
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -24,14 +23,16 @@ describe("builders", () => {
     describe("send", () => {
       it("should return the correct object when send is called", () => {
         let testInstance = new mochaTest();
-        testInstance.send = new sinon.spy(testInstance, "send");
         testInstance.send();
-        assert.isTrue(
-          testInstance.send.returned({
-            name: "",
-            assertionType: "",
-            assertionArgs: [],
-          }),
+        let sendData = testInstance.send();
+        let expectedData = {
+          name: "",
+          assertionType: "",
+          assertionArgs: [],
+        };
+        assert.deepEqual(
+          sendData,
+          expectedData,
           "it should return the correct object"
         );
       });
@@ -39,50 +40,54 @@ describe("builders", () => {
   });
   describe("notFalseTest", () => {
     it("should return the correct test", () => {
-      let spy = new sinon.spy(builders, "notFalseTest");
-      spy("test", [1, 2, 3]);
-      assert.isTrue(
-        spy.returned({
-          name: "test",
-          assertionType: "isNotFalse",
-          assertionArgs: [1, 2, 3],
-        }),
+      let testData = builders.notFalseTest("test", [1, 2, 3]);
+      let expectedData = {
+        name: "test",
+        assertionType: "isNotFalse",
+        assertionArgs: [1, 2, 3],
+      };
+      assert.deepEqual(
+        testData,
+        expectedData,
         "it should return the correct data"
       );
     });
   });
   describe("isTrueTest", () => {
     it("should return the correct test", () => {
-      let spy = new sinon.spy(builders, "isTrueTest");
-      spy("test", [1, 2, 3]);
-      assert.isTrue(
-        spy.returned({
-          name: "test",
-          assertionType: "isTrue",
-          assertionArgs: [1, 2, 3],
-        }),
+      let testData = builders.isTrueTest("test", [1, 2, 3]);
+      let expectedData = {
+        name: "test",
+        assertionType: "isTrue",
+        assertionArgs: [1, 2, 3],
+      };
+      assert.deepEqual(
+        testData,
+        expectedData,
         "it should return the correct data"
       );
     });
   });
   describe("deepEqualTest", () => {
     it("should return the correct test", () => {
-      let spy = new sinon.spy(builders, "deepEqualTest");
-      spy("test", [1, 2, 3]);
-      assert.isTrue(
-        spy.returned({
-          name: "test",
-          assertionType: "deepEqual",
-          assertionArgs: [1, 2, 3],
-        })
+      let testData = builders.deepEqualTest("test", [1, 2, 3]);
+      let expectedData = {
+        name: "test",
+        assertionType: "deepEqual",
+        assertionArgs: [1, 2, 3],
+      };
+      assert.deepEqual(
+        testData,
+        expectedData,
+        "it should return the correct data"
       );
     });
   });
   describe("eachKeyTest", () => {
-    let eachKeyTest = new sinon.spy(builders, "eachKeyTest");
+    let eachKeyTest = builders.eachKeyTest;
 
     it("should run value test against a function if the value is a function", () => {
-      eachKeyTest(
+      let data = eachKeyTest(
         "address",
         {
           value: (value) => {
@@ -96,41 +101,41 @@ describe("builders", () => {
         "plan",
         "test"
       );
-      assert.isTrue(
-        eachKeyTest.returned([
-          {
-            name: "test should have the correct value value",
-            assertionType: "isTrue",
-            assertionArgs: [
-              true,
-              "Expected address resource value value append",
-            ],
-          },
-        ]),
-        "it should return correct object"
-      );
+      let expectedData = [
+        {
+          name: "test should have the correct value value",
+          assertionType: "isTrue",
+          assertionArgs: [true, "Expected address resource value value append"],
+        },
+      ];
+      assert.deepEqual(data, expectedData, "it should return correct object");
     });
     it("should run a notFalseTest for unfound keys", () => {
-      eachKeyTest("test", { test: "data" }, {}, "apply", "test", 0);
-      assert.isTrue(
-        eachKeyTest.returned([
-          {
-            name: "Expected resource test[0] to have correct value for test[0].test",
-            assertionType: "isNotFalse",
-            assertionArgs: [
-              false,
-              "Expected test[0] attribute test.test to exist",
-            ],
-          },
-        ]),
-        "it should return correct object"
+      let actualData = eachKeyTest(
+        "test",
+        { test: "data" },
+        {},
+        "apply",
+        "test",
+        0
       );
+      let expectedData = [
+        {
+          name: "Expected resource test[0] to have correct value for test[0].test",
+          assertionType: "isNotFalse",
+          assertionArgs: [
+            false,
+            "Expected test[0] attribute test.test to exist",
+          ],
+        },
+      ];
+      assert.deepEqual(actualData, expectedData);
     });
   });
   describe("valueTest", () => {
-    let valueTest = new sinon.spy(builders, "valueTest");
+    let valueTest = builders.valueTest;
     it("should return the correct test if a valid valueFunction is passed", () => {
-      valueTest(
+      let actualData = valueTest(
         (value) => {
           return {
             expectedData: true,
@@ -141,12 +146,14 @@ describe("builders", () => {
         "testName",
         "testMessage"
       );
-      assert.isTrue(
-        valueTest.returned({
-          name: "testName",
-          assertionType: "isTrue",
-          assertionArgs: [true, "testMessage append"],
-        }),
+      let expectedData = {
+        name: "testName",
+        assertionType: "isTrue",
+        assertionArgs: [true, "testMessage append"],
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
         "it should return correct test"
       );
     });
@@ -171,32 +178,32 @@ describe("builders", () => {
     });
   });
   describe("resource", () => {
-    let resource = new sinon.spy(builders, "resource");
+    let resource = builders.resource;
     it("should return the correct object", () => {
-      resource("test", "test", {});
-      assert.isTrue(
-        resource.returned({
-          name: "test",
-          address: "test",
-          values: {},
-        }),
-        "it should return the correct object"
-      );
+      let actualData = resource("test", "test", {});
+      assert.deepEqual(actualData, {
+        name: "test",
+        address: "test",
+        values: {},
+      });
     });
   });
   describe("address", () => {
-    let address = new sinon.spy(builders, "address");
+    let address = builders.address;
     it("should return instances", () => {
-      address("test", { id: true });
-      assert.isTrue(
-        address.returned({
-          address: "test",
-          instances: [
-            {
-              id: true,
-            },
-          ],
-        })
+      let actualData = address("test", { id: true });
+      let expectedData = {
+        address: "test",
+        instances: [
+          {
+            id: true,
+          },
+        ],
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct data"
       );
     });
   });
