@@ -5,10 +5,8 @@ const sinon = require("sinon");
 
 function mockExec(data, spy) {
   this.data = data;
-  // this.commandList = [];
   this.spy = spy;
   this.promise = (command) => {
-    // this.commandList.push(command);
     this.spy(command);
     return new Promise((resolve, reject) => {
       if (this.data?.stderr) reject(this.data);
@@ -39,7 +37,7 @@ describe("terraformCli", () => {
           execSpy.args,
           [
             [
-              "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
+              "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfvars' --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
             ],
           ],
           "should return correct commands"
@@ -55,7 +53,7 @@ describe("terraformCli", () => {
             execSpy.args,
             [
               [
-                "mkdir ./.tmp-clone-template && rsync -av --progress ../directory ./.tmp-clone-template -q",
+                "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfvars' --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
               ],
               ["rm -rf ../directory"],
             ],
