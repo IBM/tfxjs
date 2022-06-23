@@ -291,9 +291,9 @@ describe("tfxjs", () => {
       });
       overrideTfx.print = mock.log;
       overrideTfx.tfplan = "arbitraty_data";
+      overrideTfx.tfutils.testModule = new sinon.spy();
     });
     it("should run tfutils with correct params", () => {
-      overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.module("test", "test", []);
       assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
         {
@@ -305,7 +305,6 @@ describe("tfxjs", () => {
       ));
     });
     it("should run tfutils with correct params using spread operator", () => {
-      overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.module("test", "test", { name: "test", address: "test" });
       assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
         {
@@ -357,8 +356,10 @@ describe("tfxjs", () => {
     });
   });
   describe("state", () => {
-    it("should run tfutils with correct params", () => {
+    beforeEach(() => {
       overrideTfx.tfutils.testModule = new sinon.spy();
+    });
+    it("should run tfutils with correct params", () => {
       overrideTfx.state("test", [{ test: "test" }]);
       assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
         {
@@ -376,7 +377,6 @@ describe("tfxjs", () => {
       ));
     });
     it("should run tfutils with correct params using multiple objects", () => {
-      overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.state("test", "test", { test: "test" }, { test: "test" });
       assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith( 
         {

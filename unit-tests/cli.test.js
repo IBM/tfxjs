@@ -1,6 +1,7 @@
 const { assert } = require("chai");
 const cli = require("../lib/cli");
 const sinon = require("sinon");
+const constants = require("../lib/constants");
 /**
  * Constructor that returns mock tfx constructor
  * @param {sinon.spy} spy Sinon Spy
@@ -50,6 +51,6 @@ describe("cli", () => {
   });
   it("should run console log with thrown error text", () => {
     cli(mockTfxError, "", "", mockConsole, ["nodepath", "filepath"]);
-    assert(mockConsole.log.calledOnceWith("this is an error"));
+    assert(mockConsole.log.calledOnceWith(`${constants.ansiRed}this is an error${constants.ansiDefaultForeground}`));
   });
 });
