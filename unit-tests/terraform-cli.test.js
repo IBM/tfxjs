@@ -232,7 +232,6 @@ describe("terraformCli", () => {
       tfWithLogs.log = new sinon.spy();
       tfWithLogs.print("frog");
       assert.isTrue(tfWithLogs.log.calledOnceWith("frog"));
-      // assert.deepEqual(actualData, "frog", "it should return exact data");
     });
     it("should not run log if enableLogs is false", () => {
       let tfWithLogsSpy = sinon.spy();

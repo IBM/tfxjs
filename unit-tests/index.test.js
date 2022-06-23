@@ -107,21 +107,12 @@ describe("tfxjs", () => {
       });
     });
     it("should send correct string to console log", () => {
-      // let data = "";
-      // overrideTfx.log = (str) => {
-      //   data = str;
-      // };
       overrideTfx.log = new sinon.spy();
       overrideTfx.print("string");
       assert.isTrue(
         overrideTfx.log.calledOnceWith("string"),
         "should send correct function to console log"
       );
-      // assert.deepEqual(
-      //   data,
-      //   "string",
-      //   "should send correct function to console log"
-      // );
     });
     it("should by default have console.log set to this.log", () => {
       assert.deepEqual(
@@ -234,17 +225,6 @@ describe("tfxjs", () => {
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.plan("describe", () => {});
-      // console.log(JSON.stringify(chalk.white(`
-
-      // * tfxjs testing
-
-      // `) + chalk.bold(`##############################################################################
-      // #
-      // #`) + chalk.blue("  Running `terraform plan`\n") + chalk.bold(`#`) + chalk.white(`  Teplate File:
-      // `) + chalk.bold(`#`) + chalk.blue(`     ./mock_path
-      // `) + chalk.bold(`#
-      // ##############################################################################
-      // `)));
       assert.deepEqual(
         mock.logList,
         [
@@ -315,37 +295,19 @@ describe("tfxjs", () => {
     it("should run tfutils with correct params", () => {
       overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.module("test", "test", []);
-      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
+      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
         {
           address: "test",
           moduleName: "test",
           testList: [],
           tfData: "arbitraty_data",
         },
-      ]);
+      ));
     });
     it("should run tfutils with correct params using spread operator", () => {
-      // let testModuleArgs;
-      // overrideTfx.tfutils.testModule = function (...args) {
-      //   testModuleArgs = args;
-      // };
       overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.module("test", "test", { name: "test", address: "test" });
-      // assert.deepEqual(testModuleArgs, [
-      //   {
-      //     address: "test",
-      //     moduleName: "test",
-      //     testList: [
-      //       {
-      //         address: "test",
-      //         name: "test",
-      //         values: {},
-      //       },
-      //     ],
-      //     tfData: "arbitraty_data",
-      //   },
-      // ]);
-      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
+      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
         {
           address: "test",
           moduleName: "test",
@@ -358,7 +320,7 @@ describe("tfxjs", () => {
           ],
           tfData: "arbitraty_data",
         },
-      ]);
+      ));
     });
     it("should throw an error if no tfplan", () => {
       overrideTfx.tfplan = undefined;
@@ -396,13 +358,9 @@ describe("tfxjs", () => {
   });
   describe("state", () => {
     it("should run tfutils with correct params", () => {
-      // let testModuleArgs;
-      // overrideTfx.tfutils.testModule = function (...args) {
-      //   testModuleArgs = args;
-      // };
       overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.state("test", [{ test: "test" }]);
-      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
+      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
         {
           isApply: true,
           moduleName: "test",
@@ -415,30 +373,12 @@ describe("tfxjs", () => {
             planned_values: "success",
           },
         },
-      ]);
-      // assert.deepEqual(testModuleArgs, [
-      //   {
-      //     isApply: true,
-      //     moduleName: "test",
-      //     testList: [
-      //       {
-      //         test: "test",
-      //       },
-      //     ],
-      //     tfData: {
-      //       planned_values: "success",
-      //     },
-      //   },
-      // ]);
+      ));
     });
     it("should run tfutils with correct params using multiple objects", () => {
-      // let testModuleArgs;
-      // overrideTfx.tfutils.testModule = function (...args) {
-      //   testModuleArgs = args;
-      // };
       overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.state("test", "test", { test: "test" }, { test: "test" });
-      assert.deepEqual(overrideTfx.tfutils.testModule.lastCall.args, [
+      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith( 
         {
           isApply: true,
           moduleName: "test",
@@ -447,7 +387,7 @@ describe("tfxjs", () => {
             planned_values: "success",
           },
         },
-      ]);
+      ));
     });
     it("should throw an error if no tfstate", () => {
       overrideTfx.tfstate = undefined;

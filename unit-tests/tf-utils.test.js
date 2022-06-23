@@ -23,11 +23,11 @@ const tfutils = new tfUnitTestUtils({
   overrideDescribe: (definition, callback) => {
     describeSpy(definition);
     return callback();
-  }, //tfUtilMocks.describe,
+  },
   overrideIt: (definition, callback) => {
     itSpy(definition);
     return callback();
-  }, //tfUtilMocks.it,
+  }, 
   overrideAssert: assert,
 });
 
@@ -93,20 +93,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "it should return the correct tests"
       );
-      // let expectedData = {
-      //   describe: "test",
-      //   tests: [
-      //     notFalseTest("Module undefined should contain resource test.test", [
-      //       false,
-      //       "Expected undefined contain the test resource.",
-      //     ]),
-      //   ],
-      // };
-      // assert.deepEqual(
-      //   actualData,
-      //   expectedData,
-      //   "it should return the correct tests"
-      // );
     });
     it("should return tests for each key if the resourceData has values and planValues is passed and resource exists in root module", () => {
       buildResourceTest(
@@ -144,11 +130,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "it should return the correct tests"
       );
-      // assert.deepEqual(
-      //   actualData,
-      //   expectedData,
-      //   "it should return the correct tests"
-      // );
     });
     it("should return tests for each key if the resourceData has values and planValues is passed and resource exists in child module", () => {
       buildResourceTest(
@@ -189,11 +170,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "it should return the correct tests"
       );
-      // assert.deepEqual(
-      //   actualData,
-      //   expectedData,
-      //   "it should return the correct tests"
-      // );
     });
   });
   describe("buildModuleTest", () => {
@@ -255,7 +231,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "should return correct data"
       );
-      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted module with no tests", () => {
       buildModuleTest(
@@ -293,7 +268,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "should return correct data"
       );
-      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted child module", () => {
       buildModuleTest(
@@ -369,7 +343,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "should return correct data"
       );
-      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for a correctly formatted child module with no resources", () => {
       buildModuleTest(
@@ -432,7 +405,6 @@ describe("tfUnitTestUtils", () => {
           ],
         })
       );
-      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should build tests for unfound module", () => {
       buildModuleTest(
@@ -486,7 +458,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "should return correct data"
       );
-      // assert.deepEqual(actualData, expectedData, "should return correct data");
     });
   });
   describe("buildInstanceTest", () => {
@@ -855,11 +826,6 @@ describe("tfUnitTestUtils", () => {
         }),
         "It should return correct instance test data"
       );
-      // assert.deepEqual(
-      //   actualData,
-      //   expectedData,
-      //   "It should return correct instance test data"
-      // );
     });
     it("should correctly return a list of tests for resources in root_module", () => {
       let tfstate = {
@@ -962,15 +928,9 @@ describe("tfUnitTestUtils", () => {
         }),
         "it should return correct data"
       );
-      // assert.deepEqual(
-      //   actualData,
-      //   expectedData,
-      //   "it should return correct data"
-      // );
     });
   });
   describe("testModule", () => {
-    // beforeEach(() => (mock = new mocks()));
     it("should throw an error if options does not have tfData", () => {
       let task = () => {
         tfutils.testModule({});
