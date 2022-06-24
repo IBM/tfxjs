@@ -129,7 +129,7 @@ describe("builders", () => {
           ],
         },
       ];
-      assert.deepEqual(actualData, expectedData);
+      assert.deepEqual(actualData, expectedData, "should return expected data");
     });
   });
   describe("valueTest", () => {
@@ -181,11 +181,15 @@ describe("builders", () => {
     let resource = builders.resource;
     it("should return the correct object", () => {
       let actualData = resource("test", "test", {});
-      assert.deepEqual(actualData, {
-        name: "test",
-        address: "test",
-        values: {},
-      });
+      assert.deepEqual(
+        actualData,
+        {
+          name: "test",
+          address: "test",
+          values: {},
+        },
+        "should return expected data"
+      );
     });
   });
   describe("address", () => {

@@ -295,19 +295,20 @@ describe("tfxjs", () => {
     });
     it("should run tfutils with correct params", () => {
       overrideTfx.module("test", "test", []);
-      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
-        {
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
           address: "test",
           moduleName: "test",
           testList: [],
           tfData: "arbitraty_data",
-        },
-      ));
+        }),
+        "should have been called with correct params"
+      );
     });
     it("should run tfutils with correct params using spread operator", () => {
       overrideTfx.module("test", "test", { name: "test", address: "test" });
-      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
-        {
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
           address: "test",
           moduleName: "test",
           testList: [
@@ -318,8 +319,9 @@ describe("tfxjs", () => {
             },
           ],
           tfData: "arbitraty_data",
-        },
-      ));
+        }),
+        "should have been called with correct params"
+      );
     });
     it("should throw an error if no tfplan", () => {
       overrideTfx.tfplan = undefined;
@@ -361,8 +363,8 @@ describe("tfxjs", () => {
     });
     it("should run tfutils with correct params", () => {
       overrideTfx.state("test", [{ test: "test" }]);
-      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith(
-        {
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
           isApply: true,
           moduleName: "test",
           testList: [
@@ -373,21 +375,23 @@ describe("tfxjs", () => {
           tfData: {
             planned_values: "success",
           },
-        },
-      ));
+        }),
+        "should have been called with expected params"
+      );
     });
     it("should run tfutils with correct params using multiple objects", () => {
       overrideTfx.state("test", "test", { test: "test" }, { test: "test" });
-      assert.isTrue(overrideTfx.tfutils.testModule.calledOnceWith( 
-        {
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
           isApply: true,
           moduleName: "test",
           testList: ["test", { test: "test" }, { test: "test" }],
           tfData: {
             planned_values: "success",
           },
-        },
-      ));
+        }),
+        "should have been called with expected params"
+      );
     });
     it("should throw an error if no tfstate", () => {
       overrideTfx.tfstate = undefined;

@@ -200,7 +200,11 @@ describe("terraformCli", () => {
       return tf
         .plan({}, () => {}, false)
         .catch((err) => {
-          assert.deepEqual(err, `Error in ../directory/main.tf\n`);
+          assert.deepEqual(
+            err,
+            `Error in ../directory/main.tf\n`,
+            "should throw expected error"
+          );
         });
     });
     it("should throw an error when terraform init is called in an empty directory", () => {
@@ -218,7 +222,8 @@ describe("terraformCli", () => {
         .catch((err) => {
           assert.deepEqual(
             err,
-            `Error: Terraform initialized in empty directory ../directory\n\nEnsure you are targeting the correct directory and try again\n`
+            `Error: Terraform initialized in empty directory ../directory\n\nEnsure you are targeting the correct directory and try again\n`,
+            "should throw expected error"
           );
         });
     });
@@ -229,14 +234,17 @@ describe("terraformCli", () => {
       let actualData;
       tfWithLogs.log = new sinon.spy();
       tfWithLogs.print("frog");
-      assert.isTrue(tfWithLogs.log.calledOnceWith("frog"));
+      assert.isTrue(
+        tfWithLogs.log.calledOnceWith("frog"),
+        "should have been called with expected args"
+      );
     });
     it("should not run log if enableLogs is false", () => {
       let tfWithLogsSpy = sinon.spy();
       let tfWithLogs = new cli("../", exec.promise, false);
       tfWithLogs.log = tfWithLogsSpy;
       tfWithLogs.print("frog");
-      assert.isFalse(tfWithLogsSpy.calledOnce);
+      assert.isFalse(tfWithLogsSpy.calledOnce, "should not have been called");
     });
   });
   describe("apply", () => {
