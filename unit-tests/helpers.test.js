@@ -207,10 +207,14 @@ describe("helpers", () => {
       let data = valueFunctionTest((frog) => {
         return "uh-oh";
       });
-      assert.deepEqual(data, {
-        appendMessage: "to exist in module, got undefined.",
-        expectedData: false,
-      });
+      assert.deepEqual(
+        data,
+        {
+          appendMessage: "to exist in module, got undefined.",
+          expectedData: false,
+        },
+        "should return expected data"
+      );
     });
   });
   describe("checkModuleTest", () => {
@@ -506,21 +510,35 @@ describe("helpers", () => {
   describe("formatModuleName", () => {
     let formatModuleName = helpers.formatModuleName;
     it("should create a name for a top level module", () => {
-      let actualData = formatModuleName("module.test_module")
-      let expectedData = "Test Module"
-      assert.deepEqual(actualData, expectedData, "it should return correct name")
-    })
+      let actualData = formatModuleName("module.test_module");
+      let expectedData = "Test Module";
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct name"
+      );
+    });
     it("should create a name for a child module", () => {
-      let actualData = formatModuleName("module.test_module[\"frog\"].module.child.module.deep_child")
-      let expectedData = "Deep Child"
-      assert.deepEqual(actualData, expectedData, "it should return correct name")
-    })
-  })
+      let actualData = formatModuleName(
+        'module.test_module["frog"].module.child.module.deep_child'
+      );
+      let expectedData = "Deep Child";
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct name"
+      );
+    });
+  });
   describe("convertTfVarsFromTags", () => {
     it("should return empty object when no planFlagValues.tfvars", () => {
-      let actualData = convertTfVarsFromTags({})
-      let expectedData = {}
-      assert.deepEqual(actualData, expectedData, "it should return empty object")
-    })
-  })
+      let actualData = convertTfVarsFromTags({});
+      let expectedData = {};
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return empty object"
+      );
+    });
+  });
 });
