@@ -8,11 +8,30 @@ const sinon = require("sinon");
 let mock = new mocks(); // initialize mocks
 process.env.API_KEY = "test";
 
+let describeSpy, itSpy, beforeSpy, logSpy;
+describeSpy = new sinon.spy();
+itSpy = new sinon.spy();
+beforeSpy = new sinon.spy();
+logSpy = new sinon.spy();
+
+let beforeFn = (callback) => {
+  beforeSpy(callback());
+  return callback();
+};
+let describeFn = (definition, callback) => {
+  describeSpy(definition);
+  return callback();
+};
+let itFn = (definition, callback) => {
+  itSpy(definition);
+  return callback();
+};
+
 // initialize mock tfx
 let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-  overrideBefore: mock.before,
-  overrideDescribe: mock.describe,
-  overrideIt: mock.it,
+  overrideBefore: beforeFn,
+  overrideDescribe: describeFn,
+  overrideIt: itFn,
   quiet: true,
   overrideExec: new mock.mockExec({}).promise,
 });
@@ -44,21 +63,21 @@ describe("tfxjs", () => {
       it("should not use the chai before function if override option passed", () => {
         assert.deepEqual(
           overrideTfx.before.toString(),
-          mock.before.toString(),
+          beforeFn.toString(),
           "it should have correct it function"
         );
       });
       it("should not use the chai it function if override option passed", () => {
         assert.deepEqual(
           overrideTfx.it.toString(),
-          mock.it.toString(),
+          itFn.toString(),
           "it should have correct it function"
         );
       });
       it("should not use the chai describe function if override option passed", () => {
         assert.deepEqual(
           overrideTfx.describe.toString(),
-          mock.describe.toString(),
+          describeFn.toString(),
           "it should have correct describe function"
         );
       });
@@ -85,9 +104,9 @@ describe("tfxjs", () => {
         "./mock_path",
         { test: "test" },
         {
-          overrideBefore: mock.before,
-          overrideDescribe: mock.describe,
-          overrideIt: mock.it,
+          overrideBefore: beforeFn,
+          overrideDescribe: describeFn,
+          overrideIt: itFn,
         }
       );
       assert.deepEqual(
@@ -100,11 +119,7 @@ describe("tfxjs", () => {
   describe("print", () => {
     beforeEach(() => {
       mock = new mocks();
-      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: mock.before,
-        overrideDescribe: mock.describe,
-        overrideIt: mock.it,
-      });
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {});
     });
     it("should send correct string to console log", () => {
       overrideTfx.log = new sinon.spy();
@@ -124,13 +139,17 @@ describe("tfxjs", () => {
   });
   describe("tfAction", () => {
     beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
       mock = new mocks();
       overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: mock.before,
-        overrideDescribe: mock.describe,
-        overrideIt: mock.it,
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
       });
-      overrideTfx.print = mock.log;
+      overrideTfx.print = logSpy;
     });
     it("should run the correct describe function", () => {
       overrideTfx.tfAction(
@@ -140,8 +159,8 @@ describe("tfxjs", () => {
         () => {}
       );
       assert.deepEqual(
-        mock.definitionList,
-        ["describe"],
+        describeSpy.args,
+        [["describe"]],
         "it should add the correct data to the mock definitionList"
       );
     });
@@ -153,8 +172,8 @@ describe("tfxjs", () => {
         () => {}
       );
       assert.deepEqual(
-        mock.itList,
-        ["Successfully generates a terraform plan file"],
+        itSpy.args,
+        [["Successfully generates a terraform plan file"]],
         "it should add the correct data to the mock itList"
       );
     });
@@ -166,8 +185,8 @@ describe("tfxjs", () => {
         () => {}
       );
       assert.deepEqual(
-        mock.itList,
-        ["Runs `terraform apply` in the target directory"],
+        itSpy.args,
+        [["Runs `terraform apply` in the target directory"]],
         "it should add the correct data to the mock itList"
       );
     });
@@ -180,8 +199,8 @@ describe("tfxjs", () => {
         "path"
       );
       assert.deepEqual(
-        mock.itList,
-        ["Creates a clone directory at destination path path"],
+        itSpy.args,
+        [["Creates a clone directory at destination path path"]],
         "it should add the correct data to the mock itList"
       );
     });
@@ -214,21 +233,27 @@ describe("tfxjs", () => {
   });
   describe("plan", () => {
     beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
       mock = new mocks();
       overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: mock.before,
-        overrideDescribe: mock.describe,
-        overrideIt: mock.it,
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
         overrideExec: new mock.mockExec({}).promise,
       });
-      overrideTfx.print = mock.log;
+      overrideTfx.print = logSpy;
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.plan("describe", () => {});
       assert.deepEqual(
-        mock.logList,
+        logSpy.args,
         [
-          `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}* tfxjs testing${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}  Running \`terraform plan\`${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiLtGray}  Teplate File:${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}     ./mock_path${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}`,
+          [
+            `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}* tfxjs testing${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}  Running \`terraform plan\`${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiLtGray}  Teplate File:${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}     ./mock_path${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}`,
+          ],
         ],
         "it should print out the correct data"
       );
@@ -236,21 +261,27 @@ describe("tfxjs", () => {
   });
   describe("apply", () => {
     beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
       mock = new mocks();
       overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: mock.before,
-        overrideDescribe: mock.describe,
-        overrideIt: mock.it,
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
         quiet: true,
       });
-      overrideTfx.print = mock.log;
+      overrideTfx.print = logSpy;
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.apply("describe", () => {});
       assert.deepEqual(
-        mock.logList,
+        logSpy.args,
         [
-          `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}* tfxjs testing${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}  Running \`terraform apply\`${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiLtGray}  Teplate File:${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}     ./mock_path${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}`,
+          [
+            `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}* tfxjs testing${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}  Running \`terraform apply\`${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiLtGray}  Teplate File:${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}#${constants.ansiResetDim}${constants.ansiBlue}     ./mock_path${constants.ansiDefaultForeground}\n${constants.ansiBlue}${constants.ansiDefaultForeground}${constants.ansiBold}# ${constants.ansiResetDim}\n${constants.ansiBold}##############################################################################${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}`,
+          ],
         ],
         "it should print out the correct data"
       );
@@ -258,17 +289,21 @@ describe("tfxjs", () => {
   });
   describe("planAndSetData", () => {
     beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
       mock = new mocks();
       overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: mock.before,
-        overrideDescribe: mock.describe,
-        overrideIt: mock.it,
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
         overrideExec: new mock.mockExec({
           stdout: '{"planned_values" : "success"}',
         }).promise,
         quiet: true,
       });
-      overrideTfx.print = mock.log;
+      overrideTfx.print = logSpy;
     });
     it("should return the correct data and set this.tfplan", async () => {
       await overrideTfx.planAndSetData();
@@ -281,15 +316,19 @@ describe("tfxjs", () => {
   });
   describe("module", () => {
     beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
       mock = new mocks();
       overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: mock.before,
-        overrideDescribe: mock.describe,
-        overrideIt: mock.it,
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
         quiet: true,
         overrideExec: new mock.mockExec({}).promise,
       });
-      overrideTfx.print = mock.log;
+      overrideTfx.print = logSpy;
       overrideTfx.tfplan = "arbitraty_data";
       overrideTfx.tfutils.testModule = new sinon.spy();
     });
@@ -336,16 +375,20 @@ describe("tfxjs", () => {
   });
   describe("applyAndSetState", () => {
     beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
       mock = new mocks();
       overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: mock.before,
-        overrideDescribe: mock.describe,
-        overrideIt: mock.it,
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
         overrideExec: new mock.mockExec({
           stdout: '{"planned_values" : "success"}',
         }).promise,
       });
-      overrideTfx.print = mock.log;
+      overrideTfx.print = logSpy;
     });
     it("should return the correct data and set this.apply", async () => {
       overrideTfx.exec = mock.exec;
@@ -405,14 +448,18 @@ describe("tfxjs", () => {
     });
     describe("clone", () => {
       beforeEach(() => {
+        describeSpy = new sinon.spy();
+        itSpy = new sinon.spy();
+        beforeSpy = new sinon.spy();
+        logSpy = new sinon.spy();
         mock = new mocks();
         overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-          overrideBefore: mock.before,
-          overrideDescribe: mock.describe,
-          overrideIt: mock.it,
+          overrideBefore: beforeFn,
+          overrideDescribe: describeFn,
+          overrideIt: itFn,
           overrideExec: new mock.mockExec("ff").promise,
         });
-        overrideTfx.print = mock.log;
+        overrideTfx.print = logSpy;
       });
       it("should create a clone with correct template path", () => {
         overrideTfx.clone("test", (cloneTfx, done) => {
