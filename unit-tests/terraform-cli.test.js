@@ -20,12 +20,12 @@ let exec = new mockExec({}, execSpy);
 let tf = new cli("../directory", exec.promise);
 
 describe("terraformCli", () => {
-  beforeEach(() => {
-    execSpy = new sinon.spy();
-    exec = new mockExec({}, execSpy);
-    tf = new cli("../directory", exec.promise);
-  });
   describe("clone", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should run with no overridePath", () => {
       return tf.clone("./.tmp-clone-template").then(() => {
         assert.deepEqual(
@@ -46,6 +46,11 @@ describe("terraformCli", () => {
     });
   });
   describe("purgeClone", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should run correct command if clone is done first", () => {
       return tf.clone("./.tmp-clone-template").then(() => {
         return tf.purgeClone().then(() => {
@@ -64,6 +69,11 @@ describe("terraformCli", () => {
     });
   });
   describe("execPromise", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should return correct promise", () => {
       return tf.execPromise("command").then(() => {
         assert.deepEqual(
@@ -75,6 +85,11 @@ describe("terraformCli", () => {
     });
   });
   describe("cdAndExec", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should return correct promise", () => {
       return tf.cdAndExec("command").then(() => {
         assert.deepEqual(
@@ -86,6 +101,11 @@ describe("terraformCli", () => {
     });
   });
   describe("setTfVarString", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should return the correct output for an object", () => {
       let actualData = tf.setTfVarString({
         ibmcloud_api_key: "test",
@@ -101,6 +121,11 @@ describe("terraformCli", () => {
     });
   });
   describe("init", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should return correct promise with no vars", () => {
       return tf.init().then(() => {
         assert.deepEqual(
@@ -130,6 +155,11 @@ describe("terraformCli", () => {
     });
   });
   describe("plan", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should run the correct commands with no tfvars", () => {
       exec.data = {
         stdout: '{ "planned_values": "success" }',
@@ -174,6 +204,11 @@ describe("terraformCli", () => {
         });
     });
     it("should run the correct commands with no tfvars and no_output", () => {
+      beforeEach(() => {
+        execSpy = new sinon.spy();
+        exec = new mockExec({}, execSpy);
+        tf = new cli("../directory", exec.promise);
+      });
       exec.data = {
         stdout: '{ "planned_values": "success" }',
       };
@@ -194,6 +229,11 @@ describe("terraformCli", () => {
         });
     });
     it("should run the correct commands when error", () => {
+      beforeEach(() => {
+        execSpy = new sinon.spy();
+        exec = new mockExec({}, execSpy);
+        tf = new cli("../directory", exec.promise);
+      });
       exec.data = {
         stderr: "Error in main.tf",
       };
@@ -208,6 +248,11 @@ describe("terraformCli", () => {
         });
     });
     it("should throw an error when terraform init is called in an empty directory", () => {
+      beforeEach(() => {
+        execSpy = new sinon.spy();
+        exec = new mockExec({}, execSpy);
+        tf = new cli("../directory", exec.promise);
+      });
       exec.data = {
         stdout: "The directory has no Terraform configuration files.",
       };
@@ -229,25 +274,35 @@ describe("terraformCli", () => {
     });
   });
   describe("print", () => {
+    let tfLogsSpy;
+    beforeEach(() => {
+      tfLogsSpy = new sinon.spy();
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should run log if enableLogs passed", () => {
       let tfWithLogs = new cli("../", exec.promise, true);
-      let actualData;
-      tfWithLogs.log = new sinon.spy();
+      tfWithLogs.log = tfLogsSpy;
       tfWithLogs.print("frog");
       assert.isTrue(
-        tfWithLogs.log.calledOnceWith("frog"),
+        tfLogsSpy.calledOnceWith("frog"),
         "should have been called with expected args"
       );
     });
     it("should not run log if enableLogs is false", () => {
-      let tfWithLogsSpy = sinon.spy();
       let tfWithLogs = new cli("../", exec.promise, false);
-      tfWithLogs.log = tfWithLogsSpy;
+      tfWithLogs.log = tfLogsSpy;
       tfWithLogs.print("frog");
-      assert.isFalse(tfWithLogsSpy.calledOnce, "should not have been called");
+      assert.isFalse(tfLogsSpy.calledOnce, "should not have been called");
     });
   });
   describe("apply", () => {
+    beforeEach(() => {
+      execSpy = new sinon.spy();
+      exec = new mockExec({}, execSpy);
+      tf = new cli("../directory", exec.promise);
+    });
     it("should run the correct commands with no tfvars and no callback", () => {
       exec.data = {
         stdout: '{ "planned_values": "success" }',

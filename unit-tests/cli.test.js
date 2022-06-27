@@ -29,9 +29,6 @@ const mockConsole = {
 };
 
 describe("cli", () => {
-  it("infrastructure test", () => {
-    assert.equal(true, true);
-  });
   it("should call cmd.tfxcli() with no args", () => {
     let noArgSpy = sinon.spy();
     let spyMock = new spyMockTfx(noArgSpy);
