@@ -23,6 +23,7 @@ describe("builders", () => {
     describe("send", () => {
       it("should return the correct object when send is called", () => {
         let testInstance = new mochaTest();
+        testInstance.send();
         let sendData = testInstance.send();
         let expectedData = {
           name: "",
@@ -84,6 +85,7 @@ describe("builders", () => {
   });
   describe("eachKeyTest", () => {
     let eachKeyTest = builders.eachKeyTest;
+
     it("should run value test against a function if the value is a function", () => {
       let data = eachKeyTest(
         "address",
@@ -127,7 +129,7 @@ describe("builders", () => {
           ],
         },
       ];
-      assert.deepEqual(actualData, expectedData);
+      assert.deepEqual(actualData, expectedData, "should return expected data");
     });
   });
   describe("valueTest", () => {
@@ -179,11 +181,15 @@ describe("builders", () => {
     let resource = builders.resource;
     it("should return the correct object", () => {
       let actualData = resource("test", "test", {});
-      assert.deepEqual(actualData, {
-        name: "test",
-        address: "test",
-        values: {},
-      });
+      assert.deepEqual(
+        actualData,
+        {
+          name: "test",
+          address: "test",
+          values: {},
+        },
+        "should return expected data"
+      );
     });
   });
   describe("address", () => {
@@ -246,14 +252,14 @@ describe("builders", () => {
       it("should create a new instance of the textTemplate instance", () => {
         let original = new textTemplate(resourceTemplate);
         let cloneTemplate = original.clone();
-        assert.deepEqual(original.str, cloneTemplate.str, "it should copy")
-      })
+        assert.deepEqual(original.str, cloneTemplate.str, "it should copy");
+      });
       it("should not change the original when the clone is changed", () => {
         let original = new textTemplate(resourceTemplate);
         let cloneTemplate = original.clone();
-        cloneTemplate.set("$VALUES", "frog")
-        assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy")
-      })
-    })
+        cloneTemplate.set("$VALUES", "frog");
+        assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy");
+      });
+    });
   });
 });

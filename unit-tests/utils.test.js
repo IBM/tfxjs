@@ -34,17 +34,17 @@ describe("utils", () => {
   describe("getType", () => {
     let getType = utils.getType;
     it("should return array if is array", () => {
-      assert.deepEqual(getType([]), "Array", "should retun corrct value");
+      assert.deepEqual(getType([]), "Array", "should return correct value");
     });
     it("should return Function if is Function", () => {
       assert.deepEqual(
         getType(getType),
         "Function",
-        "should retun corrct value"
+        "should return correct value"
       );
     });
     it("should return typeof if is not function or Array", () => {
-      assert.deepEqual(getType({}), "object", "should retun corrct value");
+      assert.deepEqual(getType({}), "object", "should return correct value");
     });
   });
   describe("keys", () => {
@@ -284,7 +284,7 @@ describe("utils", () => {
         "--type": "-t",
       };
       let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
+      assert.deepEqual(expectedData, actualData, "should return correct data");
     });
     it("should remove optional flags with no needed key values", () => {
       let tags = {
@@ -325,7 +325,7 @@ describe("utils", () => {
         "?*--tf-var": "?*-v",
       };
       let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
+      assert.deepEqual(expectedData, actualData, "should return correct data");
     });
     it("should return correct alias map for a verb with optional tags", () => {
       let plan = {
@@ -355,7 +355,7 @@ describe("utils", () => {
         "?--tf-var": "?-v",
       };
       let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
+      assert.deepEqual(expectedData, actualData, "should return correct data");
     });
   });
   describe("containsAny", () => {
