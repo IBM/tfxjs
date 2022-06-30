@@ -156,7 +156,10 @@ describe("cli", () => {
         "it should return correct params"
       );
 
-      assert.isTrue(writeFileCallBackSpy.calledOnceWith("./out-file-path"));
+      assert.isTrue(
+        writeFileCallBackSpy.calledOnceWith("./out-file-path"),
+        "should have been called once with correct args"
+      );
     });
     it("should run extract with correct commands and flags for plan and write data when shallow", () => {
       tfx = new cli(
@@ -195,7 +198,10 @@ describe("cli", () => {
         "it should return correct params"
       );
 
-      assert.isTrue(writeFileCallBackSpy.calledOnceWith("./out-file-path"));
+      assert.isTrue(
+        writeFileCallBackSpy.calledOnceWith("./out-file-path"),
+        "should be called with correct params"
+      );
     });
     it("should run extract with correct commands and flags for plan and write data when quiet", () => {
       tfx = new cli(
@@ -235,7 +241,10 @@ describe("cli", () => {
         "it should return correct params"
       );
 
-      assert.isTrue(writeFileCallBackSpy.calledOnceWith("./out-file-path"));
+      assert.isTrue(
+        writeFileCallBackSpy.calledOnceWith("./out-file-path"),
+        "should be called with correct params"
+      );
     });
   });
   describe("decode", () => {
@@ -298,12 +307,15 @@ describe("cli", () => {
       tfx.writeFileSync = writeFileSyncSpy;
     });
     it("should return a function", () => {
-      assert.isFunction(tfx.writeFileCallBack());
+      assert.isFunction(tfx.writeFileCallBack(), "should be a function");
     });
     it("should return a function that calls writeFileSync with the correct parameters", () => {
       let callbackFunction = tfx.writeFileCallBack("outFilePath");
       callbackFunction("filedata");
-      assert(writeFileSyncSpy.calledOnceWith("outFilePath", "filedata"));
+      assert(
+        writeFileSyncSpy.calledOnceWith("outFilePath", "filedata"),
+        "should be called once with correct params"
+      );
     });
   });
 });

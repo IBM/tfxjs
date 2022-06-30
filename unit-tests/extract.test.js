@@ -815,9 +815,16 @@ tfx.plan("Template Name", () => {
           () => {}
         )
         .then(() => {
-          assert.isTrue(fileDataCallbackSpy.calledOnceWith(
-            "tfx", "path", "Template Name", {}, () => {}
-          ));
+          assert.isTrue(
+            fileDataCallbackSpy.calledOnceWith(
+              "tfx",
+              "path",
+              "Template Name",
+              {},
+              () => {}
+            ),
+            "should have been called with expected args"
+          );
         });
     });
   });
