@@ -1,57 +1,105 @@
 const { assert } = require("chai");
 const connect = require("../lib/connect");
-const node_ssh = require("node-ssh");
-const ping = require("ping");
-let mockSshPackage = {
-  connect: (data) => {
-    if (data) {
-      return new Promise((resolve, reject) => {
-        resolve(data);
-      });
-    } else {
-      return new Promise((resolve, reject) => {
+const badHost = "bad_host";
+let mockSshPackage = function (err) {
+  this.connected = false;
+  this.isConnected = function () {
+    return this.connected;
+  };
+  this.connect = function (data) {
+    return new Promise((resolve, reject) => {
+      if (err) {
+        this.connected = false;
         reject("connection failure");
-      });
-    }
-  },
+      } else {
+        this.connected = true;
+        resolve();
+      }
+    });
+  };
 };
 
-let mockPingPackage = {
-  promise: {
-    probe: (host) => {
-      if (host) {
-        return new Promise((resolve, reject) => {
-          resolve(host);
-        });
-      } else {
-        return new Promise((resolve, reject) => {
-          reject("connection failure");
-        });
-      }
+let mockPingPackage = function (err) {
+  this.promise = {
+    probe: function (host) {
+      return new Promise((resolve, reject) => {
+        if (err) {
+          resolve({ alive: false });
+        } else {
+          resolve({ alive: true });
+        }
+      });
     },
-  },
+  };
 };
 
 describe("SSH Tests", function () {
   it("should connect with mock ssh", () => {
-    return connect.sshTest(mockSshPackage, "host", "name", "key", false);
-  }),
-    it("should connect with correct credentials real ssh", () => {
-      return connect.sshTest(
-        new node_ssh.NodeSSH(),
-        "150.239.84.248",
-        "root",
-        "/Users/tahajafry/.ssh/id_rsa_ibm",
-        false
-      );
-    });
+    let sshPackage = new mockSshPackage();
+    let sshConn = new connect({ ssh: sshPackage });
+    return sshConn.sshTest(
+      "passing connecting ssh test",
+      "host",
+      "name",
+      "key"
+    );
+  });
+  it("should not connect if doesNotConnect is true", () => {
+    let sshPackage = new mockSshPackage(true);
+    let sshConn = new connect({ ssh: sshPackage });
+    return sshConn.sshTest(
+      "passing connecting ssh test",
+      "host",
+      "name",
+      "key",
+      true
+    );
+  });
+  it("should throw an error if it doesn't connect when it should", () => {
+    let sshPackage = new mockSshPackage(true);
+    let sshConn = new connect({ ssh: sshPackage });
+    return sshConn
+      .sshTest("failing not connecting ssh test", "host", "name", "key")
+      .catch((err) => {
+        assert.deepEqual(
+          err.message,
+          "failing not connecting ssh test: expected undefined to deeply equal true"
+        );
+      });
+  });
+  it("should throw an error when it connects and its not supposed to", () => {
+    let sshPackage = new mockSshPackage();
+    let sshConn = new connect({ ssh: sshPackage });
+    return sshConn
+      .sshTest("failing connecting ssh test", "host", "name", "key", true)
+      .catch((err) => {
+        assert.deepEqual(
+          err.message,
+          "failing connecting ssh test: expected true to deeply equal false"
+        );
+      });
+  });
 });
 
 describe("Ping Tests", function () {
   it("should connect with mock ping", () => {
-    return connect.pingTest(mockPingPackage, "host", false);
-  }),
-    it("should connect with ping", () => {
-      return connect.pingTest(ping, "host", false);
+    let pingConn = new connect({ ping: new mockPingPackage() });
+    return pingConn.pingTest("passing connecting ping test", "host");
+  });
+  it("should not connect with doesNotConnect = true", () => {
+    let pingConn = new connect({ ping: new mockPingPackage(true) });
+    return pingConn.pingTest("passing not connecting ping test", "host", true);
+  });
+  it("should throw an error when connects and doesNotConnect = true", () => {
+    let pingConn = new connect({ ping: new mockPingPackage() });
+    return pingConn.pingTest("failing connecting ping test", "host", true).catch((err) => {
+        assert.deepEqual(err.message, "failing connecting ping test: expected true to deeply equal false", "error should be the same")
     });
+  })
+  it("should throw an error when doesn't and doesNotConnect = false", () => {
+    let pingConn = new connect({ ping: new mockPingPackage(true) });
+    return pingConn.pingTest("failing not connecting ping test", "host").catch((err) => {
+        assert.deepEqual(err.message, "failing not connecting ping test: expected false to deeply equal true", "error should be the same")
+    });
+  })
 });
