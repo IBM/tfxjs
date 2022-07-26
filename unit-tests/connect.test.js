@@ -1,6 +1,5 @@
 const { assert } = require("chai");
 const connect = require("../lib/connect");
-const badHost = "bad_host";
 let mockSshPackage = function (err) {
   this.connected = false;
   this.isConnected = function () {
@@ -35,8 +34,7 @@ let mockPingPackage = function (err) {
 
 describe("SSH Tests", function () {
   it("should connect with mock ssh", () => {
-    let sshPackage = new mockSshPackage();
-    let sshConn = new connect({ ssh: sshPackage });
+    let sshConn = new connect({ ssh: new mockSshPackage()});
     return sshConn.sshTest(
       "passing connecting ssh test",
       "host",
@@ -45,8 +43,7 @@ describe("SSH Tests", function () {
     );
   });
   it("should not connect if doesNotConnect is true", () => {
-    let sshPackage = new mockSshPackage(true);
-    let sshConn = new connect({ ssh: sshPackage });
+    let sshConn = new connect({ ssh: new mockSshPackage(true)});
     return sshConn.sshTest(
       "passing connecting ssh test",
       "host",
@@ -56,8 +53,7 @@ describe("SSH Tests", function () {
     );
   });
   it("should throw an error if it doesn't connect when it should", () => {
-    let sshPackage = new mockSshPackage(true);
-    let sshConn = new connect({ ssh: sshPackage });
+    let sshConn = new connect({ ssh: new mockSshPackage(true) });
     return sshConn
       .sshTest("failing not connecting ssh test", "host", "name", "key")
       .catch((err) => {
@@ -68,8 +64,7 @@ describe("SSH Tests", function () {
       });
   });
   it("should throw an error when it connects and its not supposed to", () => {
-    let sshPackage = new mockSshPackage();
-    let sshConn = new connect({ ssh: sshPackage });
+    let sshConn = new connect({ ssh: new mockSshPackage() });
     return sshConn
       .sshTest("failing connecting ssh test", "host", "name", "key", true)
       .catch((err) => {
