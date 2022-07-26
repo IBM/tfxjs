@@ -92,14 +92,26 @@ describe("Ping Tests", function () {
   });
   it("should throw an error when connects and doesNotConnect = true", () => {
     let pingConn = new connect({ ping: new mockPingPackage() });
-    return pingConn.pingTest("failing connecting ping test", "host", true).catch((err) => {
-        assert.deepEqual(err.message, "failing connecting ping test: expected true to deeply equal false", "error should be the same")
-    });
-  })
+    return pingConn
+      .pingTest("failing connecting ping test", "host", true)
+      .catch((err) => {
+        assert.deepEqual(
+          err.message,
+          "failing connecting ping test: expected true to deeply equal false",
+          "error should be the same"
+        );
+      });
+  });
   it("should throw an error when doesn't and doesNotConnect = false", () => {
     let pingConn = new connect({ ping: new mockPingPackage(true) });
-    return pingConn.pingTest("failing not connecting ping test", "host").catch((err) => {
-        assert.deepEqual(err.message, "failing not connecting ping test: expected false to deeply equal true", "error should be the same")
-    });
-  })
+    return pingConn
+      .pingTest("failing not connecting ping test", "host")
+      .catch((err) => {
+        assert.deepEqual(
+          err.message,
+          "failing not connecting ping test: expected false to deeply equal true",
+          "error should be the same"
+        );
+      });
+  });
 });
