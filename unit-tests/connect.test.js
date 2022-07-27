@@ -32,6 +32,34 @@ let mockPingPackage = {
   },
 };
 
+let mockExecPackage = {
+  mockExec: function (success) {
+    return function (
+      cmd,
+      options = {
+        cwd: process.cwd(),
+        env: process.env,
+        encoding: "utf8",
+        shell: "/bin/sh",
+        timeout: 0,
+        maxBuffer: 1024 * 1024,
+        killSignal: "SIGTERM",
+        windowsHide: false,
+      }
+    ) {
+      return new Promise((resolve, reject) => {
+        if (success) {
+          setTimeout(() => {
+            reject({ stdout: "", stderr: "" });
+          }, options.timeout);
+        } else {
+          reject({ stdout: "", stderr: "read(net): Connection refused\n" });
+        }
+      });
+    };
+  },
+};
+
 describe("SSH Tests", function () {
   it("should connect with mock ssh", () => {
     return connect.sshTest(mockSshPackage, "host", "name", "key", false);
@@ -54,4 +82,15 @@ describe("Ping Tests", function () {
     it("should connect with ping", () => {
       return connect.pingTest(ping, "host", false);
     });
+});
+
+describe("UDP connection", () => {
+  it("should successfully connect using UDP when there is a UDP listener on server", () => {
+    let connectPackage = new connect({exec: mockExecPackage.mockExec(true)})
+    return connectPackage.udpTest("host", "port", false);
+  });
+  it("should refuse UDP connection with no UDP listener on server", () => {
+    let connectPackage = new connect({exec: mockExecPackage.mockExec(false)})
+    return connectPackage.udpTest("host", "port", true);
+  });
 });
