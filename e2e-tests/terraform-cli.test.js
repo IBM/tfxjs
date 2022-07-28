@@ -22,7 +22,6 @@ describe("example-test terraformCli", () => {
           shuffle_count: 2,
         },
         (data) => {
-          fs.writeFileSync("./data-files/plan-logs.txt", tfLogs[1]);
           assert.deepEqual(
             tfLogs[1],
             fs.readFileSync("./data-files/plan-logs.txt", "utf8"),
@@ -46,7 +45,6 @@ describe("example-test terraformCli", () => {
           "main.tf",
           "test-output.sh",
           "tests",
-          "tfxjs.tfvars",
           "variables.tf",
           "versions.tf",
           "",
@@ -86,7 +84,6 @@ describe("example-test terraformCli", () => {
           "main.tf",
           "test-output.sh",
           "tests",
-          "tfxjs.tfvars",
           "variables.tf",
           "versions.tf",
           "",
