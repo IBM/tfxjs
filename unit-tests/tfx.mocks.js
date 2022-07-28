@@ -80,6 +80,13 @@ const mocks = function () {
       });
     };
   };
+  /**
+   * Create a mock exec function for TCP connection using GNU netcat version 0.7.1
+   * If successful, the Promise will reject with an empty output
+   * If failure, the Promise will reject with a "Connection error" message
+   * @param {boolean} success whether mock function will pass orfail
+   * @returns a mock exec function to make a TCP connection to a port
+   */
   this.tcpExec = function (success) {
     return function () {
       return new Promise((resolve, reject) => {
