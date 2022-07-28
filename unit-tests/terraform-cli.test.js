@@ -200,7 +200,7 @@ describe("terraformCli", () => {
             [
               ["cd ../directory\nterraform init"],
               [
-                "cd ../directory\nterraform plan -out=tfplan -input=false --var-file tfxjs.tfvars",
+                "cd ../directory\nterraform plan -out=tfplan -input=false --var-file=tfxjs.tfvars",
               ],
               ["cd ../directory\nterraform show -json tfplan"],
             ],
@@ -226,6 +226,30 @@ describe("terraformCli", () => {
               ["cd ../directory\nterraform show -json tfplan"],
               [
                 "cd ../directory\nrm -rf tfplan .terraform/ .terraform.lock.hcl",
+              ],
+            ],
+            "it should run the correct command"
+          );
+        });
+    });
+    it("should run the correct commands with tfvars and cleanup", () => {
+      exec.data = {
+        stdout: '{ "planned_values": "success" }',
+      };
+
+      return tf
+        .plan({test: "test"}, () => {}, {
+          cleanup: true,
+        })
+        .then(() => {
+          assert.deepEqual(
+            execSpy.args,
+            [
+              ["cd ../directory\nterraform init"],
+              ["cd ../directory\nterraform plan -out=tfplan -input=false --var-file=tfxjs.tfvars"],
+              ["cd ../directory\nterraform show -json tfplan"],
+              [
+                "cd ../directory\nrm -rf tfplan .terraform/ .terraform.lock.hcl tfxjs.tfvars",
               ],
             ],
             "it should run the correct command"
@@ -359,9 +383,9 @@ describe("terraformCli", () => {
           execSpy.args,
           [
             ["cd ../directory\nterraform init"],
-            ["cd ../directory\nterraform plan --var-file tfxjs.tfvars"],
+            ["cd ../directory\nterraform plan --var-file=tfxjs.tfvars"],
             [
-              'cd ../directory\necho "yes" | terraform apply --var-file tfxjs.tfvars',
+              'cd ../directory\necho "yes" | terraform apply --var-file=tfxjs.tfvars',
             ],
             ["cd ../directory\ncat terraform.tfstate"],
           ],
@@ -395,6 +419,26 @@ describe("terraformCli", () => {
             ["cd ../directory\ncat terraform.tfstate"],
             [
               'cd ../directory\necho "yes" | terraform destroy\nrm -rf .terraform/ .terraform.lock.hcl terraform.tfstate terraform.tfstate.backup',
+            ],
+          ],
+          "it should run the correct command"
+        );
+      });
+    });
+    it("should run the correct commands with tfvars and no callback and destroy", () => {
+      exec.data = {
+        stdout: '{ "planned_values": "success" }',
+      };
+      return tf.apply({test: "test"}, false, true).then(() => {
+        assert.deepEqual(
+          execSpy.args,
+          [
+            ["cd ../directory\nterraform init"],
+            ["cd ../directory\nterraform plan --var-file=tfxjs.tfvars"],
+            ['cd ../directory\necho "yes" | terraform apply --var-file=tfxjs.tfvars'],
+            ["cd ../directory\ncat terraform.tfstate"],
+            [
+              'cd ../directory\necho "yes" | terraform destroy\nrm -rf .terraform/ .terraform.lock.hcl terraform.tfstate terraform.tfstate.backup tfxjs.tfvars',
             ],
           ],
           "it should run the correct command"
