@@ -80,6 +80,32 @@ const mocks = function () {
       });
     };
   };
-};
+  /*
+  this.tcpExec = function (err) {
+    promise: {
+      tcp_connect: (success) => {
+        if (data) {
+          return new Promise((resolve, reject) => {
+            reject(stderr: "");
+          });
+        } else {
+          return new Promise((resolve, reject) => {
+            reject(stderr: "Connection error");
+          });
+        }
+      };
+    }
+  };
+  */
 
+  this.tcpExec = function (success) {
+    return new Promise((resolve, reject) => {
+      if (success) {
+        reject({ stderr: "" });
+      } else {
+        reject({ stderr: "Connection error" });
+      }
+    });
+  };
+};
 module.exports = mocks;
