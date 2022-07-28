@@ -99,13 +99,15 @@ const mocks = function () {
   */
 
   this.tcpExec = function (success) {
-    return new Promise((resolve, reject) => {
-      if (success) {
-        reject({ stderr: "" });
-      } else {
-        reject({ stderr: "Connection error" });
-      }
-    });
+    return function () {
+      return new Promise((resolve, reject) => {
+        if (success) {
+          reject( "" );
+        } else {
+          reject("Connection error");
+        }
+      });
+    };
   };
 };
 module.exports = mocks;
