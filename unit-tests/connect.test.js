@@ -4,8 +4,6 @@ const mocks = require('./tfx.mocks')
 
 let mockLib = new mocks();
 
-
-
 describe("Testing the TCP connection", () => {
   it("should successfully connect to the server using the port", () => {
     let connectPackage = new connect({exec: mockLib.tcpExec(true)});
