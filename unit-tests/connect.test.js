@@ -1,7 +1,11 @@
 const { assert } = require("chai");
+const mocks = require('./tfx.mocks');
 const connect = require("../lib/connect");
 const node_ssh = require("node-ssh");
 const ping = require("ping");
+
+let mockLib = new mocks();
+
 let mockSshPackage = {
   connect: (data) => {
     if (data) {
@@ -32,34 +36,6 @@ let mockPingPackage = {
   },
 };
 
-let mockExecPackage = {
-  mockExec: function (success) {
-    return function (
-      cmd,
-      options = {
-        cwd: process.cwd(),
-        env: process.env,
-        encoding: "utf8",
-        shell: "/bin/sh",
-        timeout: 0,
-        maxBuffer: 1024 * 1024,
-        killSignal: "SIGTERM",
-        windowsHide: false,
-      }
-    ) {
-      return new Promise((resolve, reject) => {
-        if (success) {
-          setTimeout(() => {
-            reject({ stdout: "", stderr: "" });
-          }, options.timeout);
-        } else {
-          reject({ stdout: "", stderr: "read(net): Connection refused\n" });
-        }
-      });
-    };
-  },
-};
-
 describe("SSH Tests", function () {
   it("should connect with mock ssh", () => {
     return connect.sshTest(mockSshPackage, "host", "name", "key", false);
@@ -85,12 +61,12 @@ describe("Ping Tests", function () {
 });
 
 describe("UDP connection", () => {
-  it("should successfully connect using UDP when there is a UDP listener on server", () => {
-    let connectPackage = new connect({exec: mockExecPackage.mockExec(true)})
-    return connectPackage.udpTest("host", "port", false);
+  it("should run a passing test when an expected UDP connection is successful", () => {
+    let connectPackage = new connect({exec: mockLib.udpExec(true)})
+    return connectPackage.udpTest("host", "port", {timeout: 1000}, false);
   });
-  it("should refuse UDP connection with no UDP listener on server", () => {
-    let connectPackage = new connect({exec: mockExecPackage.mockExec(false)})
-    return connectPackage.udpTest("host", "port", true);
+  it("should run a passing test when an expected unsuccessful UDP connection is refused", () => {
+    let connectPackage = new connect({exec: mockLib.udpExec(false)})
+    return connectPackage.udpTest("host", "port", {timeout: 1000}, true);
   });
 });
