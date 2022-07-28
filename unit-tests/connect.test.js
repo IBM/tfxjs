@@ -10,7 +10,6 @@ describe("Testing the TCP connection", () => {
   it("should successfully connect to the server using the port", () => {
     let connectPackage = new connect({exec: mockLib.tcpExec(true)});
     return connectPackage.tcpTest("host", "port", false);
-    //return connect.tcpTest("host", "port", false);
   });
   it("should not connect when the port does not exist", () => {
     let connectPackage = new connect({exec: mockLib.tcpExec(false)});
