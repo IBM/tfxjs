@@ -80,6 +80,39 @@ const mocks = function () {
       });
     };
   };
+
+  /**
+   * Create a mock exec function for a UDP connection using GNU netcat version 0.7.1.
+   * When successful, the function will time out with no output.
+   * Upon failure, the Promise will reject with a message stored in stderr.
+   * @param {boolean} success determines whether the mock function should succeed or fail
+   * @returns mock exec function for making a UDP connection to a server
+   */
+  this.udpExec = function (success) {
+      return function (
+        cmd,
+        options = {
+          cwd: process.cwd(),
+          env: process.env,
+          encoding: "utf8",
+          shell: "/bin/sh",
+          timeout: 0,
+          maxBuffer: 1024 * 1024,
+          killSignal: "SIGTERM",
+          windowsHide: false,
+        }
+      ) {
+        return new Promise((resolve, reject) => {
+          if (success) {
+            setTimeout(() => {
+              reject({ stdout: "", stderr: "" });
+            }, options.timeout);
+          } else {
+            reject({ stdout: "", stderr: "read(net): Connection refused\n" });
+          }
+        });
+      };
+    };
 };
 
 module.exports = mocks;
