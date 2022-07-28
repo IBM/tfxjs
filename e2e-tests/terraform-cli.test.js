@@ -22,7 +22,6 @@ describe("example-test terraformCli", () => {
           shuffle_count: 2,
         },
         (data) => {
-          fs.writeFileSync("./data-files/plan-logs.txt", tfLogs[1])
           assert.deepEqual(
             tfLogs[1],
             fs.readFileSync("./data-files/plan-logs.txt", "utf8"),
@@ -111,19 +110,24 @@ describe("example-test terraformCli", () => {
         .then(() => {
           return tf.execPromise("ls ../example-tests");
         })
-        .then(expectedData => {
-          assert.deepEqual(cloneLs, expectedData)
-        })
+        .then((expectedData) => {
+          assert.deepEqual(cloneLs, expectedData);
+        });
     });
     it("should correctly purge the directory", () => {
-      tf.directory = "./clone"
-      return tf.purgeClone()
+      tf.directory = "./clone";
+      return tf
+        .purgeClone()
         .then(() => {
-          return tf.execPromise("ls ./clone")
+          return tf.execPromise("ls ./clone");
         })
-        .catch(err => {
-          assert.deepEqual(err.stderr, 'ls: ./clone: No such file or directory\n', "it should have correct error");
-        })
-    })
+        .catch((err) => {
+          assert.deepEqual(
+            err.stderr,
+            "ls: ./clone: No such file or directory\n",
+            "it should have correct error"
+          );
+        });
+    });
   });
 });
