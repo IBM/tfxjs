@@ -8,7 +8,7 @@ let mockPingPackage = new mock.mockPingPackage();
 let errMockPingPackge = new mock.mockPingPackage(true);
 
 describe("SSH Tests", function () {
-  it("should connect with mock ssh", () => {
+  it("it should run a passing test when an expected connection is successful", () => {
     let sshConn = new connect({ ssh: mockSshPackage });
     return sshConn.sshTest(
       "passing connecting ssh test",
@@ -17,7 +17,7 @@ describe("SSH Tests", function () {
       "key"
     );
   });
-  it("should not connect if doesNotConnect is true", () => {
+  it("it should run a passing test assertion when an expected unsuccessful connection is refused", () => {
     let sshConn = new connect({ ssh: errMockSshPackage });
     return sshConn.sshTest(
       "passing connecting ssh test",
@@ -27,7 +27,7 @@ describe("SSH Tests", function () {
       true
     );
   });
-  it("should throw an error if it doesn't connect when it should", () => {
+  it("it should create a failing test assertion when a expected connection is unsuccessful", () => {
     let sshConn = new connect({ ssh: errMockSshPackage });
     return sshConn
       .sshTest("failing not connecting ssh test", "host", "name", "key")
@@ -38,7 +38,7 @@ describe("SSH Tests", function () {
         );
       });
   });
-  it("should throw an error when it connects and its not supposed to", () => {
+  it("it should create a failing test assertion when an unexpected connection is made", () => {
     let sshConn = new connect({ ssh: mockSshPackage });
     return sshConn
       .sshTest("failing connecting ssh test", "host", "name", "key", true)
@@ -52,15 +52,15 @@ describe("SSH Tests", function () {
 });
 
 describe("Ping Tests", function () {
-  it("should connect with mock ping", () => {
+  it("it should run a passing test when an expected connection is successful", () => {
     let pingConn = new connect({ ping: mockPingPackage });
     return pingConn.pingTest("passing connecting ping test", "host");
   });
-  it("should not connect with doesNotConnect = true", () => {
+  it("it should run a passing test when an expected unsuccessful connection is refused", () => {
     let pingConn = new connect({ ping: errMockPingPackge });
     return pingConn.pingTest("passing not connecting ping test", "host", true);
   });
-  it("should throw an error when connects and doesNotConnect = true", () => {
+  it("it should run a failing test assertion when an unexpected connection occurs", () => {
     let pingConn = new connect({ ping: mockPingPackage });
     return pingConn
       .pingTest("failing connecting ping test", "host", true)
@@ -72,7 +72,7 @@ describe("Ping Tests", function () {
         );
       });
   });
-  it("should throw an error when doesn't connect and doesNotConnect = false", () => {
+  it("it should run a failing test assertion when an expected connection fails", () => {
     let pingConn = new connect({ ping: errMockPingPackge });
     return pingConn
       .pingTest("failing not connecting ping test", "host")
