@@ -37,7 +37,7 @@ describe("terraformCli", () => {
           execSpy.args,
           [
             [
-              "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfvars' --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
+              "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
             ],
           ],
           "should return correct commands"
@@ -58,7 +58,7 @@ describe("terraformCli", () => {
             execSpy.args,
             [
               [
-                "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfvars' --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
+                "mkdir ./.tmp-clone-template && rsync -av --progress --exclude='*.tfstate' ../directory ./.tmp-clone-template -q",
               ],
               ["rm -rf ../directory"],
             ],
@@ -100,23 +100,26 @@ describe("terraformCli", () => {
       });
     });
   });
-  describe("setTfVarString", () => {
+  describe("createTfVarFile", () => {
     beforeEach(() => {
       execSpy = new sinon.spy();
       exec = new mockExec({}, execSpy);
       tf = new cli("../directory", exec.promise);
     });
     it("should return the correct output for an object", () => {
-      let actualData = tf.setTfVarString({
+      tf.fs = {
+        writeFileSync: new sinon.spy(),
+      };
+      tf.createTfVarFile({
         ibmcloud_api_key: "test",
         number: 12,
       });
-      let expectedData =
-        "export TF_VAR_ibmcloud_api_key=test\nexport TF_VAR_number=12\n";
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return correct stements"
+      assert.isTrue(
+        tf.fs.writeFileSync.calledOnceWith(
+          "../directory/tfxjs.tfvars",
+          `ibmcloud_api_key = "test"\nnumber           = 12`
+        ),
+        "it should call fs with correct data"
       );
     });
   });
@@ -136,19 +139,23 @@ describe("terraformCli", () => {
       });
     });
     it("should return correct promise with vars", () => {
+      tf.createTfVarFile = new sinon.spy();
       return tf
         .init({
           ibmcloud_api_key: "test",
           number: 12,
         })
         .then(() => {
+          assert.isTrue(
+            tf.createTfVarFile.calledOnceWith({
+              ibmcloud_api_key: "test",
+              number: 12,
+            }),
+            "it should call createTfVarFile"
+          );
           assert.deepEqual(
             execSpy.args,
-            [
-              [
-                "cd ../directory\nexport TF_VAR_ibmcloud_api_key=test\nexport TF_VAR_number=12\nterraform init",
-              ],
-            ],
+            [["cd ../directory\nterraform init"]],
             "it should run the correct command"
           );
         });
@@ -159,6 +166,7 @@ describe("terraformCli", () => {
       execSpy = new sinon.spy();
       exec = new mockExec({}, execSpy);
       tf = new cli("../directory", exec.promise);
+      tf.createTfVarFile = () => {};
     });
     it("should run the correct commands with no tfvars", () => {
       exec.data = {
@@ -173,6 +181,27 @@ describe("terraformCli", () => {
             [
               ["cd ../directory\nterraform init"],
               ["cd ../directory\nterraform plan -out=tfplan -input=false"],
+              ["cd ../directory\nterraform show -json tfplan"],
+            ],
+            "it should run the correct command"
+          );
+        });
+    });
+    it("should run the correct commands with tfvars", () => {
+      exec.data = {
+        stdout: '{ "planned_values": "success" }',
+      };
+
+      return tf
+        .plan({ test: "test" }, () => {}, false)
+        .then(() => {
+          assert.deepEqual(
+            execSpy.args,
+            [
+              ["cd ../directory\nterraform init"],
+              [
+                "cd ../directory\nterraform plan -out=tfplan -input=false --var-file tfxjs.tfvars",
+              ],
               ["cd ../directory\nterraform show -json tfplan"],
             ],
             "it should run the correct command"
@@ -302,6 +331,7 @@ describe("terraformCli", () => {
       execSpy = new sinon.spy();
       exec = new mockExec({}, execSpy);
       tf = new cli("../directory", exec.promise);
+      tf.createTfVarFile = () => {};
     });
     it("should run the correct commands with no tfvars and no callback", () => {
       exec.data = {
@@ -320,7 +350,26 @@ describe("terraformCli", () => {
         );
       });
     });
-    it("should run the correct commands and get callback data", () => {
+    it("should run the correct commands with tfvars and no callback", () => {
+      exec.data = {
+        stdout: '{ "planned_values": "success" }',
+      };
+      return tf.apply({ test: "test" }).then(() => {
+        assert.deepEqual(
+          execSpy.args,
+          [
+            ["cd ../directory\nterraform init"],
+            ["cd ../directory\nterraform plan --var-file tfxjs.tfvars"],
+            [
+              'cd ../directory\necho "yes" | terraform apply --var-file tfxjs.tfvars',
+            ],
+            ["cd ../directory\ncat terraform.tfstate"],
+          ],
+          "it should run the correct command"
+        );
+      });
+    });
+    it("should run the correct commands and get callback data with", () => {
       exec.data = {
         stdout: '{ "planned_values": "success" }',
       };
