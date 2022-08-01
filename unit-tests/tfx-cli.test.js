@@ -380,16 +380,16 @@ describe("cli", () => {
       assert.isTrue(
         childSpy.calledOnceWith(`cd dir && npm run build`),
         "it should cd and run npm build"
-      )
+      );
       assert.isTrue(
         tfx.writeFileSync.callCount === 2,
         "it should call writeFileSync twice"
       );
       assert.deepEqual(
         tfx.writeFileSync.lastCall.args,
-        ["dir/tfxjs.test.js"],
+        ["dir/tfxjs.test.js", ""],
         "it should create an empty test file"
-      )
+      );
       assert.deepEqual(
         tfx.writeFileSync.firstCall.args,
         [

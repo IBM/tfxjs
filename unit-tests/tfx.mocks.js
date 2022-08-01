@@ -85,17 +85,17 @@ const mocks = function () {
    * Mock FS package
    * @param {bool} existingPath true if using existing filepath
    */
-  this.mockFs = function(existingPath) {
+  this.mockFs = function (existingPath) {
     this.writeFileSync = (path, data) => {
       return data;
-    }
-    this.exists = (directory) => {
-      return existingPath == true ? true : false
-    }
+    };
+    this.existsSync = (directory) => {
+      return existingPath == true ? true : false;
+    };
     this.mkdirSync = (path) => {
       return path;
-    }
-  }
+    };
+  };
 };
 
 module.exports = mocks;
