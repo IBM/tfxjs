@@ -172,12 +172,12 @@ describe("mocks", () => {
       let actualData = mockFs.mkdirSync("path");
       assert.deepEqual(actualData, "path", "it should return data")
     })
-    it("should return false running exists if file does not exist", () => {
-      let actualData = mockFs.exists("path");
+    it("should return false running existsSync if file does not exist", () => {
+      let actualData = mockFs.existsSync("path");
       assert.deepEqual(actualData, false, "it should return data")
     })
-    it("should return false running exists if file does not exist", () => {
-      let actualData = dirMockFs.exists("path");
+    it("should return false running existsSync if file does not exist", () => {
+      let actualData = dirMockFs.existsSync("path");
       assert.deepEqual(actualData, true, "it should return data")
     })
   })

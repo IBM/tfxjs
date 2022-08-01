@@ -38,7 +38,7 @@ describe("tfxInit", () => {
     );
     assert.deepEqual(
       fs.writeFileSync.lastCall.args,
-      ["testPath/tfxjs.test.js"],
+      ["testPath/tfxjs.test.js", ""],
       "it should create an empty test file"
     )
     assert.deepEqual(
