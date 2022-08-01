@@ -162,8 +162,8 @@ describe("mocks", () => {
     });
   });
   describe("tcp", () => {
-    let errorTcpPackage = new mock.tcpExec();
-    let mockTcpPackage = new mock.tcpExec(true);
+    let errorTcpPackage = new mock.tcpPackage();
+    let mockTcpPackage = new mock.tcpPackage(true);
     it("should connect without an error", () => {
       return mockTcpPackage().catch(({ stdout, stderr }) => {
         assert.equal(stdout, "", "stdout should be empty");
