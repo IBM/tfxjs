@@ -88,7 +88,7 @@ const mocks = function () {
    * @param {boolean} success whether mock function will pass or fail
    * @returns a mock exec function to make a TCP connection to a port
    */
-  this.tcpExec = function (success) {
+  this.tcpPackage = function (success) {
     return function () {
       return new Promise((resolve, reject) => {
         if (success) {
