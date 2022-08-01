@@ -35,6 +35,7 @@ describe("mocks", () => {
         "it should evaluate inner callback"
       );
     });
+
   });
   describe("it", () => {
     before(() => {
@@ -161,4 +162,44 @@ describe("mocks", () => {
       });
     });
   });
+
+  describe("tcp", () => {
+    let mockTcpPackage = new mock.tcpExec();
+    let errorTcpPackage = new mock.tcpExec(true);
+    it("should connect without an error", () => {
+      /*return mockTcpPackage.catch(({stdout, stderr}) => {
+        assert.equal(stdout, "", "output should be empty")
+        assert.equal(stderr, "", "should connect without error")
+
+
+      })
+      */
+     console.log(typeof(mockTcpPackage))
+     /*
+     
+      return mockTcpPackage.exec("netcat -vz ").catch(({stdout, stderr}) => {
+        assert.equal(stderr, "", "should connect fine")
+
+      })
+      */
+      //return mockTcpPackage.catch()
+      console.log(mockTcpPackage.)
+
+    })
+    
+    
+     //assert.equal(mockTcpPackage, true, "should connect without error")
+    })
+    /*
+    it("should connect with error", () => {
+      return errorTcpPackage.catch(({stdout, stderr}) => {
+        assert.equal(stdout, "", "output should be empty")
+        assert.equal(stderr, "TCP connection error", "should connect with error")
+      })
+    })
+    
+    
+  })
+  */
+  
 });
