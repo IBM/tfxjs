@@ -35,6 +35,8 @@ let overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
   quiet: true,
   overrideExec: new mock.mockExec({}).promise,
 });
+// prevent creation of file
+overrideTfx.cli.createTfVarFile = () => {};
 
 describe("tfxjs", () => {
   describe("tfxjs init", () => {
@@ -245,6 +247,8 @@ describe("tfxjs", () => {
         overrideExec: new mock.mockExec({}).promise,
       });
       overrideTfx.print = logSpy;
+      // prevent creation of file
+      overrideTfx.cli.createTfVarFile = () => {};
     });
     it("should produce the correct console.log data", () => {
       overrideTfx.plan("describe", () => {});
@@ -304,6 +308,8 @@ describe("tfxjs", () => {
         quiet: true,
       });
       overrideTfx.print = logSpy;
+      // prevent creation of file
+      overrideTfx.cli.createTfVarFile = () => {};
     });
     it("should return the correct data and set this.tfplan", async () => {
       await overrideTfx.planAndSetData();
@@ -331,6 +337,8 @@ describe("tfxjs", () => {
       overrideTfx.print = logSpy;
       overrideTfx.tfplan = "arbitraty_data";
       overrideTfx.tfutils.testModule = new sinon.spy();
+      // prevent creation of file
+      overrideTfx.cli.createTfVarFile = () => {};
     });
     it("should run tfutils with correct params", () => {
       overrideTfx.module("test", "test", []);
@@ -389,6 +397,8 @@ describe("tfxjs", () => {
         }).promise,
       });
       overrideTfx.print = logSpy;
+      // prevent creation of file
+      overrideTfx.cli.createTfVarFile = () => {};
     });
     it("should return the correct data and set this.apply", async () => {
       overrideTfx.exec = mock.exec;
