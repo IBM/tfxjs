@@ -177,4 +177,52 @@ describe("mocks", () => {
       });
     });
   });
+  describe("ssh", () => {
+    let mockSshPackage = new mock.mockSshPackage();
+    let errMockSshPackage = new mock.mockSshPackage(true);
+    it("should not be connected to any host when initialized", () => {
+      assert.deepEqual(
+        mockSshPackage.isConnected(),
+        false,
+        "should not be connected"
+      );
+      assert.deepEqual(
+        errMockSshPackage.isConnected(),
+        false,
+        "should not be connected"
+      );
+    });
+    it("should be connected after connect() is run when there is no error", () => {
+      mockSshPackage.connect();
+      assert.deepEqual(
+        mockSshPackage.isConnected(),
+        true,
+        "should be connected"
+      );
+    });
+    it("should not be connected even after connect() with an error", () => {
+      errMockSshPackage.connect();
+      assert.deepEqual(
+        errMockSshPackage.isConnected(),
+        false,
+        "should not be connected"
+      );
+    });
+  });
+  describe("ping", () => {
+    let mockPingPackage = new mock.mockPingPackage();
+    let errMockPingPackage = new mock.mockPingPackage(true);
+
+    it("should connect with no error", () => {
+      return mockPingPackage.promise.probe().then((res) => {
+        assert.deepEqual(res.alive, true, "host should be alive");
+      });
+    });
+
+    it("should not connect with error", () => {
+      return errMockPingPackage.promise.probe().then((res) => {
+        assert.deepEqual(res.alive, false, "host should be dead");
+      });
+    });
+  });
 });

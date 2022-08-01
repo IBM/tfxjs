@@ -1,4 +1,5 @@
 const { assert } = require("chai");
+const fs = require("fs");
 const { it } = require("mocha");
 const {
   keyCheck,
@@ -10,8 +11,10 @@ const {
   containsAny,
   flagValues,
   replaceOptionalFlags,
+  hclEncode,
 } = require("../lib/utils");
 const utils = require("../lib/utils");
+const overrideJson = require("./data-files/override.json");
 
 describe("utils", () => {
   describe("eachKey", () => {
@@ -483,6 +486,77 @@ describe("utils", () => {
         'testVar2="true"'
       );
       assert.deepEqual(actualData, expectedData, "should return correct data");
+    });
+  });
+  describe("hclEncode", () => {
+    it("should take a json object with only string, bool, and number variables and convert to hcl", () => {
+      let testJson = {
+        string: "string",
+        number: 1,
+        boolean: true,
+      };
+      let actualData = hclEncode(testJson);
+      let expectedData = `string  = "string"\nnumber  = 1\nboolean = true`;
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
+    });
+    it("should take a json object with only string, bool, number, and array variables and convert to hcl", () => {
+      let testJson = {
+        string: "string",
+        number: 1,
+        boolean: true,
+        array: [1, true, "three", 4],
+      };
+      let actualData = hclEncode(testJson);
+      let expectedData = `string  = "string"\nnumber  = 1\nboolean = true\narray   = [1,true,"three",4]`;
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
+    });
+    it("should take a json object with only string, bool, number, array, and object variables and convert to hcl", () => {
+      let testJson = {
+        string: "string",
+        number: 1,
+        object: {
+          hi: "hello",
+          zones: [1, 2, 3],
+          is_false: true,
+        },
+        boolean: true,
+        array: [1, true, "three", 4],
+      };
+      let actualData = hclEncode(testJson);
+      let expectedData = `string  = "string"
+number  = 1
+object  = {
+  hi       = "hello"
+  zones    = [1,2,3]
+  is_false = true
+}
+boolean = true
+array   = [1,true,"three",4]`;
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
+    });
+    it("should work with a very big nested json object", () => {
+      let actualData = hclEncode(overrideJson);
+      let expectedData = fs.readFileSync(
+        "./unit-tests/data-files/override.tfvars",
+        "utf-8"
+      );
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
     });
   });
 });
