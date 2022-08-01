@@ -94,6 +94,46 @@ const mocks = function () {
     };
     this.mkdirSync = (path) => {
       return path;
+    }
+  };
+  
+  /**
+   * Creates a mockSshPackage instance
+   * @param {boolean} err whether or not this mock package throws an error
+   */
+  this.mockSshPackage = function (err) {
+    this.connected = false;
+    this.isConnected = function () {
+      return this.connected;
+    };
+    this.connect = function (data) {
+      return new Promise((resolve, reject) => {
+        if (err) {
+          this.connected = false;
+          reject("connection failure");
+        } else {
+          this.connected = true;
+          resolve();
+        }
+      });
+    };
+  };
+
+  /**
+   * Creates a mock ping package instance
+   * @param {boolean} err whether or not this package will fail
+   */
+  this.mockPingPackage = function (err) {
+    this.promise = {
+      probe: function (host) {
+        return new Promise((resolve, reject) => {
+          if (err) {
+            resolve({ alive: false });
+          } else {
+            resolve({ alive: true });
+          }
+        });
+      },
     };
   };
 };
