@@ -104,6 +104,22 @@ const mocks = function () {
   };
 
   /**
+   * Mock FS package
+   * @param {bool} existingPath true if using existing filepath
+   */
+  this.mockFs = function (existingPath) {
+    this.writeFileSync = (path, data) => {
+      return data;
+    };
+    this.existsSync = (directory) => {
+      return existingPath == true ? true : false;
+    };
+    this.mkdirSync = (path) => {
+      return path;
+    }
+  };
+  
+  /**
    * Creates a mockSshPackage instance
    * @param {boolean} err whether or not this mock package throws an error
    */
