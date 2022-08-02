@@ -166,14 +166,22 @@ describe("mocks", () => {
     let mockTcpPackage = new mock.tcpPackage(true);
     it("should connect without an error", () => {
       return mockTcpPackage().catch(({ stdout, stderr }) => {
-        assert.deepEqual(stdout, "Success", "stdout should display expected data");
+        assert.deepEqual(
+          stdout,
+          "Success",
+          "stdout should display expected data"
+        );
         assert.deepEqual(stderr, "", "should be no error");
       });
     });
     it("should not connect with an error", () => {
       return errorTcpPackage().catch(({ stdout, stderr }) => {
         assert.deepEqual(stdout, "", "stdout should be empty");
-        assert.deepEqual(stderr, "TCP Connection to host ${host} on port ${port} expected", "should be an error");
+        assert.deepEqual(
+          stderr,
+          "TCP Connection to host ${host} on port ${port} expected",
+          "should be an error"
+        );
       });
     });
   });
