@@ -87,11 +87,11 @@ describe("Ping Tests", function () {
 describe("Testing the TCP connection", () => {
   it("should run a successful test assertion when an expected connection is successful", () => {
     let connectPackage = new connect({ exec: mock.tcpPackage() });
-    return connectPackage.tcpTest("passing test", "host", "port");
+    return connectPackage.tcpTest("host", "port");
   });
   it("should run a failing assertion test where an unexpected tcp connection is made", () => {
     let connectPackage = new connect({ exec: mock.tcpPackage() });
-    return connectPackage.tcpTest("failing test", "host", "port", true).catch((error) => {
+    return connectPackage.tcpTest("host", "port", true).catch((error) => {
       assert.equal(
         error.message,
         "stderr should be empty: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
@@ -101,14 +101,14 @@ describe("Testing the TCP connection", () => {
   });
   it("should create a successful test assertion if a connection not expected to connect does not connect", () => {
     let connectPackage = new connect({ exec: mock.tcpPackage(true) });
-    return connectPackage.tcpTest("passing test", "host", "port", true);
+    return connectPackage.tcpTest("host", "port", true);
   });
   it("should create a failing test assertion when a connection expected to fail succeeds", () => {
-    let connectPackage = new connect({ exec: mock.tcpPackage() });
-    return connectPackage.tcpTest("failing test", "host", "port").catch((error) => {
+    let connectPackage = new connect({ exec: mock.tcpPackage(true) });
+    return connectPackage.tcpTest("host", "port").catch((error) => {
       assert.equal(
         error.message,
-        "failing TCP test: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
+        "stderr should be empty: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
         "should display the same error"
       );
     });
