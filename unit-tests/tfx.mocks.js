@@ -92,9 +92,10 @@ const mocks = function () {
     return function () {
       return new Promise((resolve, reject) => {
         if (success) {
-          reject({ stdout: "", stderr: "" });
+          reject({ stdout: "", stderr: "TCP Connection to host ${host} on port ${port} expected" });
         } else {
-          reject({ stdout: "", stderr: "TCP connection error" });
+          
+          resolve({ stdout: "Success", stderr: "" });
         }
       });
     };
