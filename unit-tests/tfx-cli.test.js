@@ -2,6 +2,7 @@ const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
 const constants = require("../lib/constants");
 const sinon = require("sinon");
+const { prettyJSON } = require("../lib/utils");
 
 function mockExec(data) {
   this.data = data;
@@ -15,7 +16,38 @@ function mockExec(data) {
   };
 }
 
-const help = `${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#############################################################################${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                   tfxjs                                   #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#############################################################################${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}tfxjs cli tool allows you to run tfxjs tests.${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To test a .js file:${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx <file_path>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}To create tests from a terraform plan:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To create a nodejs test file from a YAML plan:${constants.ansiResetDim}\n${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx decode <yaml file path> --out <filepath>${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n${constants.ansiLtGray}${constants.ansiDefaultForeground}`;
+const help = [
+  `${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiBold}#############################################################################`,
+  `${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #`,
+  `${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                   tfxjs                                   #`,
+  `${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#                                                                           #`,
+  `${constants.ansiResetDim}${constants.ansiDefaultForeground}\n${constants.ansiCyan}${constants.ansiBold}#############################################################################`,
+  `${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}tfxjs cli tool allows you to run tfxjs tests.${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To test a .js file:${constants.ansiResetDim}\n`,
+  `${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx <file_path>${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}To create tests from a terraform plan:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiBold}To create a nodejs test file from a YAML plan:${constants.ansiResetDim}\n`,
+  `${constants.ansiBold}${constants.ansiResetDim}${constants.ansiCyan}  $ tfx decode <yaml file path> --out <filepath>${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}Additional flags are also available:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  -v | --tf-var${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}${constants.ansiLtGray}      Inject a terraform.tfvar value into the plan. This flag can be added any number of times${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}To initialize a tfxjs test directory:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx init <directory_path>${constants.ansiDefaultForeground}\n`,
+  `${constants.ansiCyan}${constants.ansiDefaultForeground}`,
+].join("");
 
 let exec = new mockExec({}, false);
 let spawn = new mockExec({}, false);
@@ -315,6 +347,70 @@ describe("cli", () => {
       assert(
         writeFileSyncSpy.calledOnceWith("outFilePath", "filedata"),
         "should be called once with correct params"
+      );
+    });
+  });
+  describe("tfxInit", () => {
+    it("should throw an error if more than two arguments are passed", () => {
+      tfx = new cli(exec.promise, exec.promise, "init", "dir", "oops");
+      tfx.writeFileSync = new sinon.spy();
+      tfx.mkdirSync = new sinon.spy();
+      tfx.fsExists = () => {
+        return true;
+      };
+      try {
+        tfx.tfxcli();
+      } catch (err) {
+        assert.deepEqual(
+          err,
+          `${constants.ansiRed}tfx init expects only a single arcument (directory path). Got a list of valid commands, run \`tfx --help\`.${constants.ansiDefaultForeground}`,
+          "it should throw correct string"
+        );
+      }
+    });
+    it("should create needed files when called with correct number of params", () => {
+      let childSpy = new sinon.spy();
+      tfx = new cli(childSpy, exec.promise, "init", "dir");
+      tfx.writeFileSync = new sinon.spy();
+      tfx.mkdirSync = new sinon.spy();
+      tfx.fsExists = () => {
+        return true;
+      };
+      tfx.tfxcli();
+      assert.isTrue(
+        childSpy.calledOnceWith(`cd dir && npm run build`),
+        "it should cd and run npm build"
+      );
+      assert.isTrue(
+        tfx.writeFileSync.callCount === 2,
+        "it should call writeFileSync twice"
+      );
+      assert.deepEqual(
+        tfx.writeFileSync.lastCall.args,
+        ["dir/tfxjs.test.js", ""],
+        "it should create an empty test file"
+      );
+      assert.deepEqual(
+        tfx.writeFileSync.firstCall.args,
+        [
+          "dir/package.json",
+          prettyJSON({
+            name: "tfxjs generated acceptance tests",
+            version: "0.0.1",
+            description: "acceptance tests for terraform directory",
+            main: "tfxjs.test.js",
+            scripts: {
+              test: "tfx .",
+              build: "npm i && npm i -g tfxjs mocha",
+            },
+            author: "This file was automatically generated by tfxjs",
+            license: "ISC",
+            dependencies: {
+              tfxjs: "^1.0.0",
+            },
+          }),
+        ],
+        "it should have the correct package.json data"
       );
     });
   });
