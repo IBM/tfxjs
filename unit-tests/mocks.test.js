@@ -161,6 +161,26 @@ describe("mocks", () => {
       });
     });
   });
+  describe("mockFs", () => {
+    let mockFs = new mock.mockFs();
+    let dirMockFs = new mock.mockFs(true)
+    it("should return running writeFileSync", () => {
+      let actualData = mockFs.writeFileSync("path", "data");
+      assert.deepEqual(actualData, "data", "it should return data")
+    })
+    it("should return running mkdirSync", () => {
+      let actualData = mockFs.mkdirSync("path");
+      assert.deepEqual(actualData, "path", "it should return data")
+    })
+    it("should return false running existsSync if file does not exist", () => {
+      let actualData = mockFs.existsSync("path");
+      assert.deepEqual(actualData, false, "it should return data")
+    })
+    it("should return false running existsSync if file does not exist", () => {
+      let actualData = dirMockFs.existsSync("path");
+      assert.deepEqual(actualData, true, "it should return data")
+    })
+  })
   describe("ssh", () => {
     let mockSshPackage = new mock.mockSshPackage();
     let errMockSshPackage = new mock.mockSshPackage(true);
