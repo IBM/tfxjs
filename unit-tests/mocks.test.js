@@ -162,8 +162,8 @@ describe("mocks", () => {
     });
   });
   describe("tcp", () => {
-    let errorTcpPackage = new mock.tcpPackage();
-    let mockTcpPackage = new mock.tcpPackage(true);
+    let mockTcpPackage = new mock.tcpPackage();
+    let errorTcpPackage = new mock.tcpPackage(true);
     it("should connect without an error", () => {
       return mockTcpPackage().catch(({ stdout, stderr }) => {
         assert.deepEqual(
