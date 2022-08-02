@@ -90,25 +90,25 @@ describe("Testing the TCP connection", () => {
     return connectPackage.tcpTest("host", "port");
   });
   it("should run a failing assertion test where an unexpected tcp connection is made", () => {
-    let connectPackage = new connect({ exec: mock.tcpPackage() });
+    let connectPackage = new connect({ exec: mock.tcpPackage(true) });
     return connectPackage.tcpTest("host", "port", true).catch((error) => {
       assert.equal(
         error.message,
-        "stderr should be empty: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
+        "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
         "should display the same error"
       );
     });
   });
   it("should create a successful test assertion if a connection not expected to connect does not connect", () => {
-    let connectPackage = new connect({ exec: mock.tcpPackage(true) });
-    return connectPackage.tcpTest("host", "port", true);
+    let connectPackage = new connect({ exec: mock.tcpPackage() });
+    return connectPackage.tcpTest("host", "port");
   });
   it("should create a failing test assertion when a connection expected to fail succeeds", () => {
     let connectPackage = new connect({ exec: mock.tcpPackage(true) });
     return connectPackage.tcpTest("host", "port").catch((error) => {
       assert.equal(
         error.message,
-        "stderr should be empty: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
+        "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
         "should display the same error"
       );
     });
