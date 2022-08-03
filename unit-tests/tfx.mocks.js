@@ -84,6 +84,83 @@ const mocks = function () {
       });
     };
   };
-};
+  /**
+   * Create a mock exec function for TCP connection using GNU netcat version 0.7.1
+   * can be installed with brew install netcat
+   * If successful, the Promise will reject with an empty output
+   * If failure, the Promise will reject with a "Connection error" message
+   * @param {boolean} error whether mock function will pass or fail
+   * @returns a mock exec function to make a TCP connection to a port
+   */
+  this.tcpPackage = function (error) {
+    return function () {
+      return new Promise((resolve, reject) => {
+        if (error) {
+          reject({
+            stdout: "",
+            stderr: "TCP Connection to host ${host} on port ${port} expected",
+          });
+        } else {
+          resolve({ stdout: "Success", stderr: "" });
+        }
+      });
+    };
+  };
 
+  /**
+   * Mock FS package
+   * @param {bool} existingPath true if using existing filepath
+   */
+  this.mockFs = function (existingPath) {
+    this.writeFileSync = (path, data) => {
+      return data;
+    };
+    this.existsSync = (directory) => {
+      return existingPath == true ? true : false;
+    };
+    this.mkdirSync = (path) => {
+      return path;
+    }
+  };
+  
+  /**
+   * Creates a mockSshPackage instance
+   * @param {boolean} err whether or not this mock package throws an error
+   */
+  this.mockSshPackage = function (err) {
+    this.connected = false;
+    this.isConnected = function () {
+      return this.connected;
+    };
+    this.connect = function (data) {
+      return new Promise((resolve, reject) => {
+        if (err) {
+          this.connected = false;
+          reject("connection failure");
+        } else {
+          this.connected = true;
+          resolve();
+        }
+      });
+    };
+  };
+
+  /**
+   * Creates a mock ping package instance
+   * @param {boolean} err whether or not this package will fail
+   */
+  this.mockPingPackage = function (err) {
+    this.promise = {
+      probe: function (host) {
+        return new Promise((resolve, reject) => {
+          if (err) {
+            resolve({ alive: false });
+          } else {
+            resolve({ alive: true });
+          }
+        });
+      },
+    };
+  };
+};
 module.exports = mocks;
