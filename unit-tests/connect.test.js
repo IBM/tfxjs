@@ -1,7 +1,5 @@
-const mocks = require("./tfx.mocks");
 const connect = require("../lib/connect");
 const { assert } = require("chai");
-
 const mocks = require("./tfx.mocks");
 let mock = new mocks();
 let mockSshPackage = new mock.mockSshPackage();
