@@ -4,7 +4,7 @@
   "description": "Terraform acceptance testing framework",
   "main": "./lib/index.js",
   "bin": {
-    "tfx": "./index.js"
+    "tfx": "index.js"
   },
   "scripts": {
     "test": "mocha unit-tests/",
@@ -27,8 +27,7 @@
     "json-to-pretty-yaml": "^1.2.2",
     "mocha": "^9.2.2",
     "node-ssh": "^12.0.5",
-    "ping": "^0.4.2",
-    "regex-but-with-words": "^1.0.3"
+    "regex-but-with-words": "^1.0.5"
   },
   "devDependencies": {
     "chai": "^4.3.6",
