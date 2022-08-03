@@ -4,7 +4,7 @@
   "description": "Terraform acceptance testing framework",
   "main": "./lib/index.js",
   "bin": {
-    "tfx": "./index.js"
+    "tfx": "index.js"
   },
   "scripts": {
     "test": "mocha unit-tests/",
