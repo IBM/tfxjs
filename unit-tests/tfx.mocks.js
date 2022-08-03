@@ -80,6 +80,28 @@ const mocks = function () {
       });
     };
   };
+  /**
+   * Create a mock exec function for TCP connection using GNU netcat version 0.7.1
+   * can be installed with brew install netcat
+   * If successful, the Promise will reject with an empty output
+   * If failure, the Promise will reject with a "Connection error" message
+   * @param {boolean} error whether mock function will pass or fail
+   * @returns a mock exec function to make a TCP connection to a port
+   */
+  this.tcpPackage = function (error) {
+    return function () {
+      return new Promise((resolve, reject) => {
+        if (error) {
+          reject({
+            stdout: "",
+            stderr: "TCP Connection to host ${host} on port ${port} expected",
+          });
+        } else {
+          resolve({ stdout: "Success", stderr: "" });
+        }
+      });
+    };
+  };
 
   /**
    * Mock FS package
@@ -137,5 +159,4 @@ const mocks = function () {
     };
   };
 };
-
 module.exports = mocks;
