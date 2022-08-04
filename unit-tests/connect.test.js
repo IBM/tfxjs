@@ -11,7 +11,7 @@ describe("UDP connection", () => {
   it("should run a passing test when an expected UDP connection is successful", () => {
     let mockExec = new mock.mockExec({ stdout: "", stderr: "" }, true);
     let connectPackage = new connect({ exec: mockExec.promise });
-    return connectPackage.udpTest("host", "port", 1000, false);
+    return connectPackage.udpTest("host", "port", false, 1000);
   });
   it("should run a passing test when an expected unsuccessful UDP connection is refused", () => {
     let mockExec = new mock.mockExec(
@@ -19,13 +19,13 @@ describe("UDP connection", () => {
       false
     );
     let connectPackage = new connect({ exec: mockExec.promise });
-    return connectPackage.udpTest("host", "port", 1000, true);
+    return connectPackage.udpTest("host", "port", true);
   });
   it("should run a failing test when an expected UDP connection is unsuccessful", () => {
     let mockExec = new mock.mockExec({ stdout: "", stderr: "read(net): Connection refused\n" }, false);
     let connectPackage = new connect({ exec: mockExec.promise });
-    return connectPackage.udpTest("host", "port", 1000, false).catch((err) => {
-      assert.deepEqual(err.message, "stderr should be empty: expected 'read(net): Connection refused\\n' to deeply equal ''", "should fail with expected error message")
+    return connectPackage.udpTest("host", "port", false, 1000).catch((err) => {
+      assert.deepEqual(err.message, "expected successful connection: expected 'read(net): Connection refused\\n' to deeply equal ''", "should fail with expected error message")
     });
   });
   it("should run a failing test when an expected unsuccessful UDP connection is successful", () => {
@@ -34,8 +34,8 @@ describe("UDP connection", () => {
       true
     );
     let connectPackage = new connect({ exec: mockExec.promise });
-    return connectPackage.udpTest("host", "port", 1000, true).catch((err) => {
-      assert.deepEqual(err.message, "stderr should show expected data: expected '' to deeply equal 'read(net): Connection refused\\n'", "should fail with expected error message");
+    return connectPackage.udpTest("host", "port", true, 1000).catch((err) => {
+      assert.deepEqual(err.message, "expected to not connect: expected '' to deeply equal 'read(net): Connection refused\\n'", "should fail with expected error message");
     });
   });
 });
