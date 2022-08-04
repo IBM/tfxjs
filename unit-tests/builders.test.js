@@ -272,22 +272,31 @@ describe("builders", () => {
     describe("tcp", () => {
       const tcp_connnect = builders.connect;
       it("should connect if the package is valid", () => {
-        return tcp_connnect.tcp.doesConnect("host", "port", mockTcpPackage)
-      })
+        return tcp_connnect.tcp.doesConnect("host", "port", mockTcpPackage);
+      });
       it("should fail if it does not connect with valid package", () => {
-        return tcp_connnect.tcp.doesNotConnect("host", "port", mockTcpPackage).catch((error) => {
-          console.log(error)
-          assert.deepEqual(error.message, "")
-        })
-      })
+        return tcp_connnect.tcp
+          .doesNotConnect("host", "port", mockTcpPackage)
+          .catch((error) => {
+            assert.deepEqual(
+              error.message,
+              "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host ${host} on por…'"
+            );
+          });
+      });
       it("should not connect with a package that is invalid", () => {
-        return tcp_connnect.tcp.doesNotConnect("host", "port", errTcpPackage)
-      })
+        return tcp_connnect.tcp.doesNotConnect("host", "port", errTcpPackage);
+      });
       it("should fail if it connects with invalid package", () => {
-        return tcp_connnect.tcp.doesConnect("host", "port", errTcpPackage).catch((error) => {
-          assert.deepEqual(error.message, "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''")
-        })
-      })
-    })
+        return tcp_connnect.tcp
+          .doesConnect("host", "port", errTcpPackage)
+          .catch((error) => {
+            assert.deepEqual(
+              error.message,
+              "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''"
+            );
+          });
+      });
+    });
   });
 });
