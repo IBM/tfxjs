@@ -1,5 +1,13 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
+let mocks = require("./tfx.mocks");
+let mock = new mocks();
+let mockSshPackage = new mock.mockSshPackage();
+let errMockSshPackage = new mock.mockSshPackage(true);
+let mockPingPackage = new mock.mockPingPackage();
+let errMockPingPackge = new mock.mockPingPackage(true);
+let mockTcpPackage = new mock.tcpPackage();
+let errTcpPackage = new mock.tcpPackage(true);
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -261,5 +269,24 @@ describe("builders", () => {
         assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy");
       });
     });
+    describe("tcp", () => {
+      const tcp_connnect = builders.connect;
+      it("should connect if the package is valid", () => {
+        return tcp_connnect.tcp.doesConnect("host", "port", mockTcpPackage)
+      })
+      it("should run a failing test if it does not connect with valid package", () => {
+        return tcp_connnect.tcp.doesNotConnect("host", "port", mockTcpPackage).catch((error) => {
+          console.log(error)
+        })
+      })
+      it("should not connect with a package that is invalid", () => {
+        return tcp_connnect.tcp.doesNotConnect("host", "port", errTcpPackage)
+      })
+      it("should run a failing test if it connects with invalid package", () => {
+        return tcp_connnect.tcp.doesConnect("host", "port", errTcpPackage).catch((error) => {
+          assert.deepEqual(error.message, "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''")
+        })
+      })
+    })
   });
 });
