@@ -67,15 +67,19 @@ const mocks = function () {
 
   /**
    * Create a mock exec function
-   * @param {Object} data arbitrary data bject to return
+   * @param {Object} data arbitrary data object to return
+   * @param {boolean} reject tells the function to reject the Promise
    */
-  this.mockExec = function (data) {
+  this.mockExec = function (data, reject) {
     this.data = data;
+    this.reject = reject;
     this.commandList = [];
     this.promise = (command) => {
       this.commandList.push(command);
       return new Promise((resolve, reject) => {
-        if (this.data?.stderr) reject(this.data);
+        if (this.reject) {
+          reject(this.data);
+        } else if (this.data?.stderr) reject(this.data);
         else resolve(this.data);
       });
     };
