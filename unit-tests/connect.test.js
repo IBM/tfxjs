@@ -1,11 +1,44 @@
-const { assert } = require("chai");
 const connect = require("../lib/connect");
+const { assert } = require("chai");
 const mocks = require("./tfx.mocks");
 let mock = new mocks();
 let mockSshPackage = new mock.mockSshPackage();
 let errMockSshPackage = new mock.mockSshPackage(true);
 let mockPingPackage = new mock.mockPingPackage();
 let errMockPingPackge = new mock.mockPingPackage(true);
+
+describe("UDP connection", () => {
+  it("should run a passing test when an expected UDP connection is successful", () => {
+    let mockExec = new mock.mockExec({ stdout: "", stderr: "" }, true);
+    let connectPackage = new connect({ exec: mockExec.promise });
+    return connectPackage.udpTest("host", "port", false, 1000);
+  });
+  it("should run a passing test when an expected unsuccessful UDP connection is refused", () => {
+    let mockExec = new mock.mockExec(
+      { stdout: "", stderr: "read(net): Connection refused\n" },
+      false
+    );
+    let connectPackage = new connect({ exec: mockExec.promise });
+    return connectPackage.udpTest("host", "port", true);
+  });
+  it("should run a failing test when an expected UDP connection is unsuccessful", () => {
+    let mockExec = new mock.mockExec({ stdout: "", stderr: "read(net): Connection refused\n" }, false);
+    let connectPackage = new connect({ exec: mockExec.promise });
+    return connectPackage.udpTest("host", "port", false, 1000).catch((err) => {
+      assert.deepEqual(err.message, "expected successful connection: expected 'read(net): Connection refused\\n' to deeply equal ''", "should fail with expected error message")
+    });
+  });
+  it("should run a failing test when an expected unsuccessful UDP connection is successful", () => {
+    let mockExec = new mock.mockExec(
+      { stdout: "", stderr: "" },
+      true
+    );
+    let connectPackage = new connect({ exec: mockExec.promise });
+    return connectPackage.udpTest("host", "port", true, 1000).catch((err) => {
+      assert.deepEqual(err.message, "expected to not connect: expected '' to deeply equal 'read(net): Connection refused\\n'", "should fail with expected error message");
+    });
+  });
+});
 
 describe("SSH Tests", function () {
   it("it should run a passing test when an expected connection is successful", () => {
