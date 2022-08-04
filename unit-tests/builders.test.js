@@ -274,15 +274,16 @@ describe("builders", () => {
       it("should connect if the package is valid", () => {
         return tcp_connnect.tcp.doesConnect("host", "port", mockTcpPackage)
       })
-      it("should run a failing test if it does not connect with valid package", () => {
+      it("should fail if it does not connect with valid package", () => {
         return tcp_connnect.tcp.doesNotConnect("host", "port", mockTcpPackage).catch((error) => {
           console.log(error)
+          assert.deepEqual(error.message, "")
         })
       })
       it("should not connect with a package that is invalid", () => {
         return tcp_connnect.tcp.doesNotConnect("host", "port", errTcpPackage)
       })
-      it("should run a failing test if it connects with invalid package", () => {
+      it("should fail if it connects with invalid package", () => {
         return tcp_connnect.tcp.doesConnect("host", "port", errTcpPackage).catch((error) => {
           assert.deepEqual(error.message, "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''")
         })
