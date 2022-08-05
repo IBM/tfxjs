@@ -1,5 +1,9 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
+const mocks = require("./tfx.mocks");
+let mock = new mocks();
+let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true).promise;
+let errMockUdpPackage = new mock.mockExec({ stdout: "", stderr: "read(net): Connection refused\n" }, false).promise;
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -259,6 +263,57 @@ describe("builders", () => {
         let cloneTemplate = original.clone();
         cloneTemplate.set("$VALUES", "frog");
         assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy");
+      });
+    });
+  });
+  describe("connect", () => {
+    let connect = builders.connect;
+    describe("udp", () => {
+      it("should connect with valid UDP package", () => {
+        return connect.udp.doesConnect(
+          mockUdpPackage,
+          "host",
+          "port",
+          1000
+        );
+      });
+      it("should not connect with an invalid UDP package", () => {
+        return connect.udp.doesNotConnect(
+          errMockUdpPackage,
+          "host",
+          "port"
+        );
+      });
+      it("should run a failing test when an expected unsuccessful UDP connection is successful", () => {
+        return connect.udp
+          .doesNotConnect(
+            mockUdpPackage,
+            "host",
+            "port",
+            1000
+          )
+          .catch((err) => {
+            assert.deepEqual(
+              err.message,
+              "expected to not connect: expected '' to deeply equal 'read(net): Connection refused\\n'",
+              "should fail with expected error message"
+            );
+          });
+      });
+      it("should run a failing test when an expected UDP connection is unsuccessful", () => {
+        return connect.udp
+          .doesConnect(
+            errMockUdpPackage,
+            "host",
+            "port",
+          )
+          .catch((err) => {
+            assert.deepEqual(
+              err.message,
+              "expected successful connection: expected 'read(net): Connection refused\\n' to deeply equal ''",
+              "should fail with expected error message"
+            );
+          });
       });
     });
   });
