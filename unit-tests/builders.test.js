@@ -1,9 +1,16 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
 const mocks = require("./tfx.mocks");
+
 let mock = new mocks();
 let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true).promise;
 let errMockUdpPackage = new mock.mockExec({ stdout: "", stderr: "read(net): Connection refused\n" }, false).promise;
+let mockSshPackage = new mock.mockSshPackage();
+let errMockSshPackage = new mock.mockSshPackage(true);
+let mockPingPackage = new mock.mockPingPackage();
+let errMockPingPackge = new mock.mockPingPackage(true);
+let mockTcpPackage = new mock.tcpPackage();
+let errTcpPackage = new mock.tcpPackage(true);
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -263,6 +270,35 @@ describe("builders", () => {
         let cloneTemplate = original.clone();
         cloneTemplate.set("$VALUES", "frog");
         assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy");
+      });
+    });
+    describe("tcp", () => {
+      const tcp_connnect = builders.connect;
+      it("should connect if the package is valid", () => {
+        return tcp_connnect.tcp.doesConnect("host", "port", mockTcpPackage);
+      });
+      it("should fail if it does not connect with valid package", () => {
+        return tcp_connnect.tcp
+          .doesNotConnect("host", "port", mockTcpPackage)
+          .catch((error) => {
+            assert.deepEqual(
+              error.message,
+              "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host ${host} on por…'"
+            );
+          });
+      });
+      it("should not connect with a package that is invalid", () => {
+        return tcp_connnect.tcp.doesNotConnect("host", "port", errTcpPackage);
+      });
+      it("should fail if it connects with invalid package", () => {
+        return tcp_connnect.tcp
+          .doesConnect("host", "port", errTcpPackage)
+          .catch((error) => {
+            assert.deepEqual(
+              error.message,
+              "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''"
+            );
+          });
       });
     });
   });
