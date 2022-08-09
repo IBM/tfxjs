@@ -127,7 +127,7 @@ describe("Testing the TCP connection", () => {
     return connectPackage.tcpTest("host", "port", true).catch((error) => {
       assert.equal(
         error.message,
-        "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host ${host} on por…'",
+        "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host host on port port'",
         "should display the same error"
       );
     });
@@ -141,7 +141,7 @@ describe("Testing the TCP connection", () => {
     return connectPackage.tcpTest("host", "port").catch((error) => {
       assert.equal(
         error.message,
-        "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
+        "Expected successful TCP connection: expected 'TCP Connection to host host on port p…' to deeply equal ''",
         "should display the same error"
       );
     });

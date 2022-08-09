@@ -179,7 +179,7 @@ describe("mocks", () => {
         assert.deepEqual(stdout, "", "stdout should be empty");
         assert.deepEqual(
           stderr,
-          "TCP Connection to host ${host} on port ${port} expected",
+          "TCP Connection to host host on port port expected",
           "should be an error"
         );
       });
