@@ -293,5 +293,90 @@ describe("builders", () => {
         )
       );
     });
+
+    it("should call and run doesConnect udp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.udpTest = new sinon.spy();
+      connectionTests.udp.doesConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.udpTest.calledOnceWith("host", 8080, false)
+      );
+    });
+    it("should call and run doesNotConnect udp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.udpTest = new sinon.spy();
+      connectionTests.udp.doesNotConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.udpTest.calledOnceWith(
+          "host",
+          8080,
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect ping test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.pingTest = new sinon.spy();
+      connectionTests.ping.doesConnect("testName", "host");
+      assert.isTrue(
+        connectionTests.connectionTests.pingTest.calledOnceWith("testName", "host")
+      );
+    });
+    it("should call and run doesNotConnect ping test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.pingTest = new sinon.spy();
+      connectionTests.ping.doesNotConnect("testName", "host");
+      assert.isTrue(
+        connectionTests.connectionTests.pingTest.calledOnceWith(
+          "testName",
+          "host",
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect ssh test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.sshTest = new sinon.spy();
+      connectionTests.ssh.doesConnect("testName", "host", "username", "privateKey");
+      assert.isTrue(
+        connectionTests.connectionTests.sshTest.calledOnceWith("testName", "host", "username", "privateKey")
+      );
+    });
+    it("should call and run doesNotConnect ssh test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.sshTest = new sinon.spy();
+      connectionTests.ssh.doesNotConnect("testName", "host", "username", "privateKey");
+      assert.isTrue(
+        connectionTests.connectionTests.sshTest.calledOnceWith(
+          "testName",
+          "host",
+          "username",
+          "privateKey",
+          true
+        )
+      );
+    });
+
+
   });
 });

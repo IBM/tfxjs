@@ -1191,13 +1191,24 @@ describe("tfUnitTestUtils", () => {
           [
             ["Cluster Versions"],
             [
+              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions connection tests",
+            ],
+            [
               "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
             ],
           ],
           "should return correct it function were run"
         );
       });
-      /*it("should run the correct describe and test function for apply with connection tests", () => {
+      it("should run the correct describe and test function for apply with connection tests", () => {
+        let tfx = {
+          tcp: {
+            doesConnect: new sinon.spy(),
+          },
+        };
+        let addressFunction = tfutils.connectionTest((address) => {
+          tfx.tcp.doesConnect(address);
+        });
         let tfstate = {
           resources: [
             {
@@ -1257,9 +1268,8 @@ describe("tfUnitTestUtils", () => {
                 "module.landing_zone.data.test.test",
               instances: [
                 {
-                  address: tfutils.connect.connectionTest(address => {
-                    tfutils.connect.udp.doesConnect(address, 8080)
-                  })
+                  address: addressFunction
+                  
                 },
               ],
             },
@@ -1269,7 +1279,7 @@ describe("tfUnitTestUtils", () => {
         assert.deepEqual(
           itSpy.args,
           [
-            ["addressTest"],
+            ["module.landing_zone.data.test.test[0] connection tests"],
             [
               "Resource module.landing_zone.data.test.test should be in tfstate"
             ],
@@ -1292,7 +1302,7 @@ describe("tfUnitTestUtils", () => {
           ],
           "should return correct it function were run"
         );
-      });*/
+      });
       it("should throw an error if no tf data", () => {
         let task = () => tfutils.testModule({ frog: "frog" });
         assert.throws(
