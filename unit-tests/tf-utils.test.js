@@ -11,8 +11,12 @@ const tfxjs = require("../lib/index");
 const connect = require("../lib/connect");
 let tfx = new tfxjs("./mock_path");
 let mock = new mocks();
-let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true).promise;
-let errMockUdpPackage = new mock.mockExec({ stdout: "", stderr: "read(net): Connection refused\n" }, false).promise;
+let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true)
+  .promise;
+let errMockUdpPackage = new mock.mockExec(
+  { stdout: "", stderr: "read(net): Connection refused\n" },
+  false
+).promise;
 
 //Initialize spies
 let describeSpy = new sinon.spy();
@@ -29,7 +33,9 @@ const tfutils = new tfUnitTestUtils({
     return callback();
   },
   overrideAssert: assert,
-  overrideExec: mockUdpPackage
+  overrideConnections: {
+    exec: mock.exec,
+  },
 });
 
 describe("tfUnitTestUtils", () => {
@@ -74,6 +80,13 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(
         tfutils.assert.toString(),
         assert.toString(),
+        "it should have correct assert function"
+      );
+    });
+    it("should set connectionPackages if override option is passed", () => {
+      assert.deepEqual(
+        tfutils.assert,
+        assert,
         "it should have correct assert function"
       );
     });
@@ -452,11 +465,43 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(actualData, expectedData, "should return correct data");
     });
   });
+  describe("connectionTest", () => {
+    it("should return a function called connectionTest", () => {
+      assert.isTrue(
+        tfutils.connectionTest(() => {}).name === "connectionTest",
+        "it should be a function"
+      );
+      assert.isTrue(
+        tfutils.connectionTest(() => {}) instanceof Function,
+        "it should be a function"
+      );
+    });
+    it("should return a function executable with address param", () => {
+      let connectSpy = new sinon.spy();
+      let testAttempt = tfutils.connectionTest((address) => {
+        connectSpy(address);
+      });
+      assert.isTrue(
+        testAttempt instanceof Function,
+        "it should return a function"
+      );
+      testAttempt()("hello");
+      assert.isTrue(
+        connectSpy.calledOnceWith("hello"),
+        "it should call the spy"
+      );
+    });
+  });
   describe("buildInstanceTest", () => {
-    it("should return the correct test for a function for udp test", () => {
-      let addressFn = tfutils.connect.connectionTest(address => {
-        tfutils.connect.udp.doesConnect(address, 8080)
-      })
+    it("should return the correct test function constructor for a connection test. it should call the correct tfx function scoped outside when invoked with retrieved value", () => {
+      let tfx = {
+        tcp: {
+          doesConnect: new sinon.spy(),
+        },
+      };
+      let addressFunction = tfutils.connectionTest((address) => {
+        tfx.tcp.doesConnect(address);
+      });
       let actualData = tfutils.buildInstanceTest(
         "module.vpc.ibm_is_floating_ip.floating_ip",
         {
@@ -469,20 +514,21 @@ describe("tfUnitTestUtils", () => {
               instances: [
                 {
                   attributes: {
-                    address: "host"
-                  }
-                }
-              ]
-            }
-          ]
+                    address: "host",
+                  },
+                },
+              ],
+            },
+          ],
         },
         {
           0: {
-            address: addressFn
-          }
+            address: addressFunction,
+          },
         }
-      )
+      );
       let expectedData = {
+        connectionTests: [],
         describe: "module.vpc.ibm_is_floating_ip.floating_ip",
         tests: [
           notFalseTest(
@@ -492,9 +538,6 @@ describe("tfUnitTestUtils", () => {
               "Expected module.vpc.ibm_is_floating_ip.floating_ip resource to be included in tfstate",
             ]
           ),
-          // describe("udpTest", () => {
-          //   it("should connect on port 8080 with UDP", () => {return new connect({ exec: mockUdpPackage }).udpTest("host", 8080, false, 1)})
-          // }),
           isTrueTest(
             "Expected instance with key 0 to exist at module.vpc.ibm_is_floating_ip.floating_ip",
             [
@@ -505,17 +548,22 @@ describe("tfUnitTestUtils", () => {
         ],
         connectionTests: [
           {
-            name: "addressTest",
-            arg: "host",
-            fn: addressFn
-
-          }
-        ]
-
+            name: "module.vpc.ibm_is_floating_ip.floating_ip[0] connection tests",
+            test: addressFunction,
+            address: "host",
+          },
+        ],
       };
-      console.log(actualData);
       assert.deepEqual(actualData, expectedData, "should return correct data");
-    })
+      // to prevent the return of a raw value, test must be invoked and then called with the address
+      actualData.connectionTests[0].test()(
+        actualData.connectionTests[0].address
+      );
+      assert.isTrue(
+        tfx.tcp.doesConnect.calledOnceWith("host"),
+        "it should evaluate the test correctly"
+      );
+    });
     it("should return the correct test for a function for unfound attribute of instance at index 0", () => {
       let actualData = tfutils.buildInstanceTest(
         "module.landing_zone.ibm_atracker_target.atracker_target",
@@ -549,6 +597,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -610,6 +659,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -684,6 +734,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -745,6 +796,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           {
@@ -820,6 +872,7 @@ describe("tfUnitTestUtils", () => {
           describe: "Landing Zone",
           tests: [
             {
+              connectionTests: [],
               describe:
                 "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
               tests: [
@@ -926,6 +979,7 @@ describe("tfUnitTestUtils", () => {
           describe: "External Data Source",
           tests: [
             {
+              connectionTests: [],
               describe: "data.external.example",
               tests: [
                 {
@@ -1143,7 +1197,7 @@ describe("tfUnitTestUtils", () => {
           "should return correct it function were run"
         );
       });
-      it("should run the correct describe and test function for apply with connection tests", () => {
+      /*it("should run the correct describe and test function for apply with connection tests", () => {
         let tfstate = {
           resources: [
             {
@@ -1238,7 +1292,7 @@ describe("tfUnitTestUtils", () => {
           ],
           "should return correct it function were run"
         );
-      });
+      });*/
       it("should throw an error if no tf data", () => {
         let task = () => tfutils.testModule({ frog: "frog" });
         assert.throws(
