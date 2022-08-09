@@ -454,6 +454,9 @@ describe("tfUnitTestUtils", () => {
   });
   describe("buildInstanceTest", () => {
     it("should return the correct test for a function for udp test", () => {
+      let addressFn = tfutils.connect.connectionTest(address => {
+        tfutils.connect.udp.doesConnect(address, 8080)
+      })
       let actualData = tfutils.buildInstanceTest(
         "module.vpc.ibm_is_floating_ip.floating_ip",
         {
@@ -475,9 +478,7 @@ describe("tfUnitTestUtils", () => {
         },
         {
           0: {
-            address: tfutils.connect.connectionTest(address => {
-              tfutils.connect.udp.doesConnect(address, 8080)
-            })
+            address: addressFn
           }
         }
       )
@@ -506,9 +507,7 @@ describe("tfUnitTestUtils", () => {
           {
             name: "addressTest",
             arg: "host",
-            fn: tfutils.connect.connectionTest(address => {
-              tfutils.connect.udp.doesConnect(address, 8080)
-            })
+            fn: addressFn
 
           }
         ]
