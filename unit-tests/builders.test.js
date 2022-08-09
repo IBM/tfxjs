@@ -1,16 +1,8 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
 const mocks = require("./tfx.mocks");
-
+const sinon = require("sinon");
 let mock = new mocks();
-let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true).promise;
-let errMockUdpPackage = new mock.mockExec({ stdout: "", stderr: "read(net): Connection refused\n" }, false).promise;
-let mockSshPackage = new mock.mockSshPackage();
-let errMockSshPackage = new mock.mockSshPackage(true);
-let mockPingPackage = new mock.mockPingPackage();
-let errMockPingPackge = new mock.mockPingPackage(true);
-let mockTcpPackage = new mock.tcpPackage();
-let errTcpPackage = new mock.tcpPackage(true);
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -272,85 +264,34 @@ describe("builders", () => {
         assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy");
       });
     });
-    describe("tcp", () => {
-      const tcp_connnect = builders.connect;
-      it("should connect if the package is valid", () => {
-        return tcp_connnect.tcp.doesConnect("host", "port", mockTcpPackage);
-      });
-      it("should fail if it does not connect with valid package", () => {
-        return tcp_connnect.tcp
-          .doesNotConnect("host", "port", mockTcpPackage)
-          .catch((error) => {
-            assert.deepEqual(
-              error.message,
-              "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host ${host} on por…'"
-            );
-          });
-      });
-      it("should not connect with a package that is invalid", () => {
-        return tcp_connnect.tcp.doesNotConnect("host", "port", errTcpPackage);
-      });
-      it("should fail if it connects with invalid package", () => {
-        return tcp_connnect.tcp
-          .doesConnect("host", "port", errTcpPackage)
-          .catch((error) => {
-            assert.deepEqual(
-              error.message,
-              "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''"
-            );
-          });
-      });
-    });
   });
   describe("connect", () => {
     let connect = builders.connect;
-    describe("udp", () => {
-      it("should connect with valid UDP package", () => {
-        return connect.udp.doesConnect(
-          mockUdpPackage,
+    it("should call and run doesConnect tcp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.tcpTest = new sinon.spy();
+      connectionTests.tcp.doesConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.tcpTest.calledOnceWith("host", 8080)
+      );
+    });
+    it("should call and run tcp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.tcpTest = new sinon.spy();
+      connectionTests.tcp.doesNotConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.tcpTest.calledOnceWith(
           "host",
-          "port",
-          1000
-        );
-      });
-      it("should not connect with an invalid UDP package", () => {
-        return connect.udp.doesNotConnect(
-          errMockUdpPackage,
-          "host",
-          "port"
-        );
-      });
-      it("should run a failing test when an expected unsuccessful UDP connection is successful", () => {
-        return connect.udp
-          .doesNotConnect(
-            mockUdpPackage,
-            "host",
-            "port",
-            1000
-          )
-          .catch((err) => {
-            assert.deepEqual(
-              err.message,
-              "expected to not connect: expected '' to deeply equal 'read(net): Connection refused\\n'",
-              "should fail with expected error message"
-            );
-          });
-      });
-      it("should run a failing test when an expected UDP connection is unsuccessful", () => {
-        return connect.udp
-          .doesConnect(
-            errMockUdpPackage,
-            "host",
-            "port",
-          )
-          .catch((err) => {
-            assert.deepEqual(
-              err.message,
-              "expected successful connection: expected 'read(net): Connection refused\\n' to deeply equal ''",
-              "should fail with expected error message"
-            );
-          });
-      });
+          8080,
+          true
+        )
+      );
     });
   });
 });
