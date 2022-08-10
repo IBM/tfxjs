@@ -4,7 +4,7 @@ const tfx = new tfxjs("../", {
   shuffle_count: 3,
 });
 let addressFunction = tfx.tfutils.connectionTest((address) => {
-  tfx.connect.ping.doesConnect("ping test", address);
+  return tfx.connect.ping.doesConnect("ping test", address);
 });
 
 tfx.apply("Hashicorp Provider Example Tests", () => {
@@ -190,14 +190,12 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
   tfx.state(
     "Ping Test",
     tfx.address("module.ping_module.random_shuffle.ping_test", {
-      index_key: 0,
       keepers: {
-        shuffle_count: 1,
+        shuffle_count: "1",
       },
       result_count: 1,
-      input: [
-        "8.8.8.8"
-      ]
+      input: ["8.8.8.8"],
+      result: addressFunction
     })
   )
 });
