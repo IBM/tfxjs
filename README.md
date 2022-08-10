@@ -34,7 +34,9 @@ npm install tfxjs -g
 ```shell
 npm install mocha -g
 ```
-
+- Install [GNU Netcat version 0.7.1](http://netcat.sourceforge.net/). On MacOS, use ```shell
+brew install netcat
+```
 ---
 
 ## Example Usage
