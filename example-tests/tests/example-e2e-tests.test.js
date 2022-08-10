@@ -1,7 +1,10 @@
-const tfxjs = require("tfxjs");
+const tfxjs = require("../../lib/index");
 const tfx = new tfxjs("../", {
   trigger_value: "example-e2e-tests",
   shuffle_count: 3,
+});
+let addressFunction = tfx.tfutils.connectionTest((address) => {
+  tfx.connect.ping.doesConnect("ping test", address);
 });
 
 tfx.apply("Hashicorp Provider Example Tests", () => {
@@ -184,4 +187,17 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
       separator: "-",
     })
   );
+  tfx.state(
+    "Ping Test",
+    tfx.address("module.ping_module.random_shuffle.ping_test", {
+      index_key: 0,
+      keepers: {
+        shuffle_count: 1,
+      },
+      result_count: 1,
+      input: [
+        "8.8.8.8"
+      ]
+    })
+  )
 });
