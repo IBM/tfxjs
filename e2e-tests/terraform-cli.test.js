@@ -3,21 +3,14 @@ const cli = require("../lib/terraform-cli");
 const jsutil = require("util"); // Utils to run child process
 const fs = require("fs");
 const jsExec = jsutil.promisify(require("child_process").exec); // Exec from child process
-<<<<<<< HEAD
-=======
 const tfxInit = require("../lib/tfx-init");
->>>>>>> intern-tfxjs/master
 let tf;
 let tfLogs = [];
 
 describe("example-test terraformCli", () => {
   beforeEach(() => {
     tfLogs = [];
-<<<<<<< HEAD
-    tf = new cli("./example-tests", jsExec, true);
-=======
     tf = new cli("../example-tests", jsExec, true);
->>>>>>> intern-tfxjs/master
     tf.log = (log) => {
       tfLogs.push(log);
     };
@@ -31,14 +24,6 @@ describe("example-test terraformCli", () => {
         },
         (data) => {
           assert.deepEqual(
-<<<<<<< HEAD
-            tfLogs[1],
-            fs.readFileSync("./e2e-tests/data-files/plan-logs.txt", "utf8"),
-            "it should product correct logs"
-          );
-          assert.deepEqual(
-=======
->>>>>>> intern-tfxjs/master
             data,
             require("./data-files/plan.json"),
             "should return correct data"
@@ -54,10 +39,7 @@ describe("example-test terraformCli", () => {
           "example-module",
           "local-files",
           "main.tf",
-<<<<<<< HEAD
-=======
           "ping_module",
->>>>>>> intern-tfxjs/master
           "test-output.sh",
           "tests",
           "variables.tf",
@@ -97,10 +79,7 @@ describe("example-test terraformCli", () => {
           "example-module",
           "local-files",
           "main.tf",
-<<<<<<< HEAD
-=======
           "ping_module",
->>>>>>> intern-tfxjs/master
           "test-output.sh",
           "tests",
           "variables.tf",
@@ -127,24 +106,6 @@ describe("example-test terraformCli", () => {
           cloneLs = lsData;
         })
         .then(() => {
-<<<<<<< HEAD
-          return tf.execPromise("ls ./example-tests");
-        })
-        .then(expectedData => {
-          assert.deepEqual(cloneLs, expectedData)
-        })
-    });
-    it("should correctly purge the directory", () => {
-      tf.directory = "./clone"
-      return tf.purgeClone()
-        .then(() => {
-          return tf.execPromise("ls ./clone")
-        })
-        .catch(err => {
-          assert.deepEqual(err.stderr, 'ls: ./clone: No such file or directory\n', "it should have correct error");
-        })
-    })
-=======
           return tf.execPromise("ls ../example-tests");
         })
         .then((expectedData) => {
@@ -212,6 +173,5 @@ describe("example-test terraformCli", () => {
           jsExec("rm -rf e2e_test_tfx_init");
         });
     });
->>>>>>> intern-tfxjs/master
   });
 });

@@ -1,9 +1,6 @@
 const { assert } = require("chai");
-<<<<<<< HEAD
-=======
 const fs = require("fs");
 const { it } = require("mocha");
->>>>>>> intern-tfxjs/master
 const {
   keyCheck,
   emptyCheck,
@@ -14,15 +11,10 @@ const {
   containsAny,
   flagValues,
   replaceOptionalFlags,
-<<<<<<< HEAD
-} = require("../lib/utils");
-const utils = require("../lib/utils");
-=======
   hclEncode,
 } = require("../lib/utils");
 const utils = require("../lib/utils");
 const overrideJson = require("./data-files/override.json");
->>>>>>> intern-tfxjs/master
 
 describe("utils", () => {
   describe("eachKey", () => {
@@ -45,29 +37,17 @@ describe("utils", () => {
   describe("getType", () => {
     let getType = utils.getType;
     it("should return array if is array", () => {
-<<<<<<< HEAD
-      assert.deepEqual(getType([]), "Array", "should retun corrct value");
-=======
       assert.deepEqual(getType([]), "Array", "should return correct value");
->>>>>>> intern-tfxjs/master
     });
     it("should return Function if is Function", () => {
       assert.deepEqual(
         getType(getType),
         "Function",
-<<<<<<< HEAD
-        "should retun corrct value"
-      );
-    });
-    it("should return typeof if is not function or Array", () => {
-      assert.deepEqual(getType({}), "object", "should retun corrct value");
-=======
         "should return correct value"
       );
     });
     it("should return typeof if is not function or Array", () => {
       assert.deepEqual(getType({}), "object", "should return correct value");
->>>>>>> intern-tfxjs/master
     });
   });
   describe("keys", () => {
@@ -127,15 +107,12 @@ describe("utils", () => {
   });
   describe("contains", () => {
     let contains = utils.contains;
-<<<<<<< HEAD
-=======
     it("should return true if string in string", () => {
       assert.isTrue(contains("test", "es"), "should be true");
     });
     it("should return false if string not in string", () => {
       assert.isFalse(contains("test", "frog"), "should be false");
     });
->>>>>>> intern-tfxjs/master
     it("should return true if item in array", () => {
       assert.isTrue(contains(["test"], "test"), "should be true");
     });
@@ -247,14 +224,10 @@ describe("utils", () => {
           "./filePath"
         );
       };
-<<<<<<< HEAD
-      assert.throws(task, "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`.");
-=======
       assert.throws(
         task,
         "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`."
       );
->>>>>>> intern-tfxjs/master
     });
     it("should not throw an error if an optional flag is passed", () => {
       let task = () => {
@@ -289,11 +262,7 @@ describe("utils", () => {
           "-v",
           'testVar2="true"'
         );
-<<<<<<< HEAD
-        assert.doesNotThrow(task)
-=======
         assert.doesNotThrow(task);
->>>>>>> intern-tfxjs/master
       };
     });
   });
@@ -301,10 +270,6 @@ describe("utils", () => {
     it("should return correct alias map for a verb", () => {
       let plan = {
         requiredFlags: ["in", "out", "type"],
-<<<<<<< HEAD
-
-=======
->>>>>>> intern-tfxjs/master
       };
       let tags = {
         help: ["-h", "--help"],
@@ -322,9 +287,6 @@ describe("utils", () => {
         "--type": "-t",
       };
       let actualData = getVerbActions(plan, tags);
-<<<<<<< HEAD
-      assert.deepEqual(expectedData, actualData);
-=======
       assert.deepEqual(expectedData, actualData, "should return correct data");
     });
     it("should remove optional flags with no needed key values", () => {
@@ -336,7 +298,6 @@ describe("utils", () => {
         shallow: ["-s", "--shallow"],
         // extract -in path -out path -type tfx | yaml
       };
->>>>>>> intern-tfxjs/master
     });
     it("should return correct alias map for a verb with optional multiple tags", () => {
       let plan = {
@@ -353,11 +314,7 @@ describe("utils", () => {
         in: ["-i", "--in"],
         out: ["-o", "--out"],
         type: ["-t", "--type"],
-<<<<<<< HEAD
-        tfvar: ["-v", "--tf-var"]
-=======
         tfvar: ["-v", "--tf-var"],
->>>>>>> intern-tfxjs/master
         // extract -in path -out path -type tfx | yaml
       };
       let expectedData = {
@@ -367,19 +324,11 @@ describe("utils", () => {
         "--out": "-o",
         "-t": "--type",
         "--type": "-t",
-<<<<<<< HEAD
-        "?*-v" : "?*--tf-var",
-        "?*--tf-var" : "?*-v"
-      };
-      let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
-=======
         "?*-v": "?*--tf-var",
         "?*--tf-var": "?*-v",
       };
       let actualData = getVerbActions(plan, tags);
       assert.deepEqual(expectedData, actualData, "should return correct data");
->>>>>>> intern-tfxjs/master
     });
     it("should return correct alias map for a verb with optional tags", () => {
       let plan = {
@@ -395,11 +344,7 @@ describe("utils", () => {
         in: ["-i", "--in"],
         out: ["-o", "--out"],
         type: ["-t", "--type"],
-<<<<<<< HEAD
-        tfvar: ["-v", "--tf-var"]
-=======
         tfvar: ["-v", "--tf-var"],
->>>>>>> intern-tfxjs/master
         // extract -in path -out path -type tfx | yaml
       };
       let expectedData = {
@@ -409,19 +354,11 @@ describe("utils", () => {
         "--out": "-o",
         "-t": "--type",
         "--type": "-t",
-<<<<<<< HEAD
-        "?-v" : "?--tf-var",
-        "?--tf-var" : "?-v"
-      };
-      let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
-=======
         "?-v": "?--tf-var",
         "?--tf-var": "?-v",
       };
       let actualData = getVerbActions(plan, tags);
       assert.deepEqual(expectedData, actualData, "should return correct data");
->>>>>>> intern-tfxjs/master
     });
   });
   describe("containsAny", () => {
@@ -436,11 +373,6 @@ describe("utils", () => {
   });
   describe("replaceOptionalFlags", () => {
     it("should return command if none optional flags", () => {
-<<<<<<< HEAD
-      let actualData = replaceOptionalFlags({requiredFlags: ["one"]}, {}, "hi")
-      assert.deepEqual(actualData, ["hi"], "it should return commands")
-    })
-=======
       let actualData = replaceOptionalFlags(
         { requiredFlags: ["one"] },
         {},
@@ -448,28 +380,11 @@ describe("utils", () => {
       );
       assert.deepEqual(actualData, ["hi"], "it should return commands");
     });
->>>>>>> intern-tfxjs/master
     it("should replace optional flags that do not accept multiple arguments", () => {
       let actualData = replaceOptionalFlags(
         {
           optionalFlags: [
             {
-<<<<<<< HEAD
-              name: "optional"
-            }
-          ]
-        },
-        {
-          optional: ["-o", "--ooo"]
-        },
-        "-o",
-        "frog"
-      )
-      let expectedData = ["?-o", "frog"];
-      assert.deepEqual(actualData, expectedData, "it should return correct data")
-    })
-  })
-=======
               name: "optional",
             },
           ],
@@ -488,7 +403,6 @@ describe("utils", () => {
       );
     });
   });
->>>>>>> intern-tfxjs/master
   describe("flagValues", () => {
     it("should return key value pair of flag values", () => {
       let actualData = flagValues(
@@ -524,14 +438,6 @@ describe("utils", () => {
         in: "./in-file-path/",
         out: "./out-file.test.js",
         type: "tfx",
-<<<<<<< HEAD
-        tfvars: [
-          'testVar1=true',
-          'testVar2="true"'
-        ]
-      }
-      assert.deepEqual(actualData, expectedData, "should return correct data")
-=======
         tfvars: ["testVar1=true", 'testVar2="true"'],
       };
       assert.deepEqual(actualData, expectedData, "should return correct data");
@@ -651,7 +557,6 @@ array   = [1,true,"three",4]`;
         expectedData,
         "it should return the correct data"
       );
->>>>>>> intern-tfxjs/master
     });
   });
 });

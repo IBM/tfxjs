@@ -1,11 +1,8 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
-<<<<<<< HEAD
-=======
 const mocks = require("./tfx.mocks");
 const sinon = require("sinon");
 let mock = new mocks();
->>>>>>> intern-tfxjs/master
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -29,10 +26,7 @@ describe("builders", () => {
     describe("send", () => {
       it("should return the correct object when send is called", () => {
         let testInstance = new mochaTest();
-<<<<<<< HEAD
-=======
         testInstance.send();
->>>>>>> intern-tfxjs/master
         let sendData = testInstance.send();
         let expectedData = {
           name: "",
@@ -94,10 +88,7 @@ describe("builders", () => {
   });
   describe("eachKeyTest", () => {
     let eachKeyTest = builders.eachKeyTest;
-<<<<<<< HEAD
-=======
 
->>>>>>> intern-tfxjs/master
     it("should run value test against a function if the value is a function", () => {
       let data = eachKeyTest(
         "address",
@@ -141,11 +132,7 @@ describe("builders", () => {
           ],
         },
       ];
-<<<<<<< HEAD
-      assert.deepEqual(actualData, expectedData);
-=======
       assert.deepEqual(actualData, expectedData, "should return expected data");
->>>>>>> intern-tfxjs/master
     });
   });
   describe("valueTest", () => {
@@ -197,13 +184,6 @@ describe("builders", () => {
     let resource = builders.resource;
     it("should return the correct object", () => {
       let actualData = resource("test", "test", {});
-<<<<<<< HEAD
-      assert.deepEqual(actualData, {
-        name: "test",
-        address: "test",
-        values: {},
-      });
-=======
       assert.deepEqual(
         actualData,
         {
@@ -213,7 +193,6 @@ describe("builders", () => {
         },
         "should return expected data"
       );
->>>>>>> intern-tfxjs/master
     });
   });
   describe("address", () => {
@@ -276,17 +255,6 @@ describe("builders", () => {
       it("should create a new instance of the textTemplate instance", () => {
         let original = new textTemplate(resourceTemplate);
         let cloneTemplate = original.clone();
-<<<<<<< HEAD
-        assert.deepEqual(original.str, cloneTemplate.str, "it should copy")
-      })
-      it("should not change the original when the clone is changed", () => {
-        let original = new textTemplate(resourceTemplate);
-        let cloneTemplate = original.clone();
-        cloneTemplate.set("$VALUES", "frog")
-        assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy")
-      })
-    })
-=======
         assert.deepEqual(original.str, cloneTemplate.str, "it should copy");
       });
       it("should not change the original when the clone is changed", () => {
@@ -408,6 +376,5 @@ describe("builders", () => {
     });
 
 
->>>>>>> intern-tfxjs/master
   });
 });

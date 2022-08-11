@@ -23,11 +23,8 @@ This terraform template uses several different HashiCorp provider resources and 
 
 ## Getting Started
 
-<<<<<<< HEAD
-=======
 Install `jq` using your preferred method [here](https://stedolan.github.io/jq/download/)
 
->>>>>>> intern-tfxjs/master
 Install `tfxjs` in the [tests](./tests/) folder.
 
 ```shell

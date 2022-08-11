@@ -142,9 +142,6 @@
           "seed": null
         },
         "sensitive_values": {
-<<<<<<< HEAD
-          "input": [false, false, false, false, false, false],
-=======
           "input": [
             false,
             false,
@@ -153,7 +150,6 @@
             false,
             false
           ],
->>>>>>> intern-tfxjs/master
           "keepers": {},
           "result": []
         }
@@ -167,9 +163,6 @@
         "provider_name": "registry.terraform.io/hashicorp/random",
         "schema_version": 0,
         "values": {
-<<<<<<< HEAD
-          "input": ["scout", "slinger", "warrior", "builder", "settler"],
-=======
           "input": [
             "scout",
             "slinger",
@@ -177,7 +170,6 @@
             "builder",
             "settler"
           ],
->>>>>>> intern-tfxjs/master
           "keepers": {
             "shuffle_count": "2"
           },
@@ -185,9 +177,6 @@
           "seed": null
         },
         "sensitive_values": {
-<<<<<<< HEAD
-          "input": [false, false, false, false, false],
-=======
           "input": [
             false,
             false,
@@ -195,7 +184,6 @@
             false,
             false
           ],
->>>>>>> intern-tfxjs/master
           "keepers": {},
           "result": []
         }
@@ -221,12 +209,6 @@
           }
         ],
         "address": "module.example_module"
-<<<<<<< HEAD
-      }
-    ]
-  }
-}
-=======
       },
       {
         "resources": [
@@ -261,4 +243,3 @@
     ]
   }
 }
->>>>>>> intern-tfxjs/master

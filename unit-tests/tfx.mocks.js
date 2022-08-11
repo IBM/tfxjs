@@ -67,38 +67,23 @@ const mocks = function () {
 
   /**
    * Create a mock exec function
-<<<<<<< HEAD
-   * @param {Object} data arbitrary data bject to return
-   */
-  this.mockExec = function (data) {
-    this.data = data;
-=======
    * @param {Object} data arbitrary data object to return
    * @param {boolean} reject tells the function to reject the Promise
    */
   this.mockExec = function (data, reject) {
     this.data = data;
     this.reject = reject;
->>>>>>> intern-tfxjs/master
     this.commandList = [];
     this.promise = (command) => {
       this.commandList.push(command);
       return new Promise((resolve, reject) => {
-<<<<<<< HEAD
-        if (this.data?.stderr) reject(this.data);
-=======
         if (this.reject) {
           reject(this.data);
         } else if (this.data?.stderr) reject(this.data);
->>>>>>> intern-tfxjs/master
         else resolve(this.data);
       });
     };
   };
-<<<<<<< HEAD
-};
-
-=======
   /**
    * Create a mock exec function for TCP connection using GNU netcat version 0.7.1
    * can be installed with brew install netcat
@@ -178,5 +163,4 @@ const mocks = function () {
     };
   };
 };
->>>>>>> intern-tfxjs/master
 module.exports = mocks;

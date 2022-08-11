@@ -9,10 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD
-    "tfxjs": "^0.5.0"
-=======
     "tfxjs": "^1.0.0"
->>>>>>> intern-tfxjs/master
   }
 }
