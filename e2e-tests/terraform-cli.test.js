@@ -24,11 +24,6 @@ describe("example-test terraformCli", () => {
         },
         (data) => {
           assert.deepEqual(
-            tfLogs[1],
-            fs.readFileSync("./data-files/plan-logs.txt", "utf8"),
-            "it should product correct logs"
-          );
-          assert.deepEqual(
             data,
             require("./data-files/plan.json"),
             "should return correct data"
@@ -44,6 +39,7 @@ describe("example-test terraformCli", () => {
           "example-module",
           "local-files",
           "main.tf",
+          "ping_module",
           "test-output.sh",
           "tests",
           "variables.tf",
@@ -83,6 +79,7 @@ describe("example-test terraformCli", () => {
           "example-module",
           "local-files",
           "main.tf",
+          "ping_module",
           "test-output.sh",
           "tests",
           "variables.tf",
