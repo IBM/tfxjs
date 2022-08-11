@@ -30,13 +30,16 @@ npm install tfxjs -g
 ## Prerequisites
 
 - [Terraform CLI](https://www.terraform.io/cli/commands)
+- [jq](https://stedolan.github.io/jq/download/) 
 - If [mocha](https://mochajs.org/) is not installed globally run:
 ```shell
 npm install mocha -g
 ```
-- Install [GNU Netcat version 0.7.1](http://netcat.sourceforge.net/). On MacOS, use ```shell
+- [GNU Netcat version 0.7.1](http://netcat.sourceforge.net/). On MacOS, use 
+```shell
 brew install netcat
 ```
+
 ---
 
 ## Example Usage
