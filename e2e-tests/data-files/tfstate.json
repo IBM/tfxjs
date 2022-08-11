@@ -1,8 +1,8 @@
 {
   "version": 4,
-  "terraform_version": "1.1.7",
+  "terraform_version": "1.2.6",
   "serial": 11,
-  "lineage": "ff8847e4-3dc3-a90a-9dfe-2c84b0ca695f",
+  "lineage": "1652398e-d065-131d-6aa5-c0206ce3c59b",
   "outputs": {},
   "resources": [
     {
@@ -71,7 +71,7 @@
           "index_key": 0,
           "schema_version": 0,
           "attributes": {
-            "id": "9142834085509673071",
+            "id": "6843003507803332991",
             "triggers": {
               "trigger_value": "this-is-the-apply"
             }
@@ -86,7 +86,7 @@
           "index_key": 1,
           "schema_version": 0,
           "attributes": {
-            "id": "2069881511077264837",
+            "id": "8753194100527080037",
             "triggers": {
               "trigger_value": "this-is-the-apply"
             }
@@ -101,7 +101,7 @@
           "index_key": 2,
           "schema_version": 0,
           "attributes": {
-            "id": "1377046888799190686",
+            "id": "372497200102036444",
             "triggers": {
               "trigger_value": "this-is-the-apply"
             }
@@ -124,7 +124,7 @@
           "index_key": "example",
           "schema_version": 0,
           "attributes": {
-            "id": "8960187214139378692",
+            "id": "66970888087521016",
             "triggers": {
               "trigger_value": "this-is-the-apply"
             }
@@ -139,7 +139,7 @@
           "index_key": "test",
           "schema_version": 0,
           "attributes": {
-            "id": "1086600198146314309",
+            "id": "5561850300417528052",
             "triggers": {
               "trigger_value": "this-is-the-apply"
             }
@@ -154,7 +154,7 @@
           "index_key": "value",
           "schema_version": 0,
           "attributes": {
-            "id": "6009568497056111935",
+            "id": "6585915482146404549",
             "triggers": {
               "trigger_value": "this-is-the-apply"
             }
@@ -176,7 +176,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "example-acceptance-morally-evident-malamute",
+            "id": "example-acceptance-clearly-useful-mallard",
             "keepers": null,
             "length": 3,
             "prefix": "example-acceptance",
@@ -210,11 +210,11 @@
               "shuffle_count": "5"
             },
             "result": [
-              "consider",
               "opt",
+              "ponder",
               "preordain",
               "portent",
-              "ponder"
+              "brainstorm"
             ],
             "result_count": 5,
             "seed": null
@@ -242,9 +242,9 @@
             },
             "result": [
               "slinger",
-              "builder",
-              "scout",
               "settler",
+              "scout",
+              "builder",
               "warrior"
             ],
             "result_count": 5,
@@ -268,11 +268,39 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "acceptance-module-knowing-pup",
+            "id": "acceptance-module-positive-ox",
             "keepers": null,
             "length": 2,
             "prefix": "acceptance-module",
             "separator": "-"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ping_module",
+      "mode": "managed",
+      "type": "random_shuffle",
+      "name": "ping_test",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "-",
+            "input": [
+              "8.8.8.8"
+            ],
+            "keepers": {
+              "shuffle_count": "1"
+            },
+            "result": [
+              "8.8.8.8"
+            ],
+            "result_count": 1,
+            "seed": null
           },
           "sensitive_attributes": [],
           "private": "bnVsbA=="

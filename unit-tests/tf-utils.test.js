@@ -6,6 +6,17 @@ const {
 } = require("../lib/builders.js");
 const tfUnitTestUtils = require("../lib/tf-utils.js");
 const sinon = require("sinon");
+const mocks = require("./tfx.mocks");
+const tfxjs = require("../lib/index");
+const connect = require("../lib/connect");
+let tfx = new tfxjs("./mock_path");
+let mock = new mocks();
+let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true)
+  .promise;
+let errMockUdpPackage = new mock.mockExec(
+  { stdout: "", stderr: "read(net): Connection refused\n" },
+  false
+).promise;
 
 //Initialize spies
 let describeSpy = new sinon.spy();
@@ -22,6 +33,9 @@ const tfutils = new tfUnitTestUtils({
     return callback();
   },
   overrideAssert: assert,
+  overrideConnections: {
+    exec: mock.exec,
+  },
 });
 
 describe("tfUnitTestUtils", () => {
@@ -66,6 +80,13 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(
         tfutils.assert.toString(),
         assert.toString(),
+        "it should have correct assert function"
+      );
+    });
+    it("should set connectionPackages if override option is passed", () => {
+      assert.deepEqual(
+        tfutils.assert,
+        assert,
         "it should have correct assert function"
       );
     });
@@ -444,7 +465,105 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(actualData, expectedData, "should return correct data");
     });
   });
+  describe("connectionTest", () => {
+    it("should return a function called connectionTest", () => {
+      assert.isTrue(
+        tfutils.connectionTest(() => {}).name === "connectionTest",
+        "it should be a function"
+      );
+      assert.isTrue(
+        tfutils.connectionTest(() => {}) instanceof Function,
+        "it should be a function"
+      );
+    });
+    it("should return a function executable with address param", () => {
+      let connectSpy = new sinon.spy();
+      let testAttempt = tfutils.connectionTest((address) => {
+        connectSpy(address);
+      });
+      assert.isTrue(
+        testAttempt instanceof Function,
+        "it should return a function"
+      );
+      testAttempt()("hello");
+      assert.isTrue(
+        connectSpy.calledOnceWith("hello"),
+        "it should call the spy"
+      );
+    });
+  });
   describe("buildInstanceTest", () => {
+    it("should return the correct test function constructor for a connection test. it should call the correct tfx function scoped outside when invoked with retrieved value", () => {
+      let tfx = {
+        tcp: {
+          doesConnect: new sinon.spy(),
+        },
+      };
+      let addressFunction = tfutils.connectionTest((address) => {
+        tfx.tcp.doesConnect(address);
+      });
+      let actualData = tfutils.buildInstanceTest(
+        "module.vpc.ibm_is_floating_ip.floating_ip",
+        {
+          resources: [
+            {
+              module: "module.vpc",
+              mode: "managed",
+              type: "ibm_is_floating_ip",
+              name: "floating_ip",
+              instances: [
+                {
+                  attributes: {
+                    address: "host",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          0: {
+            address: addressFunction,
+          },
+        }
+      );
+      let expectedData = {
+        connectionTests: [],
+        describe: "module.vpc.ibm_is_floating_ip.floating_ip",
+        tests: [
+          notFalseTest(
+            "Resource module.vpc.ibm_is_floating_ip.floating_ip should be in tfstate",
+            [
+              true,
+              "Expected module.vpc.ibm_is_floating_ip.floating_ip resource to be included in tfstate",
+            ]
+          ),
+          isTrueTest(
+            "Expected instance with key 0 to exist at module.vpc.ibm_is_floating_ip.floating_ip",
+            [
+              true,
+              "Expected instance with key 0 to exist at module.vpc.ibm_is_floating_ip.floating_ip.instances",
+            ]
+          ),
+        ],
+        connectionTests: [
+          {
+            name: "module.vpc.ibm_is_floating_ip.floating_ip[0] connection tests",
+            test: addressFunction,
+            address: "host",
+          },
+        ],
+      };
+      assert.deepEqual(actualData, expectedData, "should return correct data");
+      // to prevent the return of a raw value, test must be invoked and then called with the address
+      actualData.connectionTests[0].test()(
+        actualData.connectionTests[0].address
+      );
+      assert.isTrue(
+        tfx.tcp.doesConnect.calledOnceWith("host"),
+        "it should evaluate the test correctly"
+      );
+    });
     it("should return the correct test for a function for unfound attribute of instance at index 0", () => {
       let actualData = tfutils.buildInstanceTest(
         "module.landing_zone.ibm_atracker_target.atracker_target",
@@ -478,6 +597,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -539,6 +659,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -613,6 +734,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -674,6 +796,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           {
@@ -749,6 +872,7 @@ describe("tfUnitTestUtils", () => {
           describe: "Landing Zone",
           tests: [
             {
+              connectionTests: [],
               describe:
                 "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
               tests: [
@@ -855,6 +979,7 @@ describe("tfUnitTestUtils", () => {
           describe: "External Data Source",
           tests: [
             {
+              connectionTests: [],
               describe: "data.external.example",
               tests: [
                 {
@@ -1066,8 +1191,114 @@ describe("tfUnitTestUtils", () => {
           [
             ["Cluster Versions"],
             [
+              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions connection tests",
+            ],
+            [
               "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
             ],
+          ],
+          "should return correct it function were run"
+        );
+      });
+      it("should run the correct describe and test function for apply with connection tests", () => {
+        let tfx = {
+          tcp: {
+            doesConnect: new sinon.spy(),
+          },
+        };
+        let addressFunction = tfutils.connectionTest((address) => {
+          tfx.tcp.doesConnect(address);
+        });
+        let tfstate = {
+          resources: [
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_container_cluster_versions",
+              name: "cluster_versions",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    name: "name-one",
+                  },
+                },
+                {
+                  index_key: "test",
+                  attributes: {
+                    name: "name-two",
+                  },
+                },
+              ],
+            },
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_resource_instance",
+              name: "cos",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [],
+            },
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "test",
+              name: "test",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    address: "1.2.3.4"
+                  }
+                }
+              ]
+            }
+          ],
+        };
+        let options = {
+          moduleName: "Connection Test",
+          address:
+            "module.landing_zone.data.test.test",
+          tfData: tfstate,
+          isApply: true,
+          testList: [
+            {
+              name: "Connection Test",
+              address:
+                "module.landing_zone.data.test.test",
+              instances: [
+                {
+                  address: addressFunction
+                  
+                },
+              ],
+            },
+          ],
+        };
+        tfutils.testModule(options);
+        assert.deepEqual(
+          itSpy.args,
+          [
+            ["module.landing_zone.data.test.test[0] connection tests"],
+            [
+              "Resource module.landing_zone.data.test.test should be in tfstate"
+            ],
+            [
+              "Expected instance with key 0 to exist at module.landing_zone.data.test.test"
+            ]
+          ],
+          "should return correct it function were run"
+        );
+        assert.deepEqual(
+          describeSpy.args,
+          [
+            ["Connection Test"],
+            [
+              "module.landing_zone.data.test.test connection tests",
+            ],
+            [
+              "module.landing_zone.data.test.test"
+            ]
           ],
           "should return correct it function were run"
         );

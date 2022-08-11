@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2022-08-11
+
+- When attempting to run tfx commands in a directory that causes an error, the correct terraform error will be shown in the terminal instead of a NodeJS error.
+- Users can now pass an optional quiet flag to CLI commands (`--quiet` or `-q`) to tfx commands supress terraform CLI logs.
+- Users can now pass a shallow flag to CLI commands (`--shallow` or `-s`) to allow users to track null values inside terraform json objects. This is helpful when using terraform `timeouts` blocks where null values may be required.
+- Users will now get the text of a terraform error resulting from an unset required variable instead of a NodeJS error.
+- Unit tests have been added for [/lib/cli.js](./lib/cli.js).
+- CLI commands now have colorful outputs
+- README.md now properly reflects the dependency of using [jq](https://stedolan.github.io/jq/download/).
+- Unit tests have been updated to use [sinon](https://sinonjs.org/) spies.
+- For increased readability, [regex-but-with-words](https://www.npmjs.com/package/regex-but-with-words) is now used to handle regular expressions.
+- `tfx.clone` function now exludes `.tfvars` and `.tfstate` files.
+- Using the tfx CLI, users can now use the `tfx init` command to create a test directory with a `package.json`. The command will also run a build command to install needed npm packages.
+- tfxjs tests now create a temporary environment variable store `tfxjs.tfvars` insted of exporting values into the development environment. This allows users to provide complex variable types in test files using JSON.. `terraform plan` and `terraform apply` commands will use the `--var-file` tag to point to `tfxjs.tvars` when provided.
+- When writing end-to-end tests, users can now run connection tests against provisioned resources passing `tfx.connectionTest` as the expected value for the property of an instance and a callback function. The callback function returns a single parameter `address`. The following are valid `tfx` functions for use inside `tfx.connectionTest`
+    - `tfx.connect.tcp.doesConnect`
+    - `tfx.connect.tcp.doesNotConnect`
+    - `tfx.connect.udp.doesConnect`
+    - `tfx.connect.udp.doesNotConnect`
+    - `tfx.connect.ping.doesConnect`
+    - `tfx.connect.ping.doesNotConnect`
+    - `tfx.connect.ssh.doesConnect`
+    - `tfx.connect.ssh.doesNotConnect`
+
 ## [0.6.3] - 2022-05-17
 
 - Fixed issue preventing `tfx plan` command from correctly interpreting data resources when creating tests.

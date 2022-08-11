@@ -44,7 +44,6 @@ describe("SSH Tests", function () {
   it("it should run a passing test when an expected connection is successful", () => {
     let sshConn = new connect({ ssh: mockSshPackage });
     return sshConn.sshTest(
-      "passing connecting ssh test",
       "host",
       "name",
       "key"
@@ -53,7 +52,6 @@ describe("SSH Tests", function () {
   it("it should run a passing test assertion when an expected unsuccessful connection is refused", () => {
     let sshConn = new connect({ ssh: errMockSshPackage });
     return sshConn.sshTest(
-      "passing connecting ssh test",
       "host",
       "name",
       "key",
@@ -63,11 +61,11 @@ describe("SSH Tests", function () {
   it("it should create a failing test assertion when a expected connection is unsuccessful", () => {
     let sshConn = new connect({ ssh: errMockSshPackage });
     return sshConn
-      .sshTest("failing not connecting ssh test", "host", "name", "key")
+      .sshTest("host", "name", "key")
       .catch((err) => {
         assert.deepEqual(
           err.message,
-          "failing not connecting ssh test: expected undefined to deeply equal true"
+          "expected ssh test at host to connect: expected undefined to deeply equal true"
         );
       });
   });
@@ -78,7 +76,7 @@ describe("SSH Tests", function () {
       .catch((err) => {
         assert.deepEqual(
           err.message,
-          "failing connecting ssh test: expected true to deeply equal false"
+          "expected ssh test at failing connecting ssh test to not connect: expected true to deeply equal false"
         );
       });
   });
@@ -86,20 +84,20 @@ describe("SSH Tests", function () {
 describe("Ping Tests", function () {
   it("it should run a passing test when an expected connection is successful", () => {
     let pingConn = new connect({ ping: mockPingPackage });
-    return pingConn.pingTest("passing connecting ping test", "host");
+    return pingConn.pingTest("host");
   });
   it("it should run a passing test when an expected unsuccessful connection is refused", () => {
     let pingConn = new connect({ ping: errMockPingPackge });
-    return pingConn.pingTest("passing not connecting ping test", "host", true);
+    return pingConn.pingTest("host", true);
   });
   it("it should run a failing test assertion when an unexpected connection occurs", () => {
     let pingConn = new connect({ ping: mockPingPackage });
     return pingConn
-      .pingTest("failing connecting ping test", "host", true)
+      .pingTest("host", true)
       .catch((err) => {
         assert.deepEqual(
           err.message,
-          "failing connecting ping test: expected true to deeply equal false",
+          "expected ping at host not to connect: expected true to deeply equal false",
           "error should be the same"
         );
       });
@@ -107,11 +105,11 @@ describe("Ping Tests", function () {
   it("it should run a failing test assertion when an expected connection fails", () => {
     let pingConn = new connect({ ping: errMockPingPackge });
     return pingConn
-      .pingTest("failing not connecting ping test", "host")
+      .pingTest("host")
       .catch((err) => {
         assert.deepEqual(
           err.message,
-          "failing not connecting ping test: expected false to deeply equal true",
+          "expected ping at host to connect: expected false to deeply equal true",
           "error should be the same"
         );
       });
@@ -127,7 +125,7 @@ describe("Testing the TCP connection", () => {
     return connectPackage.tcpTest("host", "port", true).catch((error) => {
       assert.equal(
         error.message,
-        "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host ${host} on por…'",
+        "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host host on port port'",
         "should display the same error"
       );
     });
@@ -141,7 +139,7 @@ describe("Testing the TCP connection", () => {
     return connectPackage.tcpTest("host", "port").catch((error) => {
       assert.equal(
         error.message,
-        "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''",
+        "Expected successful TCP connection: expected 'TCP Connection to host host on port p…' to deeply equal ''",
         "should display the same error"
       );
     });
