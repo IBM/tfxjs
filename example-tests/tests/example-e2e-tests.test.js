@@ -192,7 +192,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
       },
       result_count: 1,
       input: ["8.8.8.8"],
-      result: tfx.tfutils.connectionTest((address) => {
+      result: tfx.connectionTest((address) => {
         return tfx.connect.ping.doesConnect("ping test", address);
       }),
     })
