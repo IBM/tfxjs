@@ -6,10 +6,7 @@ const {
   childArraySearch,
   convertTfVarsFromTags,
 } = require("../lib/helpers");
-<<<<<<< HEAD
-=======
 const constants = require("../lib/constants");
->>>>>>> intern-tfxjs/master
 
 describe("helpers", () => {
   describe("keycontainsKeys", () => {
@@ -210,12 +207,6 @@ describe("helpers", () => {
       let data = valueFunctionTest((frog) => {
         return "uh-oh";
       });
-<<<<<<< HEAD
-      assert.deepEqual(data, {
-        appendMessage: "to exist in module, got undefined.",
-        expectedData: false,
-      });
-=======
       assert.deepEqual(
         data,
         {
@@ -224,7 +215,6 @@ describe("helpers", () => {
         },
         "should return expected data"
       );
->>>>>>> intern-tfxjs/master
     });
   });
   describe("checkModuleTest", () => {
@@ -435,11 +425,7 @@ describe("helpers", () => {
       };
       assert.throws(
         task,
-<<<<<<< HEAD
-        "Expected type of string, number, or boolean for one got string\nExpected type of string, number, or boolean for two got string"
-=======
         `${constants.ansiRed}Expected type of string, number, or boolean for one got string${constants.ansiDefaultForeground}\n${constants.ansiRed}Expected type of string, number, or boolean for two got string${constants.ansiDefaultForeground}`
->>>>>>> intern-tfxjs/master
       );
     });
   });
@@ -524,25 +510,6 @@ describe("helpers", () => {
   describe("formatModuleName", () => {
     let formatModuleName = helpers.formatModuleName;
     it("should create a name for a top level module", () => {
-<<<<<<< HEAD
-      let actualData = formatModuleName("module.test_module")
-      let expectedData = "Test Module"
-      assert.deepEqual(actualData, expectedData, "it should return correct name")
-    })
-    it("should create a name for a child module", () => {
-      let actualData = formatModuleName("module.test_module[\"frog\"].module.child.module.deep_child")
-      let expectedData = "Deep Child"
-      assert.deepEqual(actualData, expectedData, "it should return correct name")
-    })
-  })
-  describe("convertTfVarsFromTags", () => {
-    it("should return empty object when no planFlagValues.tfvars", () => {
-      let actualData = convertTfVarsFromTags({})
-      let expectedData = {}
-      assert.deepEqual(actualData, expectedData, "it should return empty object")
-    })
-  })
-=======
       let actualData = formatModuleName("module.test_module");
       let expectedData = "Test Module";
       assert.deepEqual(
@@ -574,5 +541,4 @@ describe("helpers", () => {
       );
     });
   });
->>>>>>> intern-tfxjs/master
 });

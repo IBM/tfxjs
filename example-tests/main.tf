@@ -77,11 +77,8 @@ module example_module {
   source = "./example-module"
 }
 
-<<<<<<< HEAD
-=======
 module ping_module {
   source = "./ping_module"
 }
 
->>>>>>> intern-tfxjs/master
 ##############################################################################

@@ -161,8 +161,6 @@ describe("mocks", () => {
       });
     });
   });
-<<<<<<< HEAD
-=======
   describe("tcp", () => {
     let mockTcpPackage = new mock.tcpPackage();
     let errorTcpPackage = new mock.tcpPackage(true);
@@ -255,5 +253,4 @@ describe("mocks", () => {
       });
     });
   });
->>>>>>> intern-tfxjs/master
 });

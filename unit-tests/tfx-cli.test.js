@@ -1,11 +1,8 @@
 const { assert } = require("chai");
 const cli = require("../lib/tfx-cli");
-<<<<<<< HEAD
-=======
 const constants = require("../lib/constants");
 const sinon = require("sinon");
 const { prettyJSON } = require("../lib/utils");
->>>>>>> intern-tfxjs/master
 
 function mockExec(data) {
   this.data = data;
@@ -19,35 +16,6 @@ function mockExec(data) {
   };
 }
 
-<<<<<<< HEAD
-
-const help = `
-#############################################################################
-#                                                                           #
-#                                   tfxjs                                   #
-#                                                                           #
-#############################################################################
-
-tfxjs cli tool allows you to run tfxjs tests.
-
-To test a .js file:
-  $ tfx <file_path>
-
-To create tests from a terraform plan:
-  $ tfx plan --in <terraform file path> --out <filepath> --type <tfx or yaml>
-
-Additional flags are also available:
-  -v | --tf-var
-      Inject a terraform.tfvar value into the plan. This flag can be added any number of times
-
-To create a nodejs test file from a YAML plan:
-  $ tfx decode <yaml file path> --out <filepath>
-
-Additional flags are also available:
-  -v | --tf-var
-  Inject a terraform.tfvar value into the plan. This flag can be added any number of times
-`;
-=======
 const help = [
   `${constants.ansiCyan}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
   `${constants.ansiCyan}${constants.ansiBold}#############################################################################`,
@@ -80,7 +48,6 @@ const help = [
   `${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx init <directory_path>${constants.ansiDefaultForeground}\n`,
   `${constants.ansiCyan}${constants.ansiDefaultForeground}`,
 ].join("");
->>>>>>> intern-tfxjs/master
 
 let exec = new mockExec({}, false);
 let spawn = new mockExec({}, false);
@@ -136,16 +103,12 @@ describe("cli", () => {
       assert.deepEqual(actualData, help, "it should return correct data");
     });
     it("should throw error text if bad command", () => {
-<<<<<<< HEAD
-      let tfWithLogs = new cli(exec.promise, spawn.promise, "bad-command", "bad-command");
-=======
       let tfWithLogs = new cli(
         exec.promise,
         spawn.promise,
         "bad-command",
         "bad-command"
       );
->>>>>>> intern-tfxjs/master
       let task = () => {
         tfWithLogs.tfxcli();
       };
@@ -177,18 +140,6 @@ describe("cli", () => {
       tfx = new cli(exec.promise, spawn.promise, "decode", "./filePath");
       let returnedDecode = false;
       tfx.decode = () => {
-<<<<<<< HEAD
-        returnedDecode = true
-      }
-      tfx.tfxcli();
-      assert.isTrue(returnedDecode, "it should run the correct test")
-    })
-  });
-  describe("plan", () => {
-    it("should run extract with correct commands and flags for plan and write data", () => {
-      tfx = new cli(
-        exec.promise, spawn.promise,
-=======
         returnedDecode = true;
       };
       tfx.tfxcli();
@@ -205,7 +156,6 @@ describe("cli", () => {
       tfx = new cli(
         "exec.promise",
         "spawn.promise",
->>>>>>> intern-tfxjs/master
         "plan",
         "--in",
         "./filePath",
@@ -216,39 +166,6 @@ describe("cli", () => {
         "-v",
         "testVar1=true",
         "-v",
-<<<<<<< HEAD
-        'testVar2="true"', 
-        "-v",
-        'testValue3=3'
-      );
-      let actualData = [];
-      let expectedData = ["tfx Generated Plan", "./filePath", "tfx", {
-        testVar1: true,
-        testVar2: "true",
-        testValue3: 3
-      }];
-      
-      tfx.planTfx = (...args) => {
-        let callback = args.pop(); // remove callback
-        args.pop(); // remove child
-        actualData = args;
-        callback("fileData")
-      }
-      let actualCallback = [];
-      let expectedCallback = ["./out-file-path", "fileData"];
-      tfx.writeFileSync = (filePath, data) => {
-        actualCallback = [filePath, data]
-      }
-      tfx.tfxcli();
-      assert.deepEqual(actualData, expectedData, "it should return correct params")
-      assert.deepEqual(actualCallback, expectedCallback, "it should run writeFileSync with correct params")
-    });
-  })
-  describe("decode", () => {
-    it("should run extract with correct commands and flags for decode and write data", () => {
-      tfx = new cli(
-        exec.promise, spawn.promise,
-=======
         'testVar2="true"',
         "-v",
         "testValue3=3"
@@ -367,7 +284,6 @@ describe("cli", () => {
       tfx = new cli(
         exec.promise,
         spawn.promise,
->>>>>>> intern-tfxjs/master
         "decode",
         "./filePath",
         "--out",
@@ -375,40 +291,6 @@ describe("cli", () => {
         "-v",
         "testVar1=true",
         "-v",
-<<<<<<< HEAD
-        'testVar2="true"', 
-        "-v",
-        'testValue3=3'
-      );
-      let expectedReadArg = ["./filePath"]
-      let expectedParams = [
-        undefined,
-        [
-          "testVar1=true",
-          "testVar2=\"true\"",
-          "testValue3=3"
-        ]
-      ]
-      let expectedFileData = ["./out-file-path", undefined]
-      let actualParams
-      let actualReadArg
-      let actualFileData
-      tfx.readFileSync = (...args) => {
-        actualReadArg = args;
-      }
-      tfx.deyamilfy = (...args) => {
-        actualParams = args;
-      }
-      tfx.writeFileSync = (...args) => {
-        actualFileData = args
-      }
-      tfx.decode();
-      assert.deepEqual(actualReadArg, expectedReadArg, "it should correctly read file data")
-      assert.deepEqual(actualParams, expectedParams, "it should return all params")
-      assert.deepEqual(actualFileData, expectedFileData, "it should return correct file data")
-    });
-  })
-=======
         'testVar2="true"',
         "-v",
         "testValue3=3"
@@ -532,5 +414,4 @@ describe("cli", () => {
       );
     });
   });
->>>>>>> intern-tfxjs/master
 });
