@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 - Unit tests have been updated to use [sinon](https://sinonjs.org/) spies.
 - For increased readability, [regex-but-with-words](https://www.npmjs.com/package/regex-but-with-words) is now used to handle regular expressions.
 - `tfx.clone` function now exludes `.tfvars` and `.tfstate` files.
-- Using the tfx CLI, users can now use the `tfx init` command to create a test directory with a `package.json`. Inside this directory, users can use the command `npm run build` to install needed packages.
+- Using the tfx CLI, users can now use the `tfx init` command to create a test directory with a `package.json`. The command will also run a build command to install needed npm packages.
 - tfxjs tests now create a temporary environment variable store `tfxjs.tfvars` insted of exporting values into the development environment. This allows users to provide complex variable types in test files using JSON.. `terraform plan` and `terraform apply` commands will use the `--var-file` tag to point to `tfxjs.tvars` when provided.
 - When writing end-to-end tests, users can now run connection tests against provisioned resources. The following are valid `tfx` functions for use inside `tfx.address`
     - `tfx.connect.tcp.doesConnect`
