@@ -327,9 +327,9 @@ describe("builders", () => {
       };
       let connectionTests = new connect(mockConnect, {});
       connectionTests.connectionTests.pingTest = new sinon.spy();
-      connectionTests.ping.doesConnect("testName", "host");
+      connectionTests.ping.doesConnect("host");
       assert.isTrue(
-        connectionTests.connectionTests.pingTest.calledOnceWith("testName", "host")
+        connectionTests.connectionTests.pingTest.calledOnceWith("host")
       );
     });
     it("should call and run doesNotConnect ping test from connect with a connection package", () => {
@@ -338,10 +338,9 @@ describe("builders", () => {
       };
       let connectionTests = new connect(mockConnect, {});
       connectionTests.connectionTests.pingTest = new sinon.spy();
-      connectionTests.ping.doesNotConnect("testName", "host");
+      connectionTests.ping.doesNotConnect("host");
       assert.isTrue(
         connectionTests.connectionTests.pingTest.calledOnceWith(
-          "testName",
           "host",
           true
         )
@@ -354,9 +353,9 @@ describe("builders", () => {
       };
       let connectionTests = new connect(mockConnect, {});
       connectionTests.connectionTests.sshTest = new sinon.spy();
-      connectionTests.ssh.doesConnect("testName", "host", "username", "privateKey");
+      connectionTests.ssh.doesConnect("host", "username", "privateKey");
       assert.isTrue(
-        connectionTests.connectionTests.sshTest.calledOnceWith("testName", "host", "username", "privateKey")
+        connectionTests.connectionTests.sshTest.calledOnceWith("host", "username", "privateKey")
       );
     });
     it("should call and run doesNotConnect ssh test from connect with a connection package", () => {
@@ -365,10 +364,9 @@ describe("builders", () => {
       };
       let connectionTests = new connect(mockConnect, {});
       connectionTests.connectionTests.sshTest = new sinon.spy();
-      connectionTests.ssh.doesNotConnect("testName", "host", "username", "privateKey");
+      connectionTests.ssh.doesNotConnect("host", "username", "privateKey");
       assert.isTrue(
         connectionTests.connectionTests.sshTest.calledOnceWith(
-          "testName",
           "host",
           "username",
           "privateKey",
