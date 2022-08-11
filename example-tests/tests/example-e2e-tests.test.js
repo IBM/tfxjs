@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const tfxjs = require("tfxjs");
+=======
+const tfxjs = require("../../lib/index");
+>>>>>>> intern-tfxjs/master
 const tfx = new tfxjs("../", {
   trigger_value: "example-e2e-tests",
   shuffle_count: 3,
@@ -38,7 +42,10 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
     "Count Null Resource",
     tfx.address(
       "null_resource.count_example",
+<<<<<<< HEAD
 
+=======
+>>>>>>> intern-tfxjs/master
       {
         id: tfx.expect("to match the regex ^d+$", (id) => {
           // Make sure the id matches the string
@@ -184,4 +191,20 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
       separator: "-",
     })
   );
+<<<<<<< HEAD
+=======
+  tfx.state(
+    "Ping Test",
+    tfx.address("module.ping_module.random_shuffle.ping_test", {
+      keepers: {
+        shuffle_count: "1",
+      },
+      result_count: 1,
+      input: ["8.8.8.8"],
+      result: tfx.connectionTest((address) => {
+        return tfx.connect.ping.doesConnect(address[0]);
+      }),
+    })
+  );
+>>>>>>> intern-tfxjs/master
 });

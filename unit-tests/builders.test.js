@@ -1,5 +1,11 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
+<<<<<<< HEAD
+=======
+const mocks = require("./tfx.mocks");
+const sinon = require("sinon");
+let mock = new mocks();
+>>>>>>> intern-tfxjs/master
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -23,6 +29,10 @@ describe("builders", () => {
     describe("send", () => {
       it("should return the correct object when send is called", () => {
         let testInstance = new mochaTest();
+<<<<<<< HEAD
+=======
+        testInstance.send();
+>>>>>>> intern-tfxjs/master
         let sendData = testInstance.send();
         let expectedData = {
           name: "",
@@ -84,6 +94,10 @@ describe("builders", () => {
   });
   describe("eachKeyTest", () => {
     let eachKeyTest = builders.eachKeyTest;
+<<<<<<< HEAD
+=======
+
+>>>>>>> intern-tfxjs/master
     it("should run value test against a function if the value is a function", () => {
       let data = eachKeyTest(
         "address",
@@ -127,7 +141,11 @@ describe("builders", () => {
           ],
         },
       ];
+<<<<<<< HEAD
       assert.deepEqual(actualData, expectedData);
+=======
+      assert.deepEqual(actualData, expectedData, "should return expected data");
+>>>>>>> intern-tfxjs/master
     });
   });
   describe("valueTest", () => {
@@ -179,11 +197,23 @@ describe("builders", () => {
     let resource = builders.resource;
     it("should return the correct object", () => {
       let actualData = resource("test", "test", {});
+<<<<<<< HEAD
       assert.deepEqual(actualData, {
         name: "test",
         address: "test",
         values: {},
       });
+=======
+      assert.deepEqual(
+        actualData,
+        {
+          name: "test",
+          address: "test",
+          values: {},
+        },
+        "should return expected data"
+      );
+>>>>>>> intern-tfxjs/master
     });
   });
   describe("address", () => {
@@ -246,6 +276,7 @@ describe("builders", () => {
       it("should create a new instance of the textTemplate instance", () => {
         let original = new textTemplate(resourceTemplate);
         let cloneTemplate = original.clone();
+<<<<<<< HEAD
         assert.deepEqual(original.str, cloneTemplate.str, "it should copy")
       })
       it("should not change the original when the clone is changed", () => {
@@ -255,5 +286,128 @@ describe("builders", () => {
         assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy")
       })
     })
+=======
+        assert.deepEqual(original.str, cloneTemplate.str, "it should copy");
+      });
+      it("should not change the original when the clone is changed", () => {
+        let original = new textTemplate(resourceTemplate);
+        let cloneTemplate = original.clone();
+        cloneTemplate.set("$VALUES", "frog");
+        assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy");
+      });
+    });
+  });
+  describe("connect", () => {
+    let connect = builders.connect;
+    it("should call and run doesConnect tcp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.tcpTest = new sinon.spy();
+      connectionTests.tcp.doesConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.tcpTest.calledOnceWith("host", 8080)
+      );
+    });
+    it("should call and run tcp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.tcpTest = new sinon.spy();
+      connectionTests.tcp.doesNotConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.tcpTest.calledOnceWith(
+          "host",
+          8080,
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect udp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.udpTest = new sinon.spy();
+      connectionTests.udp.doesConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.udpTest.calledOnceWith("host", 8080, false)
+      );
+    });
+    it("should call and run doesNotConnect udp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.udpTest = new sinon.spy();
+      connectionTests.udp.doesNotConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.udpTest.calledOnceWith(
+          "host",
+          8080,
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect ping test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.pingTest = new sinon.spy();
+      connectionTests.ping.doesConnect("host");
+      assert.isTrue(
+        connectionTests.connectionTests.pingTest.calledOnceWith("host")
+      );
+    });
+    it("should call and run doesNotConnect ping test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.pingTest = new sinon.spy();
+      connectionTests.ping.doesNotConnect("host");
+      assert.isTrue(
+        connectionTests.connectionTests.pingTest.calledOnceWith(
+          "host",
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect ssh test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.sshTest = new sinon.spy();
+      connectionTests.ssh.doesConnect("host", "username", "privateKey");
+      assert.isTrue(
+        connectionTests.connectionTests.sshTest.calledOnceWith("host", "username", "privateKey")
+      );
+    });
+    it("should call and run doesNotConnect ssh test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.sshTest = new sinon.spy();
+      connectionTests.ssh.doesNotConnect("host", "username", "privateKey");
+      assert.isTrue(
+        connectionTests.connectionTests.sshTest.calledOnceWith(
+          "host",
+          "username",
+          "privateKey",
+          true
+        )
+      );
+    });
+
+
+>>>>>>> intern-tfxjs/master
   });
 });
