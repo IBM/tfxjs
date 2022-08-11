@@ -1,13 +1,8 @@
 const { assert } = require("chai");
 const builders = require("../lib/builders");
-let mocks = require("./tfx.mocks");
+const mocks = require("./tfx.mocks");
+const sinon = require("sinon");
 let mock = new mocks();
-let mockSshPackage = new mock.mockSshPackage();
-let errMockSshPackage = new mock.mockSshPackage(true);
-let mockPingPackage = new mock.mockPingPackage();
-let errMockPingPackge = new mock.mockPingPackage(true);
-let mockTcpPackage = new mock.tcpPackage();
-let errTcpPackage = new mock.tcpPackage(true);
 
 describe("builders", () => {
   const mochaTest = builders.mochaTest;
@@ -269,34 +264,117 @@ describe("builders", () => {
         assert.notDeepEqual(original.str, cloneTemplate.str, "it should copy");
       });
     });
-    describe("tcp", () => {
-      const tcp_connnect = builders.connect;
-      it("should connect if the package is valid", () => {
-        return tcp_connnect.tcp.doesConnect("host", "port", mockTcpPackage);
-      });
-      it("should fail if it does not connect with valid package", () => {
-        return tcp_connnect.tcp
-          .doesNotConnect("host", "port", mockTcpPackage)
-          .catch((error) => {
-            assert.deepEqual(
-              error.message,
-              "Expected unsuccessful TCP connection: expected '' to deeply equal 'TCP Connection to host ${host} on por…'"
-            );
-          });
-      });
-      it("should not connect with a package that is invalid", () => {
-        return tcp_connnect.tcp.doesNotConnect("host", "port", errTcpPackage);
-      });
-      it("should fail if it connects with invalid package", () => {
-        return tcp_connnect.tcp
-          .doesConnect("host", "port", errTcpPackage)
-          .catch((error) => {
-            assert.deepEqual(
-              error.message,
-              "Expected successful TCP connection: expected 'TCP Connection to host ${host} on por…' to deeply equal ''"
-            );
-          });
-      });
+  });
+  describe("connect", () => {
+    let connect = builders.connect;
+    it("should call and run doesConnect tcp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.tcpTest = new sinon.spy();
+      connectionTests.tcp.doesConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.tcpTest.calledOnceWith("host", 8080)
+      );
     });
+    it("should call and run tcp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.tcpTest = new sinon.spy();
+      connectionTests.tcp.doesNotConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.tcpTest.calledOnceWith(
+          "host",
+          8080,
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect udp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.udpTest = new sinon.spy();
+      connectionTests.udp.doesConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.udpTest.calledOnceWith("host", 8080, false)
+      );
+    });
+    it("should call and run doesNotConnect udp test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.udpTest = new sinon.spy();
+      connectionTests.udp.doesNotConnect("host", 8080);
+      assert.isTrue(
+        connectionTests.connectionTests.udpTest.calledOnceWith(
+          "host",
+          8080,
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect ping test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.pingTest = new sinon.spy();
+      connectionTests.ping.doesConnect("host");
+      assert.isTrue(
+        connectionTests.connectionTests.pingTest.calledOnceWith("host")
+      );
+    });
+    it("should call and run doesNotConnect ping test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.pingTest = new sinon.spy();
+      connectionTests.ping.doesNotConnect("host");
+      assert.isTrue(
+        connectionTests.connectionTests.pingTest.calledOnceWith(
+          "host",
+          true
+        )
+      );
+    });
+
+    it("should call and run doesConnect ssh test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.sshTest = new sinon.spy();
+      connectionTests.ssh.doesConnect("host", "username", "privateKey");
+      assert.isTrue(
+        connectionTests.connectionTests.sshTest.calledOnceWith("host", "username", "privateKey")
+      );
+    });
+    it("should call and run doesNotConnect ssh test from connect with a connection package", () => {
+      let mockConnect = function (connectionPackages) {
+        this.test = "hello";
+      };
+      let connectionTests = new connect(mockConnect, {});
+      connectionTests.connectionTests.sshTest = new sinon.spy();
+      connectionTests.ssh.doesNotConnect("host", "username", "privateKey");
+      assert.isTrue(
+        connectionTests.connectionTests.sshTest.calledOnceWith(
+          "host",
+          "username",
+          "privateKey",
+          true
+        )
+      );
+    });
+
+
   });
 });

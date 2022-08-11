@@ -245,6 +245,8 @@ describe("tfxjs", () => {
         overrideDescribe: describeFn,
         overrideIt: itFn,
         overrideExec: new mock.mockExec({}).promise,
+        overridePing: new mock.mockPingPackage(),
+        overrideSSH: new mock.mockSshPackage(),
       });
       overrideTfx.print = logSpy;
       // prevent creation of file

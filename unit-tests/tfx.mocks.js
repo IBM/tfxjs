@@ -98,7 +98,7 @@ const mocks = function () {
         if (error) {
           reject({
             stdout: "",
-            stderr: "TCP Connection to host ${host} on port ${port} expected",
+            stderr: `TCP Connection to host host on port port expected`,
           });
         } else {
           resolve({ stdout: "Success", stderr: "" });

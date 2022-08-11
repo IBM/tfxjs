@@ -1,14 +1,14 @@
 {
-  "name": "tfx-example-acceptance-tests",
+  "name": "tfxjs-developer-e2e-tests",
   "version": "1.0.0",
-  "description": "",
+  "description": "End to end testing for terraform cli",
   "main": "example-tests.test.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Jennifer Valle",
   "license": "ISC",
   "dependencies": {
-    "tfxjs": "^0.5.0"
+    "tfxjs": "^1.0.0"
   }
 }
