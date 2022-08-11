@@ -9,5 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "tfxjs": "^1.0.0"
   }
 }
