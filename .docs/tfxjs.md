@@ -301,6 +301,10 @@ Users can run end-to-end connection tests against insance values using `tfx.conn
 - `tfx.connect.tcp.doesNotConnect(host, port)`
 - `tfx.connect.udp.doesConnect(host, port, timeout)`
 - `tfx.connect.udp.doesNotConnect(host, port, timeout)`
+- `tfx.connect.ping.doesConnect(host)`
+- `tfx.connect.ping.doesNotConnect(host)`
+- `tfx.connect.ssh.doesConnect(host, username, privateKey)`
+- `tfx.connect.ssh.doesNotConnect(host, username, privateKey)`
 
 ### Example
 
