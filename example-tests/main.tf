@@ -80,4 +80,5 @@ module example_module {
 module ping_module {
   source = "./ping_module"
 }
+
 ##############################################################################
