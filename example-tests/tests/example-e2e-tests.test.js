@@ -1,10 +1,7 @@
-const tfxjs = require("../../lib/index");
+const tfxjs = require("tfxjs");
 const tfx = new tfxjs("../", {
   trigger_value: "example-e2e-tests",
   shuffle_count: 3,
-});
-let addressFunction = tfx.tfutils.connectionTest((address) => {
-  return tfx.connect.ping.doesConnect("ping test", address);
 });
 
 tfx.apply("Hashicorp Provider Example Tests", () => {
@@ -195,7 +192,9 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
       },
       result_count: 1,
       input: ["8.8.8.8"],
-      result: addressFunction
+      result: tfx.tfutils.connectionTest((address) => {
+        return tfx.connect.ping.doesConnect("ping test", address);
+      }),
     })
-  )
+  );
 });
