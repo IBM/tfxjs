@@ -1,10 +1,10 @@
 {
   "name": "tfxjs",
-  "version": "0.6.3",
+  "version": "1.0.0",
   "description": "Terraform acceptance testing framework",
   "main": "./lib/index.js",
   "bin": {
-    "tfx": "./index.js"
+    "tfx": "index.js"
   },
   "scripts": {
     "test": "mocha unit-tests/",
@@ -13,21 +13,29 @@
   "engines": {
     "node": ">=17.6.0"
   },
-  "author": "Jennifer Valle",
+  "authors": [
+    "Jennifer Valle",
+    "Lucas Franke",
+    "Taha Jafry",
+    "Walter Tang"
+  ],
   "license": "ISC",
   "dependencies": {
-    "chai": "^4.3.6",
+    "chalk": "^4.1.2",
     "dotenv": "^16.0.0",
     "js-yaml": "^4.1.0",
     "json-to-pretty-yaml": "^1.2.2",
     "mocha": "^9.2.2",
-    "tfxjs": "^0.6.0"
+    "node-ssh": "^12.0.5",
+    "ping": "^0.4.2",
+    "regex-but-with-words": "^1.0.5"
   },
   "devDependencies": {
     "chai": "^4.3.6",
     "dotenv": "^16.0.0",
     "json-to-pretty-yaml": "^1.2.2",
     "mocha": "^9.2.2",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "sinon": "^14.0.0"
   }
 }
