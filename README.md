@@ -30,7 +30,6 @@ npm install tfxjs -g
 ## Prerequisites
 
 - [Terraform CLI](https://www.terraform.io/cli/commands)
-- [jq](https://stedolan.github.io/jq/download/) 
 - If [mocha](https://mochajs.org/) is not installed globally run:
 ```shell
 npm install mocha -g
@@ -233,16 +232,21 @@ tfx e2e-tests/
 
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------|---------|----------|---------|---------|-------------------
-All files          |     100 |      100 |     100 |     100 | 🏆                  
- lib               |     100 |      100 |     100 |     100 | 🏆                  
-  builders.js      |     100 |      100 |     100 |     100 | 🏆  
-  cli.js           |     100 |      100 |     100 |     100 | 🏆                                 
-  extract.js       |     100 |      100 |     100 |     100 | 🏆                  
-  helpers.js       |     100 |      100 |     100 |     100 | 🏆                  
-  index.js         |     100 |      100 |     100 |     100 | 🏆                  
-  terraform-cli.js |     100 |      100 |     100 |     100 | 🏆                  
-  tf-utils.js      |     100 |      100 |     100 |     100 | 🏆                  
-  tfx-cli.js       |     100 |      100 |     100 |     100 | 🏆                  
-  utils.js         |     100 |      100 |     100 |     100 | 🏆                  
- unit-tests        |     100 |      100 |     100 |     100 | 🏆                  
-  tfx.mocks.js     |     100 |      100 |     100 |     100 | 🏆                  
+All files          |     100 |      100 |     100 |     100 | 🏆                                   
+ lib               |     100 |      100 |     100 |     100 | 🏆                   
+  builders.js      |     100 |      100 |     100 |     100 | 🏆                   
+  cli.js           |     100 |      100 |     100 |     100 | 🏆                   
+  connect.js       |     100 |      100 |     100 |     100 | 🏆                   
+  constants.js     |     100 |      100 |     100 |     100 | 🏆                   
+  extract.js       |     100 |      100 |     100 |     100 | 🏆                   
+  helpers.js       |     100 |      100 |     100 |     100 | 🏆                   
+  index.js         |     100 |      100 |     100 |     100 | 🏆                   
+  requests.js      |     100 |      100 |     100 |     100 | 🏆                   
+  terraform-cli.js |     100 |      100 |     100 |     100 | 🏆                   
+  tf-utils.js      |     100 |      100 |     100 |     100 | 🏆                   
+  tfx-cli.js       |     100 |      100 |     100 |     100 | 🏆                   
+  tfx-init.js      |     100 |      100 |     100 |     100 | 🏆                   
+  utils.js         |     100 |      100 |     100 |     100 | 🏆                   
+ unit-tests        |     100 |      100 |     100 |     100 | 🏆                   
+  axios.mocks.js   |     100 |      100 |     100 |     100 | 🏆                   
+  tfx.mocks.js     |     100 |      100 |     100 |     100 | 🏆 
