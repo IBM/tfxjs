@@ -38,7 +38,6 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
     "Count Null Resource",
     tfx.address(
       "null_resource.count_example",
-
       {
         id: tfx.expect("to match the regex ^d+$", (id) => {
           // Make sure the id matches the string
