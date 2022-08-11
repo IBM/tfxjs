@@ -15,6 +15,7 @@ List of methods and use for `tfxjs` constructor.
 4. [apply](#apply)
     - [state](#state)
     - [address](#address)
+    - [connectionTest](#connectionTest)
 5. [expect](#expect)
 6. [clone](#clone)
 
@@ -277,6 +278,46 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
     )
   );
 });
+```
+
+---
+
+## connectionTest
+
+Users can run end-to-end connection tests against insance values using `tfx.connectionTest` function.
+
+```js
+/**
+ * Connection Test constructor. This constructor takes in a callback with one parameter `address`, the 
+ * address to run `tfx.connect` tests against.
+ * @param {connectionCallback} callback tfx callback
+ */
+  tfx.connectionTest = function (callback) 
+```
+
+### connect methods
+
+- `tfx.connect.tcp.doesConnect(host, port)`
+- `tfx.connect.tcp.doesNotConnect(host, port)`
+- `tfx.connect.udp.doesConnect(host, port, timeout)`
+- `tfx.connect.udp.doesNotConnect(host, port, timeout)`
+
+### Example
+
+```js
+  tfx.state(
+    "Ping Test",
+    tfx.address("module.ping_module.random_shuffle.ping_test", {
+      keepers: {
+        shuffle_count: "1",
+      },
+      result_count: 1,
+      input: ["8.8.8.8"],
+      result: tfx.connectionTest((address) => {
+        return tfx.connect.ping.doesConnect("ping test", address);
+      })
+    })
+  )
 ```
 
 ---
