@@ -1,4 +1,6 @@
 const { assert } = require("chai");
+const fs = require("fs");
+const { it } = require("mocha");
 const {
   keyCheck,
   emptyCheck,
@@ -9,8 +11,10 @@ const {
   containsAny,
   flagValues,
   replaceOptionalFlags,
+  hclEncode,
 } = require("../lib/utils");
 const utils = require("../lib/utils");
+const overrideJson = require("./data-files/override.json");
 
 describe("utils", () => {
   describe("eachKey", () => {
@@ -33,17 +37,17 @@ describe("utils", () => {
   describe("getType", () => {
     let getType = utils.getType;
     it("should return array if is array", () => {
-      assert.deepEqual(getType([]), "Array", "should retun corrct value");
+      assert.deepEqual(getType([]), "Array", "should return correct value");
     });
     it("should return Function if is Function", () => {
       assert.deepEqual(
         getType(getType),
         "Function",
-        "should retun corrct value"
+        "should return correct value"
       );
     });
     it("should return typeof if is not function or Array", () => {
-      assert.deepEqual(getType({}), "object", "should retun corrct value");
+      assert.deepEqual(getType({}), "object", "should return correct value");
     });
   });
   describe("keys", () => {
@@ -103,6 +107,12 @@ describe("utils", () => {
   });
   describe("contains", () => {
     let contains = utils.contains;
+    it("should return true if string in string", () => {
+      assert.isTrue(contains("test", "es"), "should be true");
+    });
+    it("should return false if string not in string", () => {
+      assert.isFalse(contains("test", "frog"), "should be false");
+    });
     it("should return true if item in array", () => {
       assert.isTrue(contains(["test"], "test"), "should be true");
     });
@@ -214,7 +224,10 @@ describe("utils", () => {
           "./filePath"
         );
       };
-      assert.throws(task, "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`.");
+      assert.throws(
+        task,
+        "\nMissing flags from command 'tfx help': --in --out\n\nFor a list of valid commands run `tfx --help`."
+      );
     });
     it("should not throw an error if an optional flag is passed", () => {
       let task = () => {
@@ -249,7 +262,7 @@ describe("utils", () => {
           "-v",
           'testVar2="true"'
         );
-        assert.doesNotThrow(task)
+        assert.doesNotThrow(task);
       };
     });
   });
@@ -257,7 +270,6 @@ describe("utils", () => {
     it("should return correct alias map for a verb", () => {
       let plan = {
         requiredFlags: ["in", "out", "type"],
-
       };
       let tags = {
         help: ["-h", "--help"],
@@ -275,7 +287,17 @@ describe("utils", () => {
         "--type": "-t",
       };
       let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
+      assert.deepEqual(expectedData, actualData, "should return correct data");
+    });
+    it("should remove optional flags with no needed key values", () => {
+      let tags = {
+        help: ["-h", "--help"],
+        in: ["-i", "--in"],
+        out: ["-o", "--out"],
+        type: ["-t", "--type"],
+        shallow: ["-s", "--shallow"],
+        // extract -in path -out path -type tfx | yaml
+      };
     });
     it("should return correct alias map for a verb with optional multiple tags", () => {
       let plan = {
@@ -292,7 +314,7 @@ describe("utils", () => {
         in: ["-i", "--in"],
         out: ["-o", "--out"],
         type: ["-t", "--type"],
-        tfvar: ["-v", "--tf-var"]
+        tfvar: ["-v", "--tf-var"],
         // extract -in path -out path -type tfx | yaml
       };
       let expectedData = {
@@ -302,11 +324,11 @@ describe("utils", () => {
         "--out": "-o",
         "-t": "--type",
         "--type": "-t",
-        "?*-v" : "?*--tf-var",
-        "?*--tf-var" : "?*-v"
+        "?*-v": "?*--tf-var",
+        "?*--tf-var": "?*-v",
       };
       let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
+      assert.deepEqual(expectedData, actualData, "should return correct data");
     });
     it("should return correct alias map for a verb with optional tags", () => {
       let plan = {
@@ -322,7 +344,7 @@ describe("utils", () => {
         in: ["-i", "--in"],
         out: ["-o", "--out"],
         type: ["-t", "--type"],
-        tfvar: ["-v", "--tf-var"]
+        tfvar: ["-v", "--tf-var"],
         // extract -in path -out path -type tfx | yaml
       };
       let expectedData = {
@@ -332,11 +354,11 @@ describe("utils", () => {
         "--out": "-o",
         "-t": "--type",
         "--type": "-t",
-        "?-v" : "?--tf-var",
-        "?--tf-var" : "?-v"
+        "?-v": "?--tf-var",
+        "?--tf-var": "?-v",
       };
       let actualData = getVerbActions(plan, tags);
-      assert.deepEqual(expectedData, actualData);
+      assert.deepEqual(expectedData, actualData, "should return correct data");
     });
   });
   describe("containsAny", () => {
@@ -351,28 +373,36 @@ describe("utils", () => {
   });
   describe("replaceOptionalFlags", () => {
     it("should return command if none optional flags", () => {
-      let actualData = replaceOptionalFlags({requiredFlags: ["one"]}, {}, "hi")
-      assert.deepEqual(actualData, ["hi"], "it should return commands")
-    })
+      let actualData = replaceOptionalFlags(
+        { requiredFlags: ["one"] },
+        {},
+        "hi"
+      );
+      assert.deepEqual(actualData, ["hi"], "it should return commands");
+    });
     it("should replace optional flags that do not accept multiple arguments", () => {
       let actualData = replaceOptionalFlags(
         {
           optionalFlags: [
             {
-              name: "optional"
-            }
-          ]
+              name: "optional",
+            },
+          ],
         },
         {
-          optional: ["-o", "--ooo"]
+          optional: ["-o", "--ooo"],
         },
         "-o",
         "frog"
-      )
+      );
       let expectedData = ["?-o", "frog"];
-      assert.deepEqual(actualData, expectedData, "it should return correct data")
-    })
-  })
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct data"
+      );
+    });
+  });
   describe("flagValues", () => {
     it("should return key value pair of flag values", () => {
       let actualData = flagValues(
@@ -408,12 +438,125 @@ describe("utils", () => {
         in: "./in-file-path/",
         out: "./out-file.test.js",
         type: "tfx",
-        tfvars: [
-          'testVar1=true',
-          'testVar2="true"'
-        ]
-      }
-      assert.deepEqual(actualData, expectedData, "should return correct data")
+        tfvars: ["testVar1=true", 'testVar2="true"'],
+      };
+      assert.deepEqual(actualData, expectedData, "should return correct data");
+    });
+    it("should not assign a value to optional flags with no matching key = true", () => {
+      let expectedData = {
+        in: "./in-file-path/",
+        out: "./out-file.test.js",
+        type: "tfx",
+        tfvars: ["testVar1=true", 'testVar2="true"'],
+        shallow: true,
+      };
+      let actualData = flagValues(
+        "plan",
+        {
+          requiredFlags: ["in", "out", "type"],
+          optionalFlags: [
+            {
+              name: "tfvars",
+              allowMultiple: true,
+            },
+            {
+              name: "shallow",
+              noMatchingValue: true,
+            },
+          ],
+        },
+        {
+          help: ["-h", "--help"],
+          in: ["-i", "--in"],
+          out: ["-o", "--out"],
+          type: ["-t", "--type"],
+          tfvars: ["-v", "--tf-var"],
+          shallow: ["-s", "--shallow"],
+        },
+        "-i",
+        "./in-file-path/",
+        "-o",
+        "./out-file.test.js",
+        "-s",
+        "-t",
+        "tfx",
+        "-v",
+        "testVar1=true",
+        "-v",
+        'testVar2="true"'
+      );
+      assert.deepEqual(actualData, expectedData, "should return correct data");
+    });
+  });
+  describe("hclEncode", () => {
+    it("should take a json object with only string, bool, and number variables and convert to hcl", () => {
+      let testJson = {
+        string: "string",
+        number: 1,
+        boolean: true,
+      };
+      let actualData = hclEncode(testJson);
+      let expectedData = `string  = "string"\nnumber  = 1\nboolean = true`;
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
+    });
+    it("should take a json object with only string, bool, number, and array variables and convert to hcl", () => {
+      let testJson = {
+        string: "string",
+        number: 1,
+        boolean: true,
+        array: [1, true, "three", 4],
+      };
+      let actualData = hclEncode(testJson);
+      let expectedData = `string  = "string"\nnumber  = 1\nboolean = true\narray   = [1,true,"three",4]`;
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
+    });
+    it("should take a json object with only string, bool, number, array, and object variables and convert to hcl", () => {
+      let testJson = {
+        string: "string",
+        number: 1,
+        object: {
+          hi: "hello",
+          zones: [1, 2, 3],
+          is_false: true,
+        },
+        boolean: true,
+        array: [1, true, "three", 4],
+      };
+      let actualData = hclEncode(testJson);
+      let expectedData = `string  = "string"
+number  = 1
+object  = {
+  hi       = "hello"
+  zones    = [1,2,3]
+  is_false = true
+}
+boolean = true
+array   = [1,true,"three",4]`;
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
+    });
+    it("should work with a very big nested json object", () => {
+      let actualData = hclEncode(overrideJson);
+      let expectedData = fs.readFileSync(
+        "./unit-tests/data-files/override.tfvars",
+        "utf-8"
+      );
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return the correct data"
+      );
     });
   });
 });

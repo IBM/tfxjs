@@ -5,19 +5,37 @@ const {
   isTrueTest,
 } = require("../lib/builders.js");
 const tfUnitTestUtils = require("../lib/tf-utils.js");
+const sinon = require("sinon");
 const mocks = require("./tfx.mocks");
-
-// Initialize mocks for unit testing
+const tfxjs = require("../lib/index");
+const connect = require("../lib/connect");
+let tfx = new tfxjs("./mock_path");
 let mock = new mocks();
+let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true)
+  .promise;
+let errMockUdpPackage = new mock.mockExec(
+  { stdout: "", stderr: "read(net): Connection refused\n" },
+  false
+).promise;
 
-// Initialize mocks to test against `mock`
-let tfUtilMocks = new mocks();
+//Initialize spies
+let describeSpy = new sinon.spy();
+let itSpy = new sinon.spy();
 
 // create new tfutils overriding describe, it, and assert for unit testing
 const tfutils = new tfUnitTestUtils({
-  overrideDescribe: tfUtilMocks.describe,
-  overrideIt: tfUtilMocks.it,
+  overrideDescribe: (definition, callback) => {
+    describeSpy(definition);
+    return callback();
+  },
+  overrideIt: (definition, callback) => {
+    itSpy(definition);
+    return callback();
+  },
   overrideAssert: assert,
+  overrideConnections: {
+    exec: mock.exec,
+  },
 });
 
 describe("tfUnitTestUtils", () => {
@@ -45,16 +63,16 @@ describe("tfUnitTestUtils", () => {
       );
     });
     it("should not use the chai it function if override option passed", () => {
-      assert.deepEqual(
+      assert.notDeepEqual(
         tfutils.it.toString(),
-        mock.it.toString(),
+        it.toString(),
         "it should have correct it function"
       );
     });
     it("should not use the chai describe function if override option passed", () => {
-      assert.deepEqual(
+      assert.notDeepEqual(
         tfutils.describe.toString(),
-        mock.describe.toString(),
+        describe.toString(),
         "it should have correct describe function"
       );
     });
@@ -62,6 +80,13 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(
         tfutils.assert.toString(),
         assert.toString(),
+        "it should have correct assert function"
+      );
+    });
+    it("should set connectionPackages if override option is passed", () => {
+      assert.deepEqual(
+        tfutils.assert,
+        assert,
         "it should have correct assert function"
       );
     });
@@ -440,7 +465,105 @@ describe("tfUnitTestUtils", () => {
       assert.deepEqual(actualData, expectedData, "should return correct data");
     });
   });
+  describe("connectionTest", () => {
+    it("should return a function called connectionTest", () => {
+      assert.isTrue(
+        tfutils.connectionTest(() => {}).name === "connectionTest",
+        "it should be a function"
+      );
+      assert.isTrue(
+        tfutils.connectionTest(() => {}) instanceof Function,
+        "it should be a function"
+      );
+    });
+    it("should return a function executable with address param", () => {
+      let connectSpy = new sinon.spy();
+      let testAttempt = tfutils.connectionTest((address) => {
+        connectSpy(address);
+      });
+      assert.isTrue(
+        testAttempt instanceof Function,
+        "it should return a function"
+      );
+      testAttempt()("hello");
+      assert.isTrue(
+        connectSpy.calledOnceWith("hello"),
+        "it should call the spy"
+      );
+    });
+  });
   describe("buildInstanceTest", () => {
+    it("should return the correct test function constructor for a connection test. it should call the correct tfx function scoped outside when invoked with retrieved value", () => {
+      let tfx = {
+        tcp: {
+          doesConnect: new sinon.spy(),
+        },
+      };
+      let addressFunction = tfutils.connectionTest((address) => {
+        tfx.tcp.doesConnect(address);
+      });
+      let actualData = tfutils.buildInstanceTest(
+        "module.vpc.ibm_is_floating_ip.floating_ip",
+        {
+          resources: [
+            {
+              module: "module.vpc",
+              mode: "managed",
+              type: "ibm_is_floating_ip",
+              name: "floating_ip",
+              instances: [
+                {
+                  attributes: {
+                    address: "host",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          0: {
+            address: addressFunction,
+          },
+        }
+      );
+      let expectedData = {
+        connectionTests: [],
+        describe: "module.vpc.ibm_is_floating_ip.floating_ip",
+        tests: [
+          notFalseTest(
+            "Resource module.vpc.ibm_is_floating_ip.floating_ip should be in tfstate",
+            [
+              true,
+              "Expected module.vpc.ibm_is_floating_ip.floating_ip resource to be included in tfstate",
+            ]
+          ),
+          isTrueTest(
+            "Expected instance with key 0 to exist at module.vpc.ibm_is_floating_ip.floating_ip",
+            [
+              true,
+              "Expected instance with key 0 to exist at module.vpc.ibm_is_floating_ip.floating_ip.instances",
+            ]
+          ),
+        ],
+        connectionTests: [
+          {
+            name: "module.vpc.ibm_is_floating_ip.floating_ip[0] connection tests",
+            test: addressFunction,
+            address: "host",
+          },
+        ],
+      };
+      assert.deepEqual(actualData, expectedData, "should return correct data");
+      // to prevent the return of a raw value, test must be invoked and then called with the address
+      actualData.connectionTests[0].test()(
+        actualData.connectionTests[0].address
+      );
+      assert.isTrue(
+        tfx.tcp.doesConnect.calledOnceWith("host"),
+        "it should evaluate the test correctly"
+      );
+    });
     it("should return the correct test for a function for unfound attribute of instance at index 0", () => {
       let actualData = tfutils.buildInstanceTest(
         "module.landing_zone.ibm_atracker_target.atracker_target",
@@ -474,6 +597,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -499,7 +623,7 @@ describe("tfUnitTestUtils", () => {
           ),
         ],
       };
-      assert.deepEqual(actualData, expectedData);
+      assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should return the correct test for an object nested in an array with only one object where it exists", () => {
       let actualData = tfutils.buildInstanceTest(
@@ -535,6 +659,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -568,7 +693,7 @@ describe("tfUnitTestUtils", () => {
           ),
         ],
       };
-      assert.deepEqual(actualData, expectedData);
+      assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should return the correct test for an object nested in an array with only one object where it exists and the value is evaluated with a function", () => {
       let actualData = tfutils.buildInstanceTest(
@@ -609,6 +734,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           notFalseTest(
@@ -641,7 +767,7 @@ describe("tfUnitTestUtils", () => {
           ),
         ],
       };
-      assert.deepEqual(actualData, expectedData);
+      assert.deepEqual(actualData, expectedData, "should return correct data");
     });
     it("should return the correct test for an object nested in an array with only one object where it exists and the value is evaluated with a function", () => {
       let actualData = tfutils.buildInstanceTest(
@@ -670,6 +796,7 @@ describe("tfUnitTestUtils", () => {
         }
       );
       let expectedData = {
+        connectionTests: [],
         describe: "module.landing_zone.ibm_atracker_target.atracker_target",
         tests: [
           {
@@ -686,333 +813,45 @@ describe("tfUnitTestUtils", () => {
           ),
         ],
       };
-      assert.deepEqual(actualData, expectedData);
+      assert.deepEqual(actualData, expectedData, "should return correct data");
     });
-  });
-  describe("buildStateTest", () => {
-    it("should return a list of instance tests based on the module name, tfstate, and instance tests", () => {
-      let tfstate = {
-        resources: [
-          {
-            module: "module.landing_zone",
-            mode: "data",
-            type: "ibm_container_cluster_versions",
-            name: "cluster_versions",
-            instances: [
-              {
-                index_key: 0,
-                attributes: {
-                  name: "name-one",
-                },
-              },
-              {
-                index_key: "test",
-                attributes: {
-                  name: "name-two",
-                },
-              },
-            ],
-          },
-          {
-            module: "module.landing_zone",
-            mode: "data",
-            type: "ibm_resource_instance",
-            name: "cos",
-            provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
-            instances: [],
-          },
-        ],
-      };
-      let actualData = tfutils.buildStateTest("Landing Zone", tfstate, [
-        {
-          name: "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-          address:
-            "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-          instances: [
+    describe("buildStateTest", () => {
+      it("should return a list of instance tests based on the module name, tfstate, and instance tests", () => {
+        let tfstate = {
+          resources: [
             {
-              name: "name-one",
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_container_cluster_versions",
+              name: "cluster_versions",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    name: "name-one",
+                  },
+                },
+                {
+                  index_key: "test",
+                  attributes: {
+                    name: "name-two",
+                  },
+                },
+              ],
             },
             {
-              index_key: "test",
-              name: "name-two",
-            },
-            {
-              index_key: "bad-index",
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_resource_instance",
+              name: "cos",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [],
             },
           ],
-        },
-      ]);
-      let expectedData = {
-        describe: "Landing Zone",
-        tests: [
+        };
+        let actualData = tfutils.buildStateTest("Landing Zone", tfstate, [
           {
-            describe:
-              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-            tests: [
-              notFalseTest(
-                "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
-                [
-                  true,
-                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions resource to be included in tfstate",
-                ]
-              ),
-              deepEqualTest(
-                "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
-                [
-                  "name-one",
-                  "name-one",
-                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] name to have value name-one",
-                ]
-              ),
-              isTrueTest(
-                "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                [
-                  true,
-                  "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
-                ]
-              ),
-              deepEqualTest(
-                "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
-                [
-                  "name-two",
-                  "name-two",
-                  "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] name to have value name-two",
-                ]
-              ),
-              isTrueTest(
-                "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                [
-                  true,
-                  "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
-                ]
-              ),
-              isTrueTest(
-                "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-                [
-                  false,
-                  "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
-                ]
-              ),
-            ],
-          },
-        ],
-      };
-
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "It should return correct instance test data"
-      );
-    });
-    it("should correctly return a list of tests for resources in root_module", () => {
-      let tfstate = {
-        resources: [
-          {
-            mode: "data",
-            type: "external",
-            name: "example",
-            provider: 'provider["registry.terraform.io/hashicorp/external"]',
-            instances: [
-              {
-                schema_version: 0,
-                attributes: {
-                  id: "-",
-                  program: ["sh", "./test-output.sh", "example", "test"],
-                  query: null,
-                  result: {
-                    data: "example-test-value",
-                  },
-                  working_dir: null,
-                },
-                sensitive_attributes: [],
-              },
-            ],
-          },
-        ],
-      };
-      let actualData = tfutils.buildStateTest("External Data Source", tfstate, [
-        {
-          name: "External Data Source",
-          address: "data.external.example",
-          instances: [
-            {
-              id: "-",
-              program: ["sh", "./test-output.sh", "example", "test"],
-              result: {
-                data: "example-test-value",
-              },
-            },
-          ],
-        },
-      ]);
-      let expectedData = {
-        describe: "External Data Source",
-        tests: [
-          {
-            describe: "data.external.example",
-            tests: [
-              {
-                name: "Resource data.external.example should be in tfstate",
-                assertionType: "isNotFalse",
-                assertionArgs: [
-                  true,
-                  "Expected data.external.example resource to be included in tfstate",
-                ],
-              },
-              {
-                name: "Expected resource data.external.example[0] to have correct value for id.",
-                assertionType: "deepEqual",
-                assertionArgs: [
-                  "-",
-                  "-",
-                  "Expected data.external.example[0] id to have value -",
-                ],
-              },
-              {
-                name: "Expected resource data.external.example[0] to have correct value for program.",
-                assertionType: "deepEqual",
-                assertionArgs: [
-                  ["sh", "./test-output.sh", "example", "test"],
-                  ["sh", "./test-output.sh", "example", "test"],
-                  'Expected data.external.example[0] program to have value ["sh","./test-output.sh","example","test"]',
-                ],
-              },
-              {
-                name: "Expected resource data.external.example[0] to have correct value for result.",
-                assertionType: "deepEqual",
-                assertionArgs: [
-                  {
-                    data: "example-test-value",
-                  },
-                  {
-                    data: "example-test-value",
-                  },
-                  'Expected data.external.example[0] result to have value {"data":"example-test-value"}',
-                ],
-              },
-              {
-                name: "Expected instance with key 0 to exist at data.external.example",
-                assertionType: "isTrue",
-                assertionArgs: [
-                  true,
-                  "Expected instance with key 0 to exist at data.external.example.instances",
-                ],
-              },
-            ],
-          },
-        ],
-      };
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return correct data"
-      );
-    });
-  });
-  describe("testModule", () => {
-    beforeEach(() => (mock = new mocks()));
-    it("should throw an error if options does not have tfData", () => {
-      let task = () => {
-        tfutils.testModule({});
-      };
-      assert.throws(task, `options must be passed with key ["tfData"] got []`);
-    });
-    it("should run the correct describe and test functions for plan", () => {
-      let callbackDone = false;
-      let options = {
-        moduleName: "test",
-        address: "module.test",
-        tfData: {
-          root_module: {
-            child_modules: [
-              {
-                address: "module.test",
-                resources: [
-                  {
-                    name: "test",
-                    address: "module.test.test",
-                    values: {
-                      test: "test",
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        },
-        callback: function () {
-          callbackDone = true;
-        },
-        testList: [
-          {
-            name: "test",
-            address: "test",
-            values: {
-              test: "test",
-            },
-          },
-        ],
-      };
-      tfutils.testModule(options);
-      assert.deepEqual(
-        tfUtilMocks.itList,
-        [
-          "Plan should contain the module module.test",
-          "Module module.test should contain resource test",
-          "test should have the correct test value",
-          "module.test should not contain additional resources",
-        ],
-        "should return correct it function were run"
-      );
-      assert.deepEqual(
-        tfUtilMocks.definitionList,
-        ["Module test", "test"],
-        "should return correct it function were run"
-      );
-      assert.isTrue(callbackDone, "it should execute the callback");
-    });
-    it("should run the correct describe and test function for apply", () => {
-      let tfstate = {
-        resources: [
-          {
-            module: "module.landing_zone",
-            mode: "data",
-            type: "ibm_container_cluster_versions",
-            name: "cluster_versions",
-            instances: [
-              {
-                index_key: 0,
-                attributes: {
-                  name: "name-one",
-                },
-              },
-              {
-                index_key: "test",
-                attributes: {
-                  name: "name-two",
-                },
-              },
-            ],
-          },
-          {
-            module: "module.landing_zone",
-            mode: "data",
-            type: "ibm_resource_instance",
-            name: "cos",
-            provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
-            instances: [],
-          },
-        ],
-      };
-      let options = {
-        moduleName: "Cluster Versions",
-        address:
-          "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-        tfData: tfstate,
-        isApply: true,
-        testList: [
-          {
-            name: "Cluster Versions",
+            name: "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
             address:
               "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
             instances: [
@@ -1023,40 +862,454 @@ describe("tfUnitTestUtils", () => {
                 index_key: "test",
                 name: "name-two",
               },
+              {
+                index_key: "bad-index",
+              },
             ],
           },
-        ],
-      };
-      tfutils.testModule(options);
-      assert.deepEqual(
-        tfUtilMocks.itList,
-        [
-          "Plan should contain the module module.test",
-          "Module module.test should contain resource test",
-          "test should have the correct test value",
-          "module.test should not contain additional resources",
-          "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
-          "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
-          "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-          "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
-          "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-        ],
-        "should return correct it function were run"
-      );
-      assert.deepEqual(
-        tfUtilMocks.definitionList,
-        [
-          "Module test",
-          "test",
-          "Cluster Versions",
-          "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-        ],
-        "should return correct it function were run"
-      );
+        ]);
+        let expectedData = {
+          describe: "Landing Zone",
+          tests: [
+            {
+              connectionTests: [],
+              describe:
+                "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+              tests: [
+                notFalseTest(
+                  "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
+                  [
+                    true,
+                    "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions resource to be included in tfstate",
+                  ]
+                ),
+                deepEqualTest(
+                  "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
+                  [
+                    "name-one",
+                    "name-one",
+                    "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] name to have value name-one",
+                  ]
+                ),
+                isTrueTest(
+                  "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                  [
+                    true,
+                    "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
+                  ]
+                ),
+                deepEqualTest(
+                  "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
+                  [
+                    "name-two",
+                    "name-two",
+                    "Expected module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] name to have value name-two",
+                  ]
+                ),
+                isTrueTest(
+                  "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                  [
+                    true,
+                    "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
+                  ]
+                ),
+                isTrueTest(
+                  "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+                  [
+                    false,
+                    "Expected instance with key bad-index to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions.instances",
+                  ]
+                ),
+              ],
+            },
+          ],
+        };
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "It should return correct instance test data"
+        );
+      });
+      it("should correctly return a list of tests for resources in root_module", () => {
+        let tfstate = {
+          resources: [
+            {
+              mode: "data",
+              type: "external",
+              name: "example",
+              provider: 'provider["registry.terraform.io/hashicorp/external"]',
+              instances: [
+                {
+                  schema_version: 0,
+                  attributes: {
+                    id: "-",
+                    program: ["sh", "./test-output.sh", "example", "test"],
+                    query: null,
+                    result: {
+                      data: "example-test-value",
+                    },
+                    working_dir: null,
+                  },
+                  sensitive_attributes: [],
+                },
+              ],
+            },
+          ],
+        };
+        let actualData = tfutils.buildStateTest(
+          "External Data Source",
+          tfstate,
+          [
+            {
+              name: "External Data Source",
+              address: "data.external.example",
+              instances: [
+                {
+                  id: "-",
+                  program: ["sh", "./test-output.sh", "example", "test"],
+                  result: {
+                    data: "example-test-value",
+                  },
+                },
+              ],
+            },
+          ]
+        );
+        let expectedData = {
+          describe: "External Data Source",
+          tests: [
+            {
+              connectionTests: [],
+              describe: "data.external.example",
+              tests: [
+                {
+                  name: "Resource data.external.example should be in tfstate",
+                  assertionType: "isNotFalse",
+                  assertionArgs: [
+                    true,
+                    "Expected data.external.example resource to be included in tfstate",
+                  ],
+                },
+                {
+                  name: "Expected resource data.external.example[0] to have correct value for id.",
+                  assertionType: "deepEqual",
+                  assertionArgs: [
+                    "-",
+                    "-",
+                    "Expected data.external.example[0] id to have value -",
+                  ],
+                },
+                {
+                  name: "Expected resource data.external.example[0] to have correct value for program.",
+                  assertionType: "deepEqual",
+                  assertionArgs: [
+                    ["sh", "./test-output.sh", "example", "test"],
+                    ["sh", "./test-output.sh", "example", "test"],
+                    'Expected data.external.example[0] program to have value ["sh","./test-output.sh","example","test"]',
+                  ],
+                },
+                {
+                  name: "Expected resource data.external.example[0] to have correct value for result.",
+                  assertionType: "deepEqual",
+                  assertionArgs: [
+                    {
+                      data: "example-test-value",
+                    },
+                    {
+                      data: "example-test-value",
+                    },
+                    'Expected data.external.example[0] result to have value {"data":"example-test-value"}',
+                  ],
+                },
+                {
+                  name: "Expected instance with key 0 to exist at data.external.example",
+                  assertionType: "isTrue",
+                  assertionArgs: [
+                    true,
+                    "Expected instance with key 0 to exist at data.external.example.instances",
+                  ],
+                },
+              ],
+            },
+          ],
+        };
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "it should return correct data"
+        );
+      });
     });
-    it("should throw an error if no tf data", () => {
-      let task = () => tfutils.testModule({ frog: "frog" });
-      assert.throws(task, `options must be passed with key ["tfData"] got ["frog"]`);
+    describe("testModule", () => {
+      beforeEach(() => {
+        describeSpy = new sinon.spy();
+        itSpy = new sinon.spy();
+      });
+      it("should throw an error if options does not have tfData", () => {
+        let task = () => {
+          tfutils.testModule({});
+        };
+        assert.throws(
+          task,
+          `options must be passed with key ["tfData"] got []`
+        );
+      });
+      it("should run the correct describe and test functions for plan", () => {
+        let callbackDone = false;
+        let options = {
+          moduleName: "test",
+          address: "module.test",
+          tfData: {
+            root_module: {
+              child_modules: [
+                {
+                  address: "module.test",
+                  resources: [
+                    {
+                      name: "test",
+                      address: "module.test.test",
+                      values: {
+                        test: "test",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          callback: function () {
+            callbackDone = true;
+          },
+          testList: [
+            {
+              name: "test",
+              address: "test",
+              values: {
+                test: "test",
+              },
+            },
+          ],
+        };
+        tfutils.testModule(options);
+        assert.deepEqual(
+          itSpy.args,
+          [
+            ["Plan should contain the module module.test"],
+            ["Module module.test should contain resource test"],
+            ["test should have the correct test value"],
+            ["module.test should not contain additional resources"],
+          ],
+          "should return correct it function were run"
+        );
+        assert.deepEqual(
+          describeSpy.args,
+          [["Module test"], ["test"]],
+          "should return correct it function were run"
+        );
+        assert.isTrue(callbackDone, "it should execute the callback");
+      });
+      it("should run the correct describe and test function for apply", () => {
+        let tfstate = {
+          resources: [
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_container_cluster_versions",
+              name: "cluster_versions",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    name: "name-one",
+                  },
+                },
+                {
+                  index_key: "test",
+                  attributes: {
+                    name: "name-two",
+                  },
+                },
+              ],
+            },
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_resource_instance",
+              name: "cos",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [],
+            },
+          ],
+        };
+        let options = {
+          moduleName: "Cluster Versions",
+          address:
+            "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          tfData: tfstate,
+          isApply: true,
+          testList: [
+            {
+              name: "Cluster Versions",
+              address:
+                "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+              instances: [
+                {
+                  name: "name-one",
+                },
+                {
+                  index_key: "test",
+                  name: "name-two",
+                },
+              ],
+            },
+          ],
+        };
+        tfutils.testModule(options);
+        assert.deepEqual(
+          itSpy.args,
+          [
+            [
+              "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
+            ],
+            [
+              "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
+            ],
+            [
+              "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+            ],
+            [
+              "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
+            ],
+            [
+              "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+            ],
+          ],
+          "should return correct it function were run"
+        );
+        assert.deepEqual(
+          describeSpy.args,
+          [
+            ["Cluster Versions"],
+            [
+              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions connection tests",
+            ],
+            [
+              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+            ],
+          ],
+          "should return correct it function were run"
+        );
+      });
+      it("should run the correct describe and test function for apply with connection tests", () => {
+        let tfx = {
+          tcp: {
+            doesConnect: new sinon.spy(),
+          },
+        };
+        let addressFunction = tfutils.connectionTest((address) => {
+          tfx.tcp.doesConnect(address);
+        });
+        let tfstate = {
+          resources: [
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_container_cluster_versions",
+              name: "cluster_versions",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    name: "name-one",
+                  },
+                },
+                {
+                  index_key: "test",
+                  attributes: {
+                    name: "name-two",
+                  },
+                },
+              ],
+            },
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_resource_instance",
+              name: "cos",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [],
+            },
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "test",
+              name: "test",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    address: "1.2.3.4"
+                  }
+                }
+              ]
+            }
+          ],
+        };
+        let options = {
+          moduleName: "Connection Test",
+          address:
+            "module.landing_zone.data.test.test",
+          tfData: tfstate,
+          isApply: true,
+          testList: [
+            {
+              name: "Connection Test",
+              address:
+                "module.landing_zone.data.test.test",
+              instances: [
+                {
+                  address: addressFunction
+                  
+                },
+              ],
+            },
+          ],
+        };
+        tfutils.testModule(options);
+        assert.deepEqual(
+          itSpy.args,
+          [
+            ["module.landing_zone.data.test.test[0] connection tests"],
+            [
+              "Resource module.landing_zone.data.test.test should be in tfstate"
+            ],
+            [
+              "Expected instance with key 0 to exist at module.landing_zone.data.test.test"
+            ]
+          ],
+          "should return correct it function were run"
+        );
+        assert.deepEqual(
+          describeSpy.args,
+          [
+            ["Connection Test"],
+            [
+              "module.landing_zone.data.test.test connection tests",
+            ],
+            [
+              "module.landing_zone.data.test.test"
+            ]
+          ],
+          "should return correct it function were run"
+        );
+      });
+      it("should throw an error if no tf data", () => {
+        let task = () => tfutils.testModule({ frog: "frog" });
+        assert.throws(
+          task,
+          `options must be passed with key ["tfData"] got ["frog"]`
+        );
+      });
     });
   });
 });

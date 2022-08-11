@@ -142,7 +142,14 @@
           "seed": null
         },
         "sensitive_values": {
-          "input": [false, false, false, false, false, false],
+          "input": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
           "keepers": {},
           "result": []
         }
@@ -156,7 +163,13 @@
         "provider_name": "registry.terraform.io/hashicorp/random",
         "schema_version": 0,
         "values": {
-          "input": ["scout", "slinger", "warrior", "builder", "settler"],
+          "input": [
+            "scout",
+            "slinger",
+            "warrior",
+            "builder",
+            "settler"
+          ],
           "keepers": {
             "shuffle_count": "2"
           },
@@ -164,7 +177,13 @@
           "seed": null
         },
         "sensitive_values": {
-          "input": [false, false, false, false, false],
+          "input": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
           "keepers": {},
           "result": []
         }
@@ -190,6 +209,36 @@
           }
         ],
         "address": "module.example_module"
+      },
+      {
+        "resources": [
+          {
+            "address": "module.ping_module.random_shuffle.ping_test",
+            "mode": "managed",
+            "type": "random_shuffle",
+            "name": "ping_test",
+            "provider_name": "registry.terraform.io/hashicorp/random",
+            "schema_version": 0,
+            "values": {
+              "input": [
+                "8.8.8.8"
+              ],
+              "keepers": {
+                "shuffle_count": "1"
+              },
+              "result_count": 1,
+              "seed": null
+            },
+            "sensitive_values": {
+              "input": [
+                false
+              ],
+              "keepers": {},
+              "result": []
+            }
+          }
+        ],
+        "address": "module.ping_module"
       }
     ]
   }
