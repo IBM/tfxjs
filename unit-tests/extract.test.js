@@ -5,7 +5,6 @@ const mocks = require("./tfx.mocks"); // import mocks
 const fs = require("fs");
 let mock = new mocks(); // initialize mocks
 const sinon = require("sinon");
-const { planTfx, fileDataCallback } = require("../lib/extract");
 
 let exampleChildModule = {
   root_module: {
@@ -268,6 +267,7 @@ describe("extract", () => {
       );
     });
   });
+
   describe("moduleTest", () => {
     let moduleTest = extract.moduleTest;
 
@@ -324,6 +324,59 @@ tfx.module(
         actualData,
         expectedData,
         "it should produce module data"
+      );
+    });
+    it("should correctly return a terraform module from plan for yaml with program", () => {
+      let testData = {
+        root_module: {
+          child_modules: [
+            {
+              address: 'module.example_module["test"]',
+              resources: [
+                {
+                  address:
+                    "data.external.format_output",
+                  mode: "data",
+                  type: "external",
+                  name: "format_output",
+                  provider_name: "registry.terraform.io/hashicorp/external",
+                  schema_version: 0,
+                  values: {
+                    program: [
+                      "python3",
+                      ".terraform/modules/icse_vpc_network.vpc/scripts/output.py",
+                      null,
+                    ],
+                    query: null,
+                    working_dir: null,
+                  },
+                  sensitive_values: {
+                    program: [false, false, false],
+                    result: {},
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      };
+      let expectedData = `
+Example Module Test:
+  address: module.example_module["test"]
+  resources:
+    - Format Output:
+        address: data.external.format_output
+        values:
+          - program:
+              - python3
+              - .terraform/modules/icse_vpc_network.vpc/scripts/output.py
+              - null
+`;
+      let actualData = moduleTest(testData, "yaml");
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct data"
       );
     });
     it("should correctly return a terraform module from plan for yaml", () => {

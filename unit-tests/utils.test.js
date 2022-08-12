@@ -1,6 +1,5 @@
 const { assert } = require("chai");
 const fs = require("fs");
-const { it } = require("mocha");
 const {
   keyCheck,
   emptyCheck,
