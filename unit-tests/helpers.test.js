@@ -9,23 +9,6 @@ const {
 const constants = require("../lib/constants");
 
 describe("helpers", () => {
-  describe("keycontainsKeys", () => {
-    it("should return true if key is found in object", () => {
-      assert.isTrue(
-        helpers.containsKeys({ test: true }, "test"),
-        "it should return true"
-      );
-    });
-    it("should return false if key is found in object", () => {
-      assert.isFalse(helpers.containsKeys({}, "test"), "it should return true");
-    });
-    it("should return false if the type passed is not object", () => {
-      assert.isFalse(
-        helpers.containsKeys("frog", "test"),
-        "it should return false"
-      );
-    });
-  });
   describe("checkResourceTests", () => {
     it("should add empty values object to tests passed with no values param", () => {
       let tests = [
@@ -387,20 +370,7 @@ describe("helpers", () => {
       );
     });
   });
-  describe("azsort", () => {
-    it("should return -1 if string a is less than string b", () => {
-      let actualData = helpers.azsort("a", "b");
-      assert.deepEqual(actualData, -1, "it should return -1");
-    });
-    it("should return 1 if string a is greater than string b", () => {
-      let actualData = helpers.azsort(3, 2);
-      assert.deepEqual(actualData, 1, "it should return 11");
-    });
-    it("should return 0 if string a is equal to string b", () => {
-      let actualData = helpers.azsort(2, 2);
-      assert.deepEqual(actualData, 0, "it should return 11");
-    });
-  });
+
   describe("tfVarCheck", () => {
     let tfVarCheck = helpers.tfVarCheck;
     it("should not throw if string, boolean, and number are passed", () => {

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2022-8-18
+
+- Remove utilities and moved to their own package `lazy-z` to reduce the number of tests
+- Added `tfx version` command to check the version of the CLI
+- Functions now use `paramTest` to check for argument typing allowing for one call rather than multiple calls to `typeCheck`
+- Moved tfxjs specific regular expressiong to `constants.js`
+
+## [1.0.2] - 2022-08-12
+
+- Fixed an error causing some string values to render in YAML with a single quotation mark
+
 ## [1.0.0] - 2022-08-11
 
 - When attempting to run tfx commands in a directory that causes an error, the correct terraform error will be shown in the terminal instead of a NodeJS error.

@@ -1,6 +1,5 @@
 const { assert } = require("chai");
 const cli = require("../lib/terraform-cli");
-const constants = require("../lib/constants");
 const sinon = require("sinon");
 
 function mockExec(data, spy) {

@@ -56,7 +56,7 @@ describe("cli", () => {
     cli(mockTfxError, "", "", mockConsole, ["nodepath", "filepath"]);
     assert(
       mockConsole.log.calledOnceWith(
-        `${constants.ansiRed}this is an error${constants.ansiDefaultForeground}`
+        `${constants.ansiRed}this is an error${constants.ansiDefaultForeground}\n\nFor a list of valid commands run '\x1B[1mtfx --help\x1B[22m'\n`
       ),
       "should have been called with expected args"
     );

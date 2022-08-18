@@ -8,15 +8,7 @@ const tfUnitTestUtils = require("../lib/tf-utils.js");
 const sinon = require("sinon");
 const mocks = require("./tfx.mocks");
 const tfxjs = require("../lib/index");
-const connect = require("../lib/connect");
-let tfx = new tfxjs("./mock_path");
 let mock = new mocks();
-let mockUdpPackage = new mock.mockExec({ stdout: "", stderr: "" }, true)
-  .promise;
-let errMockUdpPackage = new mock.mockExec(
-  { stdout: "", stderr: "read(net): Connection refused\n" },
-  false
-).promise;
 
 //Initialize spies
 let describeSpy = new sinon.spy();
