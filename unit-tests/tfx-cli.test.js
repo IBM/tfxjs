@@ -112,7 +112,7 @@ describe("cli", () => {
         actualData = data;
       };
       tfWithLogs.tfxcli();
-      assert.deepEqual(actualData, `tfx cli version 1.1.0`, "it should return correct data");
+      assert.deepEqual(actualData, `tfx cli version 1.2.0`, "it should return correct data");
     });
     it("should throw error text if bad command", () => {
       let tfWithLogs = new cli(

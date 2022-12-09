@@ -128,6 +128,18 @@ describe("extract", () => {
         "it should return correct string"
       );
     });
+    it("should return correct data for tfx", () => {
+      let resource = {
+        timeouts: null,
+      };
+      let actualData = planResourceTest(resource, "tfx");
+      let expectedData = "";
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct string"
+      );
+    });
     it("should return correct data for tfx when including null values", () => {
       let resource = {
         address: "null_resource.count_example[0]",
@@ -334,8 +346,7 @@ tfx.module(
               address: 'module.example_module["test"]',
               resources: [
                 {
-                  address:
-                    "data.external.format_output",
+                  address: "data.external.format_output",
                   mode: "data",
                   type: "external",
                   name: "format_output",
@@ -379,6 +390,7 @@ Example Module Test:
         "it should return correct data"
       );
     });
+
     it("should correctly return a terraform module from plan for yaml", () => {
       let actualData = moduleTest(exampleChildModule, "yaml");
       let expectedData = `
