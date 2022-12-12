@@ -477,23 +477,22 @@ describe("helpers", () => {
       );
     });
     it("should not recurr if an object value is null", () => {
-      let actualData = helpers.deepObjectIgnoreNullValues({identifier:null});
-      let expectedData = {identifier: null};
+      let actualData = helpers.deepObjectIgnoreNullValues({ identifier: null });
+      let expectedData = { identifier: null };
       assert.deepEqual(actualData, expectedData, "it should return object");
-
-    })
+    });
     it("should not recurr if an object value is undefined", () => {
       let actualData = helpers.deepObjectIgnoreNullValues(undefined);
       let expectedData = {};
       assert.deepEqual(actualData, expectedData, "it should return object");
-
-    })
+    });
     it("should not recurr if an object child value is null", () => {
-      let actualData = helpers.deepObjectIgnoreNullValues({frog: {identifier: null}});
-      let expectedData = {identifier:null};
+      let actualData = helpers.deepObjectIgnoreNullValues({
+        frog: { identifier: null },
+      });
+      let expectedData = { identifier: null };
       //assert.deepEqual(actualData, expectedData, "it should return object");
-
-    })
+    });
   });
   describe("formatModuleName", () => {
     let formatModuleName = helpers.formatModuleName;
