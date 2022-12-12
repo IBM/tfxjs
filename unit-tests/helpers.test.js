@@ -490,8 +490,8 @@ describe("helpers", () => {
       let actualData = helpers.deepObjectIgnoreNullValues({
         frog: { identifier: null },
       });
-      let expectedData = { identifier: null };
-      //assert.deepEqual(actualData, expectedData, "it should return object");
+      let expectedData = {frog:{ identifier: null} };
+      assert.deepEqual(actualData, expectedData, "it should return object");
     });
   });
   describe("formatModuleName", () => {
