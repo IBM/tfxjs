@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2022-12-12
+
+- Fixed some helper functions in extract.js and helpers.js to work with the Secure Landing Zone module
+
 ## [1.1.0] - 2022-8-18
 
 - Remove utilities and moved to their own package `lazy-z` to reduce the number of tests
