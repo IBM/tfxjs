@@ -118,7 +118,7 @@ describe("builders", () => {
         "test",
         { test: "data" },
         {},
-        "apply",
+        "state",
         "test",
         0
       );
