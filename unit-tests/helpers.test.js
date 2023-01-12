@@ -1,10 +1,19 @@
-const helpers = require("../lib/helpers");
-const { assert, util } = require("chai");
+const { assert } = require("chai");
 const {
   checkResourceTests,
   expectedResourceAddress,
   childArraySearch,
   convertTfVarsFromTags,
+  composeName,
+  getFoundResources,
+  valueFunctionTest,
+  checkModuleTest,
+  parseTestModuleOptions,
+  tfVarCheck,
+  capitalizeWords,
+  deepObjectIgnoreNullValues,
+  formatModuleName,
+  containsKeysModule,
 } = require("../lib/helpers");
 const constants = require("../lib/constants");
 
@@ -35,7 +44,7 @@ describe("helpers", () => {
   });
   describe("composeName", () => {
     it("should compose a name from a resource not in a module", () => {
-      let actualData = helpers.composeName({
+      let actualData = composeName({
         name: "test",
         mode: "managed",
         type: "test",
@@ -48,7 +57,7 @@ describe("helpers", () => {
       );
     });
     it("should compose a name from a data resource", () => {
-      let actualData = helpers.composeName({
+      let actualData = composeName({
         module: "test",
         name: "test",
         mode: "data",
@@ -64,7 +73,7 @@ describe("helpers", () => {
   });
   describe("childArraySearch", () => {
     it("should return correct object for found parent address", () => {
-      let data = helpers.childArraySearch("found", [
+      let data = childArraySearch("found", [
         {
           address: "found",
         },
@@ -77,7 +86,7 @@ describe("helpers", () => {
       });
     });
     it("should return correct object for unfound parent address", () => {
-      let data = helpers.childArraySearch("missing", [
+      let data = childArraySearch("missing", [
         {
           address: "found",
         },
@@ -148,7 +157,7 @@ describe("helpers", () => {
   });
   describe("getFoundResources", () => {
     it("should return correct array when none unexpected resources found and address is empty string", () => {
-      let data = helpers.getFoundResources(
+      let data = getFoundResources(
         [
           {
             address: "test.test",
@@ -160,7 +169,7 @@ describe("helpers", () => {
       assert.deepEqual(data.length, 0, "should return empty array");
     });
     it("should return correct array when none unexpected resources found and address is not empty string", () => {
-      let data = helpers.getFoundResources(
+      let data = getFoundResources(
         [
           {
             address: "test.test",
@@ -172,7 +181,7 @@ describe("helpers", () => {
       assert.deepEqual(data.length, 0, "should return empty array");
     });
     it("should return correct array when an unexpected resource is found", () => {
-      let data = helpers.getFoundResources(
+      let data = getFoundResources(
         [
           {
             address: "test.test",
@@ -185,7 +194,6 @@ describe("helpers", () => {
     });
   });
   describe("valueFunctionTest", () => {
-    let valueFunctionTest = helpers.valueFunctionTest;
     it("should return bad results if everything is correct but data isn't found", () => {
       let data = valueFunctionTest((frog) => {
         return "uh-oh";
@@ -201,7 +209,6 @@ describe("helpers", () => {
     });
   });
   describe("checkModuleTest", () => {
-    let checkModuleTest = helpers.checkModuleTest;
     it("should throw an error if no root_module", () => {
       let task = () => {
         checkModuleTest("root_module", {});
@@ -283,7 +290,6 @@ describe("helpers", () => {
     });
   });
   describe("parseTestModuleOptions", () => {
-    let parseTestModuleOptions = helpers.parseTestModuleOptions;
     it("should return the defaults if no options are passed other than tfData", () => {
       let actualData = parseTestModuleOptions({
         tfData: true,
@@ -321,7 +327,6 @@ describe("helpers", () => {
     });
   });
   describe("containsKeysModule", () => {
-    let containsKeysModule = helpers.containsKeysModule;
     it("should return true if moduleData.address and address match", () => {
       assert.isTrue(
         containsKeysModule({ address: "test" }, "test"),
@@ -372,7 +377,6 @@ describe("helpers", () => {
   });
 
   describe("tfVarCheck", () => {
-    let tfVarCheck = helpers.tfVarCheck;
     it("should not throw if string, boolean, and number are passed", () => {
       let data = {
         one: 1,
@@ -401,7 +405,7 @@ describe("helpers", () => {
   });
   describe("capitalizeWords", () => {
     it("should return capitalized words", () => {
-      let actualData = helpers.capitalizeWords(
+      let actualData = capitalizeWords(
         "all lowercase words separated by spaces"
       );
       let expectedData = "All Lowercase Words Separated By Spaces";
@@ -413,7 +417,6 @@ describe("helpers", () => {
     });
   });
   describe("deepObjectIgnoreNullValues", () => {
-    let deepObjectIgnoreNullValues = helpers.deepObjectIgnoreNullValues;
     it("should remove all null values from an object with sub object", () => {
       let testData = {
         test: {
@@ -477,25 +480,24 @@ describe("helpers", () => {
       );
     });
     it("should not recurr if an object value is null", () => {
-      let actualData = helpers.deepObjectIgnoreNullValues({ identifier: null });
+      let actualData = deepObjectIgnoreNullValues({ identifier: null });
       let expectedData = { identifier: null };
       assert.deepEqual(actualData, expectedData, "it should return object");
     });
     it("should not recurr if an object value is undefined", () => {
-      let actualData = helpers.deepObjectIgnoreNullValues(undefined);
+      let actualData = deepObjectIgnoreNullValues(undefined);
       let expectedData = {};
       assert.deepEqual(actualData, expectedData, "it should return object");
     });
     it("should not recurr if an object child value is null", () => {
-      let actualData = helpers.deepObjectIgnoreNullValues({
+      let actualData = deepObjectIgnoreNullValues({
         frog: { identifier: null },
       });
-      let expectedData = {frog:{ identifier: null} };
+      let expectedData = { frog: { identifier: null } };
       assert.deepEqual(actualData, expectedData, "it should return object");
     });
   });
   describe("formatModuleName", () => {
-    let formatModuleName = helpers.formatModuleName;
     it("should create a name for a top level module", () => {
       let actualData = formatModuleName("module.test_module");
       let expectedData = "Test Module";
