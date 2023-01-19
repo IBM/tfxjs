@@ -1309,201 +1309,204 @@ tfx.plan("Template Name", () => {
     });
   });
   describe("applyTfx", () => {
-    it("should return one address for each module", () => {
-      let actualData = applyTfx({
-        resources: [
-          {
-            mode: "managed",
-            type: "null_resource",
-            name: "count_example",
-            provider: 'provider["registry.terraform.io/hashicorp/null"]',
-            instances: [
-              {
-                index_key: 0,
-                schema_version: 0,
-                attributes: {
-                  id: "2896328915849982980",
-                  triggers: {
-                    trigger_value: "example-e2e-tests",
+    it("should return one address for each module and composed constructor", () => {
+      let actualData = applyTfx(
+        {
+          resources: [
+            {
+              mode: "managed",
+              type: "null_resource",
+              name: "count_example",
+              provider: 'provider["registry.terraform.io/hashicorp/null"]',
+              instances: [
+                {
+                  index_key: 0,
+                  schema_version: 0,
+                  attributes: {
+                    id: "2896328915849982980",
+                    triggers: {
+                      trigger_value: "example-e2e-tests",
+                    },
                   },
+                  sensitive_attributes: [],
+                  dependencies: ["data.external.example"],
                 },
-                sensitive_attributes: [],
-                dependencies: ["data.external.example"],
-              },
-              {
-                index_key: 1,
-                schema_version: 0,
-                attributes: {
-                  id: "3935907870916963842",
-                  triggers: {
-                    trigger_value: "example-e2e-tests",
+                {
+                  index_key: 1,
+                  schema_version: 0,
+                  attributes: {
+                    id: "3935907870916963842",
+                    triggers: {
+                      trigger_value: "example-e2e-tests",
+                    },
                   },
+                  sensitive_attributes: [],
+                  dependencies: ["data.external.example"],
                 },
-                sensitive_attributes: [],
-                dependencies: ["data.external.example"],
-              },
-              {
-                index_key: 2,
-                schema_version: 0,
-                attributes: {
-                  id: "5150844839615547579",
-                  triggers: {
-                    trigger_value: "example-e2e-tests",
+                {
+                  index_key: 2,
+                  schema_version: 0,
+                  attributes: {
+                    id: "5150844839615547579",
+                    triggers: {
+                      trigger_value: "example-e2e-tests",
+                    },
                   },
+                  sensitive_attributes: [],
+                  dependencies: ["data.external.example"],
                 },
-                sensitive_attributes: [],
-                dependencies: ["data.external.example"],
-              },
-            ],
-          },
-          {
-            module: "module.icse_vpc_network.module.activity_tracker",
-            mode: "managed",
-            type: "ibm_resource_key",
-            name: "atracker_cos_key",
-            provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
-            instances: [
-              {
-                index_key: 0,
-                schema_version: 0,
-                attributes: {
-                  account_id: "1234",
-                  created_by: "1234",
-                  created_at: "2022-08-18T14:38:31.845Z",
-                  credentials: {
-                    apikey: "1234",
-                    endpoints:
-                      "https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
-                    iam_apikey_description: "1234",
-                    iam_apikey_name: "icse-lz-demo-atracker-cos-bind-key",
-                    iam_role_crn: "1234",
-                    iam_serviceid_crn: "1234",
+              ],
+            },
+            {
+              module: "module.icse_vpc_network.module.activity_tracker",
+              mode: "managed",
+              type: "ibm_resource_key",
+              name: "atracker_cos_key",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [
+                {
+                  index_key: 0,
+                  schema_version: 0,
+                  attributes: {
+                    account_id: "1234",
+                    created_by: "1234",
+                    created_at: "2022-08-18T14:38:31.845Z",
+                    credentials: {
+                      apikey: "1234",
+                      endpoints:
+                        "https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
+                      iam_apikey_description: "1234",
+                      iam_apikey_name: "icse-lz-demo-atracker-cos-bind-key",
+                      iam_role_crn: "1234",
+                      iam_serviceid_crn: "1234",
+                      resource_instance_id: "1234",
+                    },
+                    crn: "1234",
+                    deleted_at: "",
+                    deleted_by: "",
+                    guid: "1234",
+                    iam_compatible: true,
+                    id: "1234",
+                    name: "icse-lz-demo-atracker-cos-bind-key",
+                    parameters: null,
+                    resource_alias_id: null,
+                    resource_group_id: "1234",
                     resource_instance_id: "1234",
+                    resource_instance_url: "1234",
+                    role: "Writer",
+                    source_crn: "1234",
+                    state: "active",
+                    status: "active",
+                    tags: ["icse", "landing-zone"],
+                    timeouts: null,
+                    updated_at: "2022-08-18T14:38:31.845Z",
+                    updated_by: "",
+                    url: "1234",
                   },
-                  crn: "1234",
-                  deleted_at: "",
-                  deleted_by: "",
-                  guid: "1234",
-                  iam_compatible: true,
-                  id: "1234",
-                  name: "icse-lz-demo-atracker-cos-bind-key",
-                  parameters: null,
-                  resource_alias_id: null,
-                  resource_group_id: "1234",
-                  resource_instance_id: "1234",
-                  resource_instance_url: "1234",
-                  role: "Writer",
-                  source_crn: "1234",
-                  state: "active",
-                  status: "active",
-                  tags: ["icse", "landing-zone"],
-                  timeouts: null,
-                  updated_at: "2022-08-18T14:38:31.845Z",
-                  updated_by: "",
-                  url: "1234",
                 },
-              },
-            ],
-          },
-          {
-            module: "module.icse_vpc_network.module.flow_logs[0]",
-            mode: "managed",
-            type: "ibm_iam_authorization_policy",
-            name: "flow_logs_policy",
-            provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
-            instances: [
-              {
-                index_key: "cos",
-                schema_version: 0,
-                attributes: {
-                  description:
-                    "Allow flow logs write access cloud object storage instance",
-                  id: "1234",
-                  resource_attributes: [
-                    {
-                      name: "accountId",
-                      operator: "stringEquals",
-                      value: "1234",
-                    },
-                    {
-                      name: "serviceInstance",
-                      operator: "stringEquals",
-                      value: "1234",
-                    },
-                    {
-                      name: "serviceName",
-                      operator: "stringEquals",
-                      value: "cloud-object-storage",
-                    },
-                  ],
-                  roles: ["Writer"],
-                  source_resource_group_id: "",
-                  source_resource_instance_id: "",
-                  source_resource_type: "flow-log-collector",
-                  source_service_account: "1234",
-                  source_service_name: "is",
-                  subject_attributes: [
-                    {
-                      name: "accountId",
-                      value: "1234",
-                    },
-                    {
-                      name: "resourceType",
-                      value: "flow-log-collector",
-                    },
-                    {
-                      name: "serviceName",
-                      value: "is",
-                    },
-                  ],
-                  target_resource_group_id: "",
-                  target_resource_instance_id: "1234",
-                  target_resource_type: "",
-                  target_service_name: "cloud-object-storage",
-                  transaction_id: "1234",
-                  version: null,
+              ],
+            },
+            {
+              module: "module.icse_vpc_network.module.flow_logs[0]",
+              mode: "managed",
+              type: "ibm_iam_authorization_policy",
+              name: "flow_logs_policy",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [
+                {
+                  index_key: "cos",
+                  schema_version: 0,
+                  attributes: {
+                    description:
+                      "Allow flow logs write access cloud object storage instance",
+                    id: "1234",
+                    resource_attributes: [
+                      {
+                        name: "accountId",
+                        operator: "stringEquals",
+                        value: "1234",
+                      },
+                      {
+                        name: "serviceInstance",
+                        operator: "stringEquals",
+                        value: "1234",
+                      },
+                      {
+                        name: "serviceName",
+                        operator: "stringEquals",
+                        value: "cloud-object-storage",
+                      },
+                    ],
+                    roles: ["Writer"],
+                    source_resource_group_id: "",
+                    source_resource_instance_id: "",
+                    source_resource_type: "flow-log-collector",
+                    source_service_account: "1234",
+                    source_service_name: "is",
+                    subject_attributes: [
+                      {
+                        name: "accountId",
+                        value: "1234",
+                      },
+                      {
+                        name: "resourceType",
+                        value: "flow-log-collector",
+                      },
+                      {
+                        name: "serviceName",
+                        value: "is",
+                      },
+                    ],
+                    target_resource_group_id: "",
+                    target_resource_instance_id: "1234",
+                    target_resource_type: "",
+                    target_service_name: "cloud-object-storage",
+                    transaction_id: "1234",
+                    version: null,
+                  },
                 },
-              },
-            ],
-          },
-          {
-            module: "module.icse_vpc_network.module.flow_logs[0]",
-            mode: "managed",
-            type: "ibm_is_flow_log",
-            name: "flow_logs",
-            provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
-            instances: [
-              {
-                index_key: "management",
-                schema_version: 0,
-                attributes: {
-                  active: true,
-                  auto_delete: null,
-                  created_at: "2022-08-18T14:44:22.000Z",
-                  crn: "1234",
-                  href: "1234",
-                  id: "1234",
-                  lifecycle_state: "stable",
-                  name: "icse-lz-demo-management-flow-logs",
-                  resource_controller_url:
-                    "https://cloud.ibm.com/vpc-ext/network/flowLogs",
-                  resource_crn: "1234",
-                  resource_group: "1234",
-                  resource_group_name: "1234",
-                  resource_name: "icse-lz-demo-management-flow-logs",
-                  resource_status: "stable",
-                  storage_bucket:
-                    "icse-lz-demo-management-flow-logs-bucket-ejnvxsz4",
-                  tags: [],
-                  target: "1234",
-                  timeouts: null,
-                  vpc: "1234",
+              ],
+            },
+            {
+              module: "module.icse_vpc_network.module.flow_logs[0]",
+              mode: "managed",
+              type: "ibm_is_flow_log",
+              name: "flow_logs",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [
+                {
+                  index_key: "management",
+                  schema_version: 0,
+                  attributes: {
+                    active: true,
+                    auto_delete: null,
+                    created_at: "2022-08-18T14:44:22.000Z",
+                    crn: "1234",
+                    href: "1234",
+                    id: "1234",
+                    lifecycle_state: "stable",
+                    name: "icse-lz-demo-management-flow-logs",
+                    resource_controller_url:
+                      "https://cloud.ibm.com/vpc-ext/network/flowLogs",
+                    resource_crn: "1234",
+                    resource_group: "1234",
+                    resource_group_name: "1234",
+                    resource_name: "icse-lz-demo-management-flow-logs",
+                    resource_status: "stable",
+                    storage_bucket:
+                      "icse-lz-demo-management-flow-logs-bucket-ejnvxsz4",
+                    tags: [],
+                    target: "1234",
+                    timeouts: null,
+                    vpc: "1234",
+                  },
                 },
-              },
-            ],
-          },
-        ],
-      }, "./state/path/terraform.tfstate");
+              ],
+            },
+          ],
+        },
+        "./state/path/terraform.tfstate"
+      );
       let expectedData = `// This file was generated by tfxjs
 const tfxjs = require("tfxjs");
 const tfx = new tfxjs("./state/path/terraform.tfstate");
@@ -1652,6 +1655,356 @@ tfx.apply("tfxjs generated tests", () => {
         actualData,
         expectedData,
         "it should return apply tests"
+      );
+    });
+    it("should return one address for each module and composed  with writefilecallback", () => {
+      let writeFileSpy = new sinon.spy();
+
+      applyTfx(
+        {
+          resources: [
+            {
+              mode: "managed",
+              type: "null_resource",
+              name: "count_example",
+              provider: 'provider["registry.terraform.io/hashicorp/null"]',
+              instances: [
+                {
+                  index_key: 0,
+                  schema_version: 0,
+                  attributes: {
+                    id: "2896328915849982980",
+                    triggers: {
+                      trigger_value: "example-e2e-tests",
+                    },
+                  },
+                  sensitive_attributes: [],
+                  dependencies: ["data.external.example"],
+                },
+                {
+                  index_key: 1,
+                  schema_version: 0,
+                  attributes: {
+                    id: "3935907870916963842",
+                    triggers: {
+                      trigger_value: "example-e2e-tests",
+                    },
+                  },
+                  sensitive_attributes: [],
+                  dependencies: ["data.external.example"],
+                },
+                {
+                  index_key: 2,
+                  schema_version: 0,
+                  attributes: {
+                    id: "5150844839615547579",
+                    triggers: {
+                      trigger_value: "example-e2e-tests",
+                    },
+                  },
+                  sensitive_attributes: [],
+                  dependencies: ["data.external.example"],
+                },
+              ],
+            },
+            {
+              module: "module.icse_vpc_network.module.activity_tracker",
+              mode: "managed",
+              type: "ibm_resource_key",
+              name: "atracker_cos_key",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [
+                {
+                  index_key: 0,
+                  schema_version: 0,
+                  attributes: {
+                    account_id: "1234",
+                    created_by: "1234",
+                    created_at: "2022-08-18T14:38:31.845Z",
+                    credentials: {
+                      apikey: "1234",
+                      endpoints:
+                        "https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
+                      iam_apikey_description: "1234",
+                      iam_apikey_name: "icse-lz-demo-atracker-cos-bind-key",
+                      iam_role_crn: "1234",
+                      iam_serviceid_crn: "1234",
+                      resource_instance_id: "1234",
+                    },
+                    crn: "1234",
+                    deleted_at: "",
+                    deleted_by: "",
+                    guid: "1234",
+                    iam_compatible: true,
+                    id: "1234",
+                    name: "icse-lz-demo-atracker-cos-bind-key",
+                    parameters: null,
+                    resource_alias_id: null,
+                    resource_group_id: "1234",
+                    resource_instance_id: "1234",
+                    resource_instance_url: "1234",
+                    role: "Writer",
+                    source_crn: "1234",
+                    state: "active",
+                    status: "active",
+                    tags: ["icse", "landing-zone"],
+                    timeouts: null,
+                    updated_at: "2022-08-18T14:38:31.845Z",
+                    updated_by: "",
+                    url: "1234",
+                  },
+                },
+              ],
+            },
+            {
+              module: "module.icse_vpc_network.module.flow_logs[0]",
+              mode: "managed",
+              type: "ibm_iam_authorization_policy",
+              name: "flow_logs_policy",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [
+                {
+                  index_key: "cos",
+                  schema_version: 0,
+                  attributes: {
+                    description:
+                      "Allow flow logs write access cloud object storage instance",
+                    id: "1234",
+                    resource_attributes: [
+                      {
+                        name: "accountId",
+                        operator: "stringEquals",
+                        value: "1234",
+                      },
+                      {
+                        name: "serviceInstance",
+                        operator: "stringEquals",
+                        value: "1234",
+                      },
+                      {
+                        name: "serviceName",
+                        operator: "stringEquals",
+                        value: "cloud-object-storage",
+                      },
+                    ],
+                    roles: ["Writer"],
+                    source_resource_group_id: "",
+                    source_resource_instance_id: "",
+                    source_resource_type: "flow-log-collector",
+                    source_service_account: "1234",
+                    source_service_name: "is",
+                    subject_attributes: [
+                      {
+                        name: "accountId",
+                        value: "1234",
+                      },
+                      {
+                        name: "resourceType",
+                        value: "flow-log-collector",
+                      },
+                      {
+                        name: "serviceName",
+                        value: "is",
+                      },
+                    ],
+                    target_resource_group_id: "",
+                    target_resource_instance_id: "1234",
+                    target_resource_type: "",
+                    target_service_name: "cloud-object-storage",
+                    transaction_id: "1234",
+                    version: null,
+                  },
+                },
+              ],
+            },
+            {
+              module: "module.icse_vpc_network.module.flow_logs[0]",
+              mode: "managed",
+              type: "ibm_is_flow_log",
+              name: "flow_logs",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [
+                {
+                  index_key: "management",
+                  schema_version: 0,
+                  attributes: {
+                    active: true,
+                    auto_delete: null,
+                    created_at: "2022-08-18T14:44:22.000Z",
+                    crn: "1234",
+                    href: "1234",
+                    id: "1234",
+                    lifecycle_state: "stable",
+                    name: "icse-lz-demo-management-flow-logs",
+                    resource_controller_url:
+                      "https://cloud.ibm.com/vpc-ext/network/flowLogs",
+                    resource_crn: "1234",
+                    resource_group: "1234",
+                    resource_group_name: "1234",
+                    resource_name: "icse-lz-demo-management-flow-logs",
+                    resource_status: "stable",
+                    storage_bucket:
+                      "icse-lz-demo-management-flow-logs-bucket-ejnvxsz4",
+                    tags: [],
+                    target: "1234",
+                    timeouts: null,
+                    vpc: "1234",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "./state/path/terraform.tfstate",
+        writeFileSpy
+      );
+      let expectedData = `// This file was generated by tfxjs
+const tfxjs = require("tfxjs");
+const tfx = new tfxjs("./state/path/terraform.tfstate");
+
+tfx.apply("tfxjs generated tests", () => {
+  tfx.state("root_module",
+    tfx.address(
+      "null_resource.count_example",
+      {
+        id: "2896328915849982980",
+        triggers: {
+          trigger_value: "example-e2e-tests"
+        }
+      },
+      {
+        id: "3935907870916963842",
+        triggers: {
+          trigger_value: "example-e2e-tests"
+        }
+      },
+      {
+        id: "5150844839615547579",
+        triggers: {
+          trigger_value: "example-e2e-tests"
+        }
+      }
+    )
+  );
+  tfx.state("module.icse_vpc_network.module.activity_tracker",
+    tfx.address("ibm_resource_key.atracker_cos_key", {
+      account_id: "1234",
+      created_by: "1234",
+      created_at: 2022-08-18T14:38:31.845Z",
+      credentials: {
+        apikey: "1234",
+        endpoints: https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
+        iam_apikey_description: "1234",
+        iam_apikey_name: "icse-lz-demo-atracker-cos-bind-key",
+        iam_role_crn: "1234",
+        iam_serviceid_crn: "1234",
+        resource_instance_id: "1234"
+      },
+      crn: "1234",
+      deleted_at: "",
+      deleted_by: "",
+      guid: "1234",
+      iam_compatible: true,
+      id: "1234",
+      name: "icse-lz-demo-atracker-cos-bind-key",
+      parameters: null,
+      resource_alias_id: null,
+      resource_group_id: "1234",
+      resource_instance_id: "1234",
+      resource_instance_url: "1234",
+      role: "Writer",
+      source_crn: "1234",
+      state: "active",
+      status: "active",
+      tags: [
+        "icse",
+        "landing-zone"
+      ],
+      timeouts: null,
+      updated_at: 2022-08-18T14:38:31.845Z",
+      updated_by: "",
+      url: "1234"
+    }),
+  );
+  tfx.state("module.icse_vpc_network.module.flow_logs[0]",
+    tfx.address("ibm_iam_authorization_policy.flow_logs_policy", {
+      description: "Allow flow logs write access cloud object storage instance",
+      id: "1234",
+      resource_attributes: [
+    {
+          name: "accountId",
+          operator: "stringEquals",
+          value: "1234"
+        },
+        {
+          name: "serviceInstance",
+          operator: "stringEquals",
+          value: "1234"
+        },
+        {
+          name: "serviceName",
+          operator: "stringEquals",
+          value: "cloud-object-storage"
+        }
+      ],
+      roles: [
+        "Writer"
+      ],
+      source_resource_group_id: "",
+      source_resource_instance_id: "",
+      source_resource_type: "flow-log-collector",
+      source_service_account: "1234",
+      source_service_name: "is",
+      subject_attributes: [
+        {
+          name: "accountId",
+          value: "1234"
+        },
+        {
+          name: "resourceType",
+          value: "flow-log-collector"
+        },
+        {
+          name: "serviceName",
+          value: "is"
+        }
+      ],
+      target_resource_group_id: "",
+      target_resource_instance_id: "1234",
+      target_resource_type: "",
+      target_service_name: "cloud-object-storage",
+      transaction_id: "1234",
+      version: null,
+      index_key: "cos"
+    }),
+    tfx.address("ibm_is_flow_log.flow_logs", {
+      active: true,
+      auto_delete: null,
+      created_at: 2022-08-18T14:44:22.000Z",
+      crn: "1234",
+      href: "1234",
+      id: "1234",
+      lifecycle_state: "stable",
+      name: "icse-lz-demo-management-flow-logs",
+      resource_controller_url: https://cloud.ibm.com/vpc-ext/network/flowLogs",
+      resource_crn: "1234",
+      resource_group: "1234",
+      resource_group_name: "1234",
+      resource_name: "icse-lz-demo-management-flow-logs",
+      resource_status: "stable",
+      storage_bucket: "icse-lz-demo-management-flow-logs-bucket-ejnvxsz4",
+      tags: [],
+      target: "1234",
+      timeouts: null,
+      vpc: "1234",
+      index_key: "management"
+    }),
+  );
+});
+`;
+      assert.isTrue(
+        writeFileSpy.calledOnceWith(expectedData),
+        "it should return data"
       );
     });
   });
