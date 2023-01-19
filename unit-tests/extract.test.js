@@ -1536,7 +1536,7 @@ tfx.apply("tfxjs generated tests", () => {
     )
   );
   tfx.state("module.icse_vpc_network.module.activity_tracker",
-    tfx.address("ibm_resource_key.atracker_cos_key", {
+    tfx.address("module.icse_vpc_network.module.activity_tracker.ibm_resource_key.atracker_cos_key", {
       account_id: "1234",
       created_by: "1234",
       created_at: 2022-08-18T14:38:31.845Z",
@@ -1576,7 +1576,7 @@ tfx.apply("tfxjs generated tests", () => {
     }),
   );
   tfx.state("module.icse_vpc_network.module.flow_logs[0]",
-    tfx.address("ibm_iam_authorization_policy.flow_logs_policy", {
+    tfx.address("module.icse_vpc_network.module.flow_logs[0].ibm_iam_authorization_policy.flow_logs_policy", {
       description: "Allow flow logs write access cloud object storage instance",
       id: "1234",
       resource_attributes: [
@@ -1626,7 +1626,7 @@ tfx.apply("tfxjs generated tests", () => {
       version: null,
       index_key: "cos"
     }),
-    tfx.address("ibm_is_flow_log.flow_logs", {
+    tfx.address("module.icse_vpc_network.module.flow_logs[0].ibm_is_flow_log.flow_logs", {
       active: true,
       auto_delete: null,
       created_at: 2022-08-18T14:44:22.000Z",
@@ -1887,7 +1887,7 @@ tfx.apply("tfxjs generated tests", () => {
     )
   );
   tfx.state("module.icse_vpc_network.module.activity_tracker",
-    tfx.address("ibm_resource_key.atracker_cos_key", {
+    tfx.address("module.icse_vpc_network.module.activity_tracker.ibm_resource_key.atracker_cos_key", {
       account_id: "1234",
       created_by: "1234",
       created_at: 2022-08-18T14:38:31.845Z",
@@ -1927,7 +1927,7 @@ tfx.apply("tfxjs generated tests", () => {
     }),
   );
   tfx.state("module.icse_vpc_network.module.flow_logs[0]",
-    tfx.address("ibm_iam_authorization_policy.flow_logs_policy", {
+    tfx.address("module.icse_vpc_network.module.flow_logs[0].ibm_iam_authorization_policy.flow_logs_policy", {
       description: "Allow flow logs write access cloud object storage instance",
       id: "1234",
       resource_attributes: [
@@ -1977,7 +1977,7 @@ tfx.apply("tfxjs generated tests", () => {
       version: null,
       index_key: "cos"
     }),
-    tfx.address("ibm_is_flow_log.flow_logs", {
+    tfx.address("module.icse_vpc_network.module.flow_logs[0].ibm_is_flow_log.flow_logs", {
       active: true,
       auto_delete: null,
       created_at: 2022-08-18T14:44:22.000Z",
@@ -2007,5 +2007,179 @@ tfx.apply("tfxjs generated tests", () => {
         "it should return data"
       );
     });
+  });
+  it("should create the correct file data with example data", () => {
+    let actualData = applyTfx(
+      {
+        version: 4,
+        terraform_version: "1.2.9",
+        serial: 38,
+        lineage: "215cd0b7-d7d4-0204-9f6b-67c5f962cbd5",
+        outputs: {},
+        resources: [
+          {
+            mode: "data",
+            type: "external",
+            name: "example",
+            provider: 'provider["registry.terraform.io/hashicorp/external"]',
+            instances: [
+              {
+                schema_version: 0,
+                attributes: {
+                  id: "-",
+                  program: ["sh", "./test-output.sh", "example", "test"],
+                  query: null,
+                  result: {
+                    data: "example-test-value",
+                  },
+                  working_dir: null,
+                },
+                sensitive_attributes: [],
+              },
+            ],
+          },
+          {
+            mode: "data",
+            type: "local_file",
+            name: "lists",
+            provider: 'provider["registry.terraform.io/hashicorp/local"]',
+            instances: [
+              {
+                index_key: "list_1",
+                schema_version: 0,
+                attributes: {
+                  content: "ponder,consider,opt,preordain,brainstorm,portent",
+                  content_base64:
+                    "cG9uZGVyLGNvbnNpZGVyLG9wdCxwcmVvcmRhaW4sYnJhaW5zdG9ybSxwb3J0ZW50",
+                  filename: "./local-files/shuffle_list_1.txt",
+                  id: "a48eb33e75d9fddbd716a126fb3fb52f0ca07613",
+                },
+                sensitive_attributes: [],
+              },
+              {
+                index_key: "list_2",
+                schema_version: 0,
+                attributes: {
+                  content: "scout,slinger,warrior,builder,settler",
+                  content_base64:
+                    "c2NvdXQsc2xpbmdlcix3YXJyaW9yLGJ1aWxkZXIsc2V0dGxlcg==",
+                  filename: "./local-files/shuffle_list_2.txt",
+                  id: "a994e19704ace6b7540ce5a2ce8842cdcdd815dd",
+                },
+                sensitive_attributes: [],
+              },
+            ],
+          },
+          {
+            mode: "managed",
+            type: "null_resource",
+            name: "count_example",
+            provider: 'provider["registry.terraform.io/hashicorp/null"]',
+            instances: [
+              {
+                index_key: 0,
+                schema_version: 0,
+                attributes: {
+                  id: "1952074275064166601",
+                  triggers: {
+                    trigger_value: "this-is-a-test",
+                  },
+                },
+                sensitive_attributes: [],
+                dependencies: ["data.external.example"],
+              },
+              {
+                index_key: 1,
+                schema_version: 0,
+                attributes: {
+                  id: "4992914291735418274",
+                  triggers: {
+                    trigger_value: "this-is-a-test",
+                  },
+                },
+                sensitive_attributes: [],
+                dependencies: ["data.external.example"],
+              },
+              {
+                index_key: 2,
+                schema_version: 0,
+                attributes: {
+                  id: "3220052493844923998",
+                  triggers: {
+                    trigger_value: "this-is-a-test",
+                  },
+                },
+                sensitive_attributes: [],
+                dependencies: ["data.external.example"],
+              },
+            ],
+          },
+        ],
+      },
+      "./x.tfstate"
+    );
+    let expectedData = `// This file was generated by tfxjs
+const tfxjs = require("tfxjs");
+const tfx = new tfxjs("./x.tfstate");
+
+tfx.apply("tfxjs generated tests", () => {
+  tfx.state("root_module",
+    tfx.address("data.external.example", {
+      id: "-",
+      program: [
+        "sh",
+        "./test-output.sh",
+        "example",
+        "test"
+      ],
+      query: null,
+      result: {
+        data: "example-test-value"
+      },
+      working_dir: null
+    }),
+    tfx.address(
+      "data.local_file.lists",
+      {
+        content: "ponder,consider,opt,preordain,brainstorm,portent",
+        content_base64: "cG9uZGVyLGNvbnNpZGVyLG9wdCxwcmVvcmRhaW4sYnJhaW5zdG9ybSxwb3J0ZW50",
+        filename: "./local-files/shuffle_list_1.txt",
+        id: "a48eb33e75d9fddbd716a126fb3fb52f0ca07613",
+        index_key: "list_1"
+      },
+      {
+        content: "scout,slinger,warrior,builder,settler",
+        content_base64: "c2NvdXQsc2xpbmdlcix3YXJyaW9yLGJ1aWxkZXIsc2V0dGxlcg==",
+        filename: "./local-files/shuffle_list_2.txt",
+        id: "a994e19704ace6b7540ce5a2ce8842cdcdd815dd",
+        index_key: "list_2"
+      }
+    ),
+    tfx.address(
+      "null_resource.count_example",
+      {
+        id: "1952074275064166601",
+        triggers: {
+          trigger_value: "this-is-a-test"
+        }
+      },
+      {
+        id: "4992914291735418274",
+        triggers: {
+          trigger_value: "this-is-a-test"
+        }
+      },
+      {
+        id: "3220052493844923998",
+        triggers: {
+          trigger_value: "this-is-a-test"
+        }
+      }
+    )
+  );
+});
+`;
+    console.log(actualData);
+    assert.deepEqual(actualData, expectedData, "it should return correct data");
   });
 });
