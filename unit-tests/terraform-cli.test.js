@@ -422,13 +422,18 @@ describe("terraformCli", () => {
       exec.data = {
         stdout: '{ "planned_values": "success" }',
       };
-      return tf.apply({}, false, false, "../terraform.tfstate", (data) => {
-        assert.deepEqual(
-          data,
-          { planned_values: "success" },
-          "it should return correct data"
-        );
-      });
+      return tf.apply(
+        {},
+        (data) => {
+          assert.deepEqual(
+            data,
+            { planned_values: "success" },
+            "it should return correct data"
+          );
+        },
+        false,
+        "../terraform.tfstate"
+      );
     });
     it("should run the correct commands with no tfvars and no callback and destroy", () => {
       exec.data = {
