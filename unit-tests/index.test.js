@@ -292,6 +292,21 @@ describe("tfxjs", () => {
         "it should print out the correct data"
       );
     });
+    it("should produce the correct console.log data when using tfstate file to run tests", () => {
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
+        quiet: true,
+        state_path: "../terraform.tfvars"
+      });
+      overrideTfx.apply("describe", () => {});
+      assert.deepEqual(
+        logSpy.args,
+        [],
+        "it should print out the correct data"
+      );
+    })
   });
   describe("planAndSetData", () => {
     beforeEach(() => {
@@ -405,6 +420,36 @@ describe("tfxjs", () => {
     it("should return the correct data and set this.apply", async () => {
       overrideTfx.exec = mock.exec;
       await overrideTfx.applyAndSetState();
+      assert.deepEqual(
+        overrideTfx.tfstate,
+        { planned_values: "success" },
+        "it should store correct plan"
+      );
+    });
+  });
+  describe("runTestsFromTfState", () => {
+    beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
+      mock = new mocks();
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
+        overrideExec: new mock.mockExec({
+          stdout: '{"planned_values" : "success"}',
+        }).promise,
+        state_path: "../terraform.tfstate",
+      });
+      overrideTfx.print = logSpy;
+      // prevent creation of file
+      overrideTfx.cli.createTfVarFile = () => {};
+    });
+    it("should return the correct data and set this.apply", async () => {
+      overrideTfx.exec = mock.exec;
+      await overrideTfx.runTestsFromTfState();
       assert.deepEqual(
         overrideTfx.tfstate,
         { planned_values: "success" },
