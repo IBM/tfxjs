@@ -170,7 +170,10 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           return foundCount === 3;
         }),
       }
-    ),
+    )
+  );
+  tfx.state(
+    "Example Module",
     tfx.address("module.example_module.random_pet.random_example", {
       id: tfx.expect("to have 4 total segments seperated by hyphens.", (id) => {
         return id.split("-").length === 4;
