@@ -293,20 +293,19 @@ describe("tfxjs", () => {
       );
     });
     it("should produce the correct console.log data when using tfstate file to run tests", () => {
-      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
-        overrideBefore: beforeFn,
-        overrideDescribe: describeFn,
-        overrideIt: itFn,
-        quiet: true,
-        state_path: "../terraform.tfvars"
-      });
-      overrideTfx.apply("describe", () => {});
-      assert.deepEqual(
-        logSpy.args,
-        [],
-        "it should print out the correct data"
+      overrideTfx = new tfxjs(
+        "./terraform.tfstate",
+        {},
+        {
+          overrideBefore: beforeFn,
+          overrideDescribe: describeFn,
+          overrideIt: itFn,
+          quiet: true,
+        }
       );
-    })
+      overrideTfx.apply("describe", () => {});
+      assert.deepEqual(logSpy.args, [], "it should print out the correct data");
+    });
   });
   describe("planAndSetData", () => {
     beforeEach(() => {
