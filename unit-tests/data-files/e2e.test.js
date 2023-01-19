@@ -39,28 +39,19 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
     tfx.address(
       "null_resource.count_example",
       {
-        id: tfx.expect("to match the regex ^d+$", (id) => {
-          // Make sure the id matches the string
-          return id.match(/^\d+$/g)[0] === id;
-        }),
+        id: "2896328915849982980",
         triggers: {
           trigger_value: "example-e2e-tests",
         },
       },
       {
-        id: tfx.expect("to match the regex ^d+$", (id) => {
-          // Make sure the id matches the string
-          return id.match(/^\d+$/g)[0] === id;
-        }),
+        id: "3935907870916963842",
         triggers: {
           trigger_value: "example-e2e-tests",
         },
       },
       {
-        id: tfx.expect("to match the regex ^d+$", (id) => {
-          // Make sure the id matches the string
-          return id.match(/^\d+$/g)[0] === id;
-        }),
+        id: "5150844839615547579",
         triggers: {
           trigger_value: "example-e2e-tests",
         },
@@ -73,30 +64,21 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
       "null_resource.map_example",
       {
         index_key: "example",
-        id: tfx.expect("to match the regex ^d+$", (id) => {
-          // Make sure the id matches the string
-          return id.match(/^\d+$/g)[0] === id;
-        }),
+        id: "1620629581596704678",
         triggers: {
           trigger_value: "example-e2e-tests",
         },
       },
       {
         index_key: "test",
-        id: tfx.expect("to match the regex ^d+$", (id) => {
-          // Make sure the id matches the string
-          return id.match(/^\d+$/g)[0] === id;
-        }),
+        id: "3242962864108601982",
         triggers: {
           trigger_value: "example-e2e-tests",
         },
       },
       {
         index_key: "value",
-        id: tfx.expect("to match the regex ^d+$", (id) => {
-          // Make sure the id matches the string
-          return id.match(/^\d+$/g)[0] === id;
-        }),
+        id: "5042942514776818409",
         triggers: {
           trigger_value: "example-e2e-tests",
         },
@@ -106,9 +88,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
   tfx.state(
     "Random Pet Resource",
     tfx.address("random_pet.random_example", {
-      id: tfx.expect("to have 5 total segments seperated by hyphens.", (id) => {
-        return id.split("-").length === 5;
-      }),
+      id: "example-acceptance-friendly-liberal-coral",
       length: 3,
       prefix: "example-acceptance",
       separator: "-",
@@ -132,23 +112,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
           "brainstorm",
           "portent",
         ],
-        result: tfx.expect("to contain 3 entries from the list.", (inputs) => {
-          let foundCount = 0;
-          inputs.forEach((resource) => {
-            if (
-              [
-                "ponder",
-                "consider",
-                "opt",
-                "preordain",
-                "brainstorm",
-                "portent",
-              ].indexOf(resource) !== -1
-            )
-              foundCount++;
-          });
-          return foundCount === 3;
-        }),
+        result: ["opt", "portent", "ponder"],
       },
       {
         index_key: "list_2",
@@ -157,24 +121,14 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
         },
         result_count: 3,
         input: ["scout", "slinger", "warrior", "builder", "settler"],
-        result: tfx.expect("to contain 3 entries from the list.", (inputs) => {
-          let foundCount = 0;
-          inputs.forEach((resource) => {
-            if (
-              ["scout", "slinger", "warrior", "builder", "settler"].indexOf(
-                resource
-              ) !== -1
-            )
-              foundCount++;
-          });
-          return foundCount === 3;
-        }),
+        result: ["slinger", "scout", "warrior"],
       }
-    ),
+    )
+  );
+  tfx.state(
+    "Example Module",
     tfx.address("module.example_module.random_pet.random_example", {
-      id: tfx.expect("to have 4 total segments seperated by hyphens.", (id) => {
-        return id.split("-").length === 4;
-      }),
+      id: "acceptance-module-arriving-pheasant",
       length: 2,
       prefix: "acceptance-module",
       separator: "-",
@@ -188,9 +142,7 @@ tfx.apply("Hashicorp Provider Example Tests", () => {
       },
       result_count: 1,
       input: ["8.8.8.8"],
-      result: tfx.connectionTest((address) => {
-        return tfx.connect.ping.doesConnect(address[0]);
-      }),
+      result: ["8.8.8.8"],
     })
   );
 });
