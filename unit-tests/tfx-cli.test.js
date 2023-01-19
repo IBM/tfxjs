@@ -46,10 +46,10 @@ const help = [
   `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n`,
   `${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}To initialize a tfxjs test directory:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
   `${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx init <directory_path>${constants.ansiDefaultForeground}\n`,
-  '\x1B[36m\x1B[39m\x1B[37m\x1B[1m\x1B[22m\x1B[39m\n',
-  '\x1B[37m\x1B[1mTo check the global tfx version:\x1B[22m\x1B[39m\n',
-  '\x1B[37m\x1B[1m\x1B[22m\x1B[39m\x1B[36m  $ tfx version\x1B[39m\n',
-  '\x1B[36m\x1B[39m'
+  "\x1B[36m\x1B[39m\x1B[37m\x1B[1m\x1B[22m\x1B[39m\n",
+  "\x1B[37m\x1B[1mTo check the global tfx version:\x1B[22m\x1B[39m\n",
+  "\x1B[37m\x1B[1m\x1B[22m\x1B[39m\x1B[36m  $ tfx version\x1B[39m\n",
+  "\x1B[36m\x1B[39m",
 ].join("");
 
 let exec = new mockExec({}, false);
@@ -112,7 +112,11 @@ describe("cli", () => {
         actualData = data;
       };
       tfWithLogs.tfxcli();
-      assert.deepEqual(actualData, `tfx cli version 1.2.0`, "it should return correct data");
+      assert.deepEqual(
+        actualData,
+        `tfx cli version 1.2.0`,
+        "it should return correct data"
+      );
     });
     it("should throw error text if bad command", () => {
       let tfWithLogs = new cli(
@@ -288,6 +292,39 @@ describe("cli", () => {
       assert.isTrue(
         writeFileCallBackSpy.calledOnceWith("./out-file-path"),
         "should be called with correct params"
+      );
+    });
+  });
+  describe("state", () => {
+    let applyTfx, writeFileCallBackSpy;
+    let exampleTfState = require("./data-files/example.tfstate.json");
+    beforeEach(() => {
+      applyTfx = new sinon.spy();
+      writeFileCallBackSpy = new sinon.spy();
+    });
+    it("should run extract with correct commands and flags for plan and write data", () => {
+      tfx = new cli(
+        "exec.promise",
+        "spawn.promise",
+        "state",
+        "--in",
+        "./unit-tests/data-files/example.tfstate.json",
+        "--out",
+        "./out-file-path"
+      );
+      tfx.applyTfx = applyTfx;
+
+      tfx.writeFileCallBack = writeFileCallBackSpy;
+
+      tfx.tfxcli();
+      assert.isTrue(applyTfx.calledOnce, "it should call apply");
+      assert.isTrue(
+        applyTfx.calledOnceWith(exampleTfState),
+        "it should return correct params"
+      );
+      assert.isTrue(
+        writeFileCallBackSpy.calledOnceWith("./out-file-path"),
+        "should have been called once with correct args"
       );
     });
   });
