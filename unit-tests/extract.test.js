@@ -2179,7 +2179,6 @@ tfx.apply("tfxjs generated tests", () => {
   );
 });
 `;
-    console.log(actualData);
     assert.deepEqual(actualData, expectedData, "it should return correct data");
   });
 });
