@@ -942,6 +942,51 @@ tfx.plan("Template Name", () => {
         "it should return a state resource"
       );
     });
+    it("should return a data source", () => {
+      let expectedData = `tfx.address("data.external.example", {
+  action: "allow",
+  destination: "0.0.0.0/0",
+  direction: "inbound",
+  icmp: [],
+  id: "b5235705-fd20-4792-acb4-caeff0475257",
+  ip_version: "ipv4",
+  name: "allow-inbound-ez-multizone-allow-all",
+  source: "0.0.0.0/0",
+  subnets: 0,
+  tcp: [],
+  udp: []
+});
+`;
+      let actualData = applyResourceTest({
+        mode: "data",
+        type: "external",
+        name: "example",
+        provider: 'provider["registry.terraform.io/hashicorp/external"]',
+        instances: [
+          {
+            schema_version: 0,
+            attributes: {
+              "action": "allow",
+              "destination": "0.0.0.0/0",
+              "direction": "inbound",
+              "icmp": [],
+              "id": "b5235705-fd20-4792-acb4-caeff0475257",
+              "ip_version": "ipv4",
+              "name": "allow-inbound-ez-multizone-allow-all",
+              "source": "0.0.0.0/0",
+              "subnets": 0,
+              "tcp": [],
+              "udp": []
+            }
+          }
+        ],
+      });
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return a state resource"
+      );
+    });
     it("should return a data source from raw json", () => {
       let actualData = applyResourceTest(
         JSON.parse(`{
