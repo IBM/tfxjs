@@ -942,6 +942,59 @@ tfx.plan("Template Name", () => {
         "it should return a state resource"
       );
     });
+    it("should return a data source from raw json", () => {
+      let actualData = applyResourceTest(
+        JSON.parse(`{
+          "module": "module.ez_vpc",
+          "mode": "data",
+          "type": "ibm_resource_group",
+          "name": "resource_group",
+          "provider":  "provider['registry.terraform.io/ibm-cloud/ibm']",
+          "instances": [
+            {
+              "schema_version": 0,
+              "attributes": {
+                "account_id": "1234",
+                "created_at": "2019-05-23T19:21:47.795Z",
+                "crn": "crn:v1:bluemix:public:resource-controller::a/1234::resource-group:5679",
+                "id": "5679",
+                "is_default": false,
+                "name": "asset-development",
+                "payment_methods_url": null,
+                "quota_id": "1234",
+                "quota_url": "/v2/quota_definitions/1234",
+                "resource_linkages": [],
+                "state": "ACTIVE",
+                "teams_url": null,
+                "updated_at": "2019-05-23T19:21:47.795Z"
+              },
+              "sensitive_attributes": []
+            }
+          ]
+        }`)
+      );
+      let expectedData = `tfx.address("data.module.ez_vpc.ibm_resource_group.resource_group", {
+  account_id: "1234",
+  created_at: "2019-05-23T19:21:47.795Z",
+  crn: "crn:v1:bluemix:public:resource-controller::a/1234::resource-group:5679",
+  id: "5679",
+  is_default: false,
+  name: "asset-development",
+  payment_methods_url: null,
+  quota_id: "1234",
+  quota_url: "/v2/quota_definitions/1234",
+  resource_linkages: [],
+  state: "ACTIVE",
+  teams_url: null,
+  updated_at: "2019-05-23T19:21:47.795Z"
+});
+`;
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return a state resource"
+      );
+    });
     it("should return a data source with multiple instances", () => {
       let expectedData = `tfx.address(
   "data.local_file.lists",
@@ -1539,10 +1592,10 @@ tfx.apply("tfxjs generated tests", () => {
     tfx.address("module.icse_vpc_network.module.activity_tracker.ibm_resource_key.atracker_cos_key", {
       account_id: "1234",
       created_by: "1234",
-      created_at: 2022-08-18T14:38:31.845Z",
+      created_at: "2022-08-18T14:38:31.845Z",
       credentials: {
         apikey: "1234",
-        endpoints: https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
+        endpoints: "https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
         iam_apikey_description: "1234",
         iam_apikey_name: "icse-lz-demo-atracker-cos-bind-key",
         iam_role_crn: "1234",
@@ -1570,7 +1623,7 @@ tfx.apply("tfxjs generated tests", () => {
         "landing-zone"
       ],
       timeouts: null,
-      updated_at: 2022-08-18T14:38:31.845Z",
+      updated_at: "2022-08-18T14:38:31.845Z",
       updated_by: "",
       url: "1234"
     }),
@@ -1629,13 +1682,13 @@ tfx.apply("tfxjs generated tests", () => {
     tfx.address("module.icse_vpc_network.module.flow_logs[0].ibm_is_flow_log.flow_logs", {
       active: true,
       auto_delete: null,
-      created_at: 2022-08-18T14:44:22.000Z",
+      created_at: "2022-08-18T14:44:22.000Z",
       crn: "1234",
       href: "1234",
       id: "1234",
       lifecycle_state: "stable",
       name: "icse-lz-demo-management-flow-logs",
-      resource_controller_url: https://cloud.ibm.com/vpc-ext/network/flowLogs",
+      resource_controller_url: "https://cloud.ibm.com/vpc-ext/network/flowLogs",
       resource_crn: "1234",
       resource_group: "1234",
       resource_group_name: "1234",
@@ -1890,10 +1943,10 @@ tfx.apply("tfxjs generated tests", () => {
     tfx.address("module.icse_vpc_network.module.activity_tracker.ibm_resource_key.atracker_cos_key", {
       account_id: "1234",
       created_by: "1234",
-      created_at: 2022-08-18T14:38:31.845Z",
+      created_at: "2022-08-18T14:38:31.845Z",
       credentials: {
         apikey: "1234",
-        endpoints: https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
+        endpoints: "https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints",
         iam_apikey_description: "1234",
         iam_apikey_name: "icse-lz-demo-atracker-cos-bind-key",
         iam_role_crn: "1234",
@@ -1921,7 +1974,7 @@ tfx.apply("tfxjs generated tests", () => {
         "landing-zone"
       ],
       timeouts: null,
-      updated_at: 2022-08-18T14:38:31.845Z",
+      updated_at: "2022-08-18T14:38:31.845Z",
       updated_by: "",
       url: "1234"
     }),
@@ -1980,13 +2033,13 @@ tfx.apply("tfxjs generated tests", () => {
     tfx.address("module.icse_vpc_network.module.flow_logs[0].ibm_is_flow_log.flow_logs", {
       active: true,
       auto_delete: null,
-      created_at: 2022-08-18T14:44:22.000Z",
+      created_at: "2022-08-18T14:44:22.000Z",
       crn: "1234",
       href: "1234",
       id: "1234",
       lifecycle_state: "stable",
       name: "icse-lz-demo-management-flow-logs",
-      resource_controller_url: https://cloud.ibm.com/vpc-ext/network/flowLogs",
+      resource_controller_url: "https://cloud.ibm.com/vpc-ext/network/flowLogs",
       resource_crn: "1234",
       resource_group: "1234",
       resource_group_name: "1234",
