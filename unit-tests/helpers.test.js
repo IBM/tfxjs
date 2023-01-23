@@ -490,7 +490,7 @@ describe("helpers", () => {
       let actualData = helpers.deepObjectIgnoreNullValues({
         frog: { identifier: null },
       });
-      let expectedData = {frog:{ identifier: null} };
+      let expectedData = { frog: { identifier: null } };
       assert.deepEqual(actualData, expectedData, "it should return object");
     });
   });
@@ -502,6 +502,95 @@ describe("helpers", () => {
         actualData,
         expectedData,
         "it should return empty object"
+      );
+    });
+  });
+  describe("restoreStringifiedJson", () => {
+    let testData, jsonStringValues;
+    beforeEach(() => {
+      testData = {
+        version: 4,
+        terraform_version: "1.2.9",
+        serial: 13,
+        lineage: "410554f0-fc4d-6733-850a-fce3af2ec2e1",
+        outputs: {
+          config: {
+            value: "__json_value_2",
+            type: "string",
+          },
+        },
+        resources: [
+          {
+            module: "module.ez_vpc",
+            mode: "data",
+            type: "external",
+            name: "format_output",
+            provider: 'provider["registry.terraform.io/hashicorp/external"]',
+            instances: [
+              {
+                schema_version: 0,
+                attributes: {
+                  id: "-",
+                  program: ["python3", "ez_vpc/scripts/output.py", "__json_value_1"],
+                  query: null,
+                  result: {
+                    data: "__json_value_3",
+                  },
+                  working_dir: null,
+                },
+                sensitive_attributes: [],
+              },
+            ],
+          },
+        ],
+      };
+      jsonStringValues = ["zero", "one", "two", "three"];
+    });
+    it("should restore data", () => {
+      let actualData = helpers.restoreStringifiedJson(
+        testData,
+        jsonStringValues
+      );
+      let expectedData = {
+        version: 4,
+        terraform_version: "1.2.9",
+        serial: 13,
+        lineage: "410554f0-fc4d-6733-850a-fce3af2ec2e1",
+        outputs: {
+          config: {
+            value: "two",
+            type: "string",
+          },
+        },
+        resources: [
+          {
+            module: "module.ez_vpc",
+            mode: "data",
+            type: "external",
+            name: "format_output",
+            provider: 'provider["registry.terraform.io/hashicorp/external"]',
+            instances: [
+              {
+                schema_version: 0,
+                attributes: {
+                  id: "-",
+                  program: ["python3", "ez_vpc/scripts/output.py", "one"],
+                  query: null,
+                  result: {
+                    data: "three",
+                  },
+                  working_dir: null,
+                },
+                sensitive_attributes: [],
+              },
+            ],
+          },
+        ],
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct data"
       );
     });
   });
