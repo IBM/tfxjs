@@ -519,6 +519,7 @@ describe("helpers", () => {
             type: "string",
           },
         },
+        frog: [1, 2, 3, [1, 2, 3, 4]],
         resources: [
           {
             module: "module.ez_vpc",
@@ -531,7 +532,11 @@ describe("helpers", () => {
                 schema_version: 0,
                 attributes: {
                   id: "-",
-                  program: ["python3", "ez_vpc/scripts/output.py", "__json_value_1"],
+                  program: [
+                    "python3",
+                    "ez_vpc/scripts/output.py",
+                    "__json_value_1",
+                  ],
                   query: null,
                   result: {
                     data: "__json_value_3",
@@ -562,6 +567,7 @@ describe("helpers", () => {
             type: "string",
           },
         },
+        frog: [1, 2, 3, [1, 2, 3, 4]],
         resources: [
           {
             module: "module.ez_vpc",
