@@ -601,6 +601,34 @@ describe("helpers", () => {
     });
   });
   describe("jsonParseCallback", () => {
-    
-  })
+    let parser, list;
+    beforeEach(() => {
+      list = [];
+      parser = new helpers.jsonParseCallback(list);
+    });
+    it("should return value if not string", () => {
+      let actualData = parser.callback("a", 0);
+      assert.deepEqual(actualData, 0, "it should return the value");
+    });
+    it("should return value if string and no { present", () => {
+      let actualData = parser.callback("a", "0");
+      assert.deepEqual(actualData, "0", "it should return the value");
+    });
+    it("should return value if { is present but json is not parsable", () => {
+      let actualData = parser.callback("a", "{0");
+      assert.deepEqual(
+        actualData,
+        "!!! ERROR -- Unable to parse stringified json.",
+        "it should return the value"
+      );
+    });
+    it("should return value if { is present but json is parsable", () => {
+      let actualData = parser.callback("a", '{ "test" : 0 }');
+      assert.deepEqual(
+        actualData,
+        "!!! ERROR -- Unable to parse stringified json.",
+        "it should return the value"
+      );
+    });
+  });
 });
