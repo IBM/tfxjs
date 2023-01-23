@@ -46,10 +46,10 @@ const help = [
   `${constants.ansiLtGray}${constants.ansiDefaultForeground}\n`,
   `${constants.ansiLtGray}${constants.ansiDefaultForeground}${constants.ansiLtGray}${constants.ansiBold}To initialize a tfxjs test directory:${constants.ansiResetDim}${constants.ansiDefaultForeground}\n`,
   `${constants.ansiLtGray}${constants.ansiBold}${constants.ansiResetDim}${constants.ansiDefaultForeground}${constants.ansiCyan}  $ tfx init <directory_path>${constants.ansiDefaultForeground}\n`,
-  '\x1B[36m\x1B[39m\x1B[37m\x1B[1m\x1B[22m\x1B[39m\n',
-  '\x1B[37m\x1B[1mTo check the global tfx version:\x1B[22m\x1B[39m\n',
-  '\x1B[37m\x1B[1m\x1B[22m\x1B[39m\x1B[36m  $ tfx version\x1B[39m\n',
-  '\x1B[36m\x1B[39m'
+  "\x1B[36m\x1B[39m\x1B[37m\x1B[1m\x1B[22m\x1B[39m\n",
+  "\x1B[37m\x1B[1mTo check the global tfx version:\x1B[22m\x1B[39m\n",
+  "\x1B[37m\x1B[1m\x1B[22m\x1B[39m\x1B[36m  $ tfx version\x1B[39m\n",
+  "\x1B[36m\x1B[39m",
 ].join("");
 
 let exec = new mockExec({}, false);
@@ -112,7 +112,11 @@ describe("cli", () => {
         actualData = data;
       };
       tfWithLogs.tfxcli();
-      assert.deepEqual(actualData, `tfx cli version 1.1.1`, "it should return correct data");
+      assert.deepEqual(
+        actualData,
+        `tfx cli version 1.1.2`,
+        "it should return correct data"
+      );
     });
     it("should throw error text if bad command", () => {
       let tfWithLogs = new cli(
