@@ -529,7 +529,7 @@ describe("tfxjs", () => {
       });
     });
   });
-  describe("output", () => {
+  describe("outputs", () => {
     beforeEach(() => {
       overrideTfx.tfutils.testModule = new sinon.spy();
       overrideTfx.tfstate = {
@@ -539,7 +539,7 @@ describe("tfxjs", () => {
       };
     });
     it("should run tfutils with correct params", () => {
-      overrideTfx.output("test", [{ test: "test" }]);
+      overrideTfx.outputs("test", [{ test: "test" }]);
       assert.isTrue(
         overrideTfx.tfutils.testModule.calledOnceWith({
           moduleName: "test",
@@ -559,7 +559,7 @@ describe("tfxjs", () => {
       );
     });
     it("should run tfutils with correct params using multiple objects", () => {
-      overrideTfx.output("test", { test: "test" }, { test: "test" });
+      overrideTfx.outputs("test", { test: "test" }, { test: "test" });
       assert.isTrue(
         overrideTfx.tfutils.testModule.calledOnceWith({
           isOutput: true,
@@ -577,7 +577,7 @@ describe("tfxjs", () => {
     it("should throw an error if no tfstate", () => {
       overrideTfx.tfstate = undefined;
       let task = () => {
-        overrideTfx.output("test", "test", []);
+        overrideTfx.outputs("test", "test", []);
       };
       assert.throws(
         task,

@@ -195,6 +195,20 @@ describe("builders", () => {
       );
     });
   });
+  describe("output", () => {
+    let output = builders.output;
+    it("should return the correct object", () => {
+      let actualData = output("test", {});
+      assert.deepEqual(
+        actualData,
+        {
+          name: "test",
+          value: {},
+        },
+        "should return expected data"
+      );
+    });
+  });
   describe("address", () => {
     let address = builders.address;
     it("should return instances", () => {
@@ -302,7 +316,11 @@ describe("builders", () => {
       connectionTests.connectionTests.udpTest = new sinon.spy();
       connectionTests.udp.doesConnect("host", 8080);
       assert.isTrue(
-        connectionTests.connectionTests.udpTest.calledOnceWith("host", 8080, false)
+        connectionTests.connectionTests.udpTest.calledOnceWith(
+          "host",
+          8080,
+          false
+        )
       );
     });
     it("should call and run doesNotConnect udp test from connect with a connection package", () => {
@@ -340,10 +358,7 @@ describe("builders", () => {
       connectionTests.connectionTests.pingTest = new sinon.spy();
       connectionTests.ping.doesNotConnect("host");
       assert.isTrue(
-        connectionTests.connectionTests.pingTest.calledOnceWith(
-          "host",
-          true
-        )
+        connectionTests.connectionTests.pingTest.calledOnceWith("host", true)
       );
     });
 
@@ -355,7 +370,11 @@ describe("builders", () => {
       connectionTests.connectionTests.sshTest = new sinon.spy();
       connectionTests.ssh.doesConnect("host", "username", "privateKey");
       assert.isTrue(
-        connectionTests.connectionTests.sshTest.calledOnceWith("host", "username", "privateKey")
+        connectionTests.connectionTests.sshTest.calledOnceWith(
+          "host",
+          "username",
+          "privateKey"
+        )
       );
     });
     it("should call and run doesNotConnect ssh test from connect with a connection package", () => {
@@ -374,7 +393,5 @@ describe("builders", () => {
         )
       );
     });
-
-
   });
 });

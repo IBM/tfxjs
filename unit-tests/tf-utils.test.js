@@ -807,7 +807,7 @@ describe("tfUnitTestUtils", () => {
       };
       assert.deepEqual(actualData, expectedData, "should return correct data");
     });
-    describe("buildOutputTest", () => {
+    describe("buildOutputTests", () => {
       it("should return a test for a correct output", () => {
         let tfstate = {
           outputs: {
@@ -876,7 +876,7 @@ describe("tfUnitTestUtils", () => {
             },
           },
         };
-        let actualData = tfutils.buildOutputTest("Landing Zone", tfstate, [
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
           {
             name: "subnet_detail_list",
             value: {
@@ -1029,7 +1029,7 @@ describe("tfUnitTestUtils", () => {
             },
           },
         };
-        let actualData = tfutils.buildOutputTest("Landing Zone", tfstate, [
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
           {
             name: "subnet_detail_list",
             value: {
@@ -1120,7 +1120,7 @@ describe("tfUnitTestUtils", () => {
             frog: true,
           },
         };
-        let actualData = tfutils.buildOutputTest("Landing Zone", tfstate, [
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
           {
             name: "subnet_detail_list",
             value: {
@@ -1169,7 +1169,7 @@ describe("tfUnitTestUtils", () => {
         let tfstate = {
           outputs: {},
         };
-        let actualData = tfutils.buildOutputTest("Landing Zone", tfstate, [
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
           {
             name: "subnet_detail_list",
             value: {
