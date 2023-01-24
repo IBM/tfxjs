@@ -73,11 +73,11 @@ resource "random_shuffle" "shuffle_example" {
 # Example Module
 ##############################################################################
 
-module example_module {
+module "example_module" {
   source = "./example-module"
 }
 
-module ping_module {
+module "ping_module" {
   source = "./ping_module"
 }
 

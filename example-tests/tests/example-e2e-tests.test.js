@@ -5,6 +5,7 @@ const tfx = new tfxjs("../", {
 });
 
 tfx.apply("Hashicorp Provider Example Tests", () => {
+  tfx.outputs("End to End Tests", tfx.output("test", "test"));
   tfx.state(
     "Data Resources",
     tfx.address("data.external.example", {
