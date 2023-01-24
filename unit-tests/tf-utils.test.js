@@ -1165,6 +1165,51 @@ describe("tfUnitTestUtils", () => {
           "It should return correct instance test data"
         );
       });
+      it("should return a test for outputs when not provided", () => {
+        let tfstate = {
+          outputs: {},
+        };
+        let actualData = tfutils.buildOutputTest("Landing Zone", tfstate, [
+          {
+            name: "subnet_detail_list",
+            value: {
+              "us-south-1": {
+                "ez-multizone-subnet-zone-1": {
+                  cidr: "10.10.10.0/24",
+                  id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                },
+              },
+              "us-south-2": {
+                "ez-multizone-subnet-zone-2": {
+                  cidr: "10.20.10.0/24",
+                  id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                },
+              },
+              "us-south-3": {
+                "ez-multizone-subnet-zone-3": {
+                  cidr: "10.30.10.0/24",
+                  id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                },
+              },
+            },
+          },
+        ]);
+        let expectedData = {
+          describe: "Landing Zone Outputs",
+          tests: [
+            deepEqualTest("tfstate should have correct outputs", [
+              ["subnet_detail_list"],
+              [],
+              "Expected outputs",
+            ]),
+          ],
+        };
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "It should return correct instance test data"
+        );
+      });
     });
     describe("buildStateTest", () => {
       it("should return a list of instance tests based on the module name, tfstate, and instance tests", () => {
@@ -1512,6 +1557,188 @@ describe("tfUnitTestUtils", () => {
                   name: "name-two",
                 },
               ],
+            },
+          ],
+        };
+        tfutils.testModule(options);
+        assert.deepEqual(
+          itSpy.args,
+          [
+            [
+              "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
+            ],
+            [
+              "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
+            ],
+            [
+              "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+            ],
+            [
+              "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
+            ],
+            [
+              "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+            ],
+          ],
+          "should return correct it function were run"
+        );
+        assert.deepEqual(
+          describeSpy.args,
+          [
+            ["Cluster Versions"],
+            [
+              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions connection tests",
+            ],
+            [
+              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+            ],
+          ],
+          "should return correct it function were run"
+        );
+      });
+      it("should run the correct describe and test function for apply with outputs", () => {
+        let tfstate = {
+          outputs: {
+            subnet_detail_list: {
+              value: {
+                "us-south-1": {
+                  "ez-multizone-subnet-zone-1": {
+                    cidr: "10.10.10.0/24",
+                    id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                  },
+                },
+                "us-south-2": {
+                  "ez-multizone-subnet-zone-2": {
+                    cidr: "10.20.10.0/24",
+                    id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                  },
+                },
+                "us-south-3": {
+                  "ez-multizone-subnet-zone-3": {
+                    cidr: "10.30.10.0/24",
+                    id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                  },
+                },
+              },
+              type: [
+                "object",
+                {
+                  "us-south-1": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-1": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-2": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-2": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-3": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-3": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          resources: [
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_container_cluster_versions",
+              name: "cluster_versions",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    name: "name-one",
+                  },
+                },
+                {
+                  index_key: "test",
+                  attributes: {
+                    name: "name-two",
+                  },
+                },
+              ],
+            },
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_resource_instance",
+              name: "cos",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [],
+            },
+          ],
+        };
+        let options = {
+          moduleName: "Cluster Versions",
+          address:
+            "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          tfData: tfstate,
+          isApply: true,
+          testList: [
+            {
+              name: "Cluster Versions",
+              address:
+                "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+              instances: [
+                {
+                  name: "name-one",
+                },
+                {
+                  index_key: "test",
+                  name: "name-two",
+                },
+              ],
+            },
+          ],
+          outputList: [
+            {
+              name: "subnet_detail_list",
+              value: {
+                "us-south-1": {
+                  "ez-multizone-subnet-zone-1": {
+                    cidr: "10.10.10.0/24",
+                    id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                  },
+                },
+                "us-south-2": {
+                  "ez-multizone-subnet-zone-2": {
+                    cidr: "10.20.10.0/24",
+                    id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                  },
+                },
+                "us-south-3": {
+                  "ez-multizone-subnet-zone-3": {
+                    cidr: "10.30.10.0/24",
+                    id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                  },
+                },
+              },
             },
           ],
         };
