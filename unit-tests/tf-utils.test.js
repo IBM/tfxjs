@@ -1596,7 +1596,7 @@ describe("tfUnitTestUtils", () => {
           "should return correct it function were run"
         );
       });
-      it("should run the correct describe and test function for apply with outputs", () => {
+      it("should run the correct describe and test function for outputs", () => {
         let tfstate = {
           outputs: {
             subnet_detail_list: {
@@ -1699,24 +1699,8 @@ describe("tfUnitTestUtils", () => {
           address:
             "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
           tfData: tfstate,
-          isApply: true,
+          isOutput: true,
           testList: [
-            {
-              name: "Cluster Versions",
-              address:
-                "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-              instances: [
-                {
-                  name: "name-one",
-                },
-                {
-                  index_key: "test",
-                  name: "name-two",
-                },
-              ],
-            },
-          ],
-          outputList: [
             {
               name: "subnet_detail_list",
               value: {
@@ -1746,35 +1730,14 @@ describe("tfUnitTestUtils", () => {
         assert.deepEqual(
           itSpy.args,
           [
-            [
-              "Resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions should be in tfstate",
-            ],
-            [
-              "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[0] to have correct value for name.",
-            ],
-            [
-              "Expected instance with key 0 to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-            ],
-            [
-              "Expected resource module.landing_zone.data.ibm_container_cluster_versions.cluster_versions[test] to have correct value for name.",
-            ],
-            [
-              "Expected instance with key test to exist at module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-            ],
+            ["Output subnet_detail_list should be in tfstate"],
+            ["Output subnet_detail_list should have the correct output value"],
           ],
           "should return correct it function were run"
         );
         assert.deepEqual(
           describeSpy.args,
-          [
-            ["Cluster Versions"],
-            [
-              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions connection tests",
-            ],
-            [
-              "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
-            ],
-          ],
+          [["Cluster Versions Outputs"], ["subnet_detail_list"]],
           "should return correct it function were run"
         );
       });
