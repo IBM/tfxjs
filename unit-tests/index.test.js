@@ -529,4 +529,60 @@ describe("tfxjs", () => {
       });
     });
   });
+  describe("output", () => {
+    beforeEach(() => {
+      overrideTfx.tfutils.testModule = new sinon.spy();
+      overrideTfx.tfstate = {
+        outputs: {
+          test: "test",
+        },
+      };
+    });
+    it("should run tfutils with correct params", () => {
+      overrideTfx.output("test", [{ test: "test" }]);
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
+          moduleName: "test",
+          testList: [
+            {
+              test: "test",
+            },
+          ],
+          tfData: {
+            outputs: {
+              test: "test",
+            },
+          },
+          isOutput: true,
+        }),
+        "should have been called with expected params"
+      );
+    });
+    it("should run tfutils with correct params using multiple objects", () => {
+      overrideTfx.output("test", { test: "test" }, { test: "test" });
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
+          isOutput: true,
+          moduleName: "test",
+          testList: [{ test: "test" }, { test: "test" }],
+          tfData: {
+            outputs: {
+              test: "test",
+            },
+          },
+        }),
+        "should have been called with expected params"
+      );
+    });
+    it("should throw an error if no tfstate", () => {
+      overrideTfx.tfstate = undefined;
+      let task = () => {
+        overrideTfx.output("test", "test", []);
+      };
+      assert.throws(
+        task,
+        "`tfx.apply` needs to be successfully completed before running `tfx.state`."
+      );
+    });
+  });
 });
