@@ -26,3 +26,4 @@ tfxjs.tfvars
 frog/
 output.txt
 example.test.js
+example.tfstate
