@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 const {
   formatModuleName,
   escapeStringifiedText,
 } = require("../lib/text-replacements");
+=======
+const { formatModuleName } = require("../lib/text-replacements");
+>>>>>>> 423c0b1 (refactor: extract.js)
 const { assert } = require("chai");
 
 describe("text replacements", () => {
