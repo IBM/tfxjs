@@ -1018,7 +1018,7 @@ tfx.plan("Template Name", () => {
           ]
         }`)
       );
-      let expectedData = `tfx.address("data.module.ez_vpc.ibm_resource_group.resource_group", {
+      let expectedData = `tfx.address("module.ez_vpc.data.ibm_resource_group.resource_group", {
   account_id: "1234",
   created_at: "2019-05-23T19:21:47.795Z",
   crn: "crn:v1:bluemix:public:resource-controller::a/1234::resource-group:5679",
