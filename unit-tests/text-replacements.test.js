@@ -1,4 +1,7 @@
-const { formatModuleName } = require("../lib/text-replacements");
+const {
+  formatModuleName,
+  escapeStringifiedText,
+} = require("../lib/text-replacements");
 const { assert } = require("chai");
 
 describe("text replacements", () => {
