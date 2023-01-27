@@ -88,7 +88,58 @@ describe("builders", () => {
   });
   describe("eachKeyTest", () => {
     let eachKeyTest = builders.eachKeyTest;
-
+    it("should return deepequal when passed an array", () => {
+      let data = eachKeyTest(
+        "address",
+        [
+          {
+            value: [
+              {
+                name: "hi",
+              },
+            ],
+          },
+        ],
+        {
+          value: [
+            {
+              name: "hi",
+            },
+          ],
+        },
+        "plan",
+        "test"
+      );
+      let expectedData = [
+        {
+          name: "Expected resource address[undefined] to have correct value for test[undefined]",
+          assertionType: "deepEqual",
+          assertionArgs: [
+            [
+              {
+                value: [
+                  {
+                    name: "hi",
+                  },
+                ],
+              },
+            ],
+            [
+              {
+                value: [
+                  {
+                    name: "hi",
+                  },
+                ],
+              },
+            ],
+            "Expected address to have correct value for address[undefined].",
+          ],
+        },
+      ];
+      console.log(JSON.stringify(data, null, 2));
+      assert.deepEqual(data, expectedData, "it should return correct object");
+    });
     it("should run value test against a function if the value is a function", () => {
       let data = eachKeyTest(
         "address",
