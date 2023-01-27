@@ -25,5 +25,9 @@ blog.md
 tfxjs.tfvars
 frog/
 output.txt
+<<<<<<< HEAD
 example.test.js
 example.tfstate
+=======
+example.test.js
+>>>>>>> 1a2d7a5 (merge)
