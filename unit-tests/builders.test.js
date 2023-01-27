@@ -88,7 +88,58 @@ describe("builders", () => {
   });
   describe("eachKeyTest", () => {
     let eachKeyTest = builders.eachKeyTest;
-
+    it("should return deepequal when passed an array", () => {
+      let data = eachKeyTest(
+        "address",
+        [
+          {
+            value: [
+              {
+                name: "hi",
+              },
+            ],
+          },
+        ],
+        {
+          value: [
+            {
+              name: "hi",
+            },
+          ],
+        },
+        "plan",
+        "test"
+      );
+      let expectedData = [
+        {
+          name: "Expected resource address[undefined] to have correct value for test[undefined]",
+          assertionType: "deepEqual",
+          assertionArgs: [
+            [
+              {
+                value: [
+                  {
+                    name: "hi",
+                  },
+                ],
+              },
+            ],
+            [
+              {
+                value: [
+                  {
+                    name: "hi",
+                  },
+                ],
+              },
+            ],
+            "Expected address to have correct value for address[undefined].",
+          ],
+        },
+      ];
+      console.log(JSON.stringify(data, null, 2));
+      assert.deepEqual(data, expectedData, "it should return correct object");
+    });
     it("should run value test against a function if the value is a function", () => {
       let data = eachKeyTest(
         "address",
@@ -118,7 +169,7 @@ describe("builders", () => {
         "test",
         { test: "data" },
         {},
-        "state",
+        "apply",
         "test",
         0
       );
@@ -190,6 +241,20 @@ describe("builders", () => {
           name: "test",
           address: "test",
           values: {},
+        },
+        "should return expected data"
+      );
+    });
+  });
+  describe("output", () => {
+    let output = builders.output;
+    it("should return the correct object", () => {
+      let actualData = output("test", {});
+      assert.deepEqual(
+        actualData,
+        {
+          name: "test",
+          value: {},
         },
         "should return expected data"
       );
@@ -302,7 +367,11 @@ describe("builders", () => {
       connectionTests.connectionTests.udpTest = new sinon.spy();
       connectionTests.udp.doesConnect("host", 8080);
       assert.isTrue(
-        connectionTests.connectionTests.udpTest.calledOnceWith("host", 8080, false)
+        connectionTests.connectionTests.udpTest.calledOnceWith(
+          "host",
+          8080,
+          false
+        )
       );
     });
     it("should call and run doesNotConnect udp test from connect with a connection package", () => {
@@ -340,10 +409,7 @@ describe("builders", () => {
       connectionTests.connectionTests.pingTest = new sinon.spy();
       connectionTests.ping.doesNotConnect("host");
       assert.isTrue(
-        connectionTests.connectionTests.pingTest.calledOnceWith(
-          "host",
-          true
-        )
+        connectionTests.connectionTests.pingTest.calledOnceWith("host", true)
       );
     });
 
@@ -355,7 +421,11 @@ describe("builders", () => {
       connectionTests.connectionTests.sshTest = new sinon.spy();
       connectionTests.ssh.doesConnect("host", "username", "privateKey");
       assert.isTrue(
-        connectionTests.connectionTests.sshTest.calledOnceWith("host", "username", "privateKey")
+        connectionTests.connectionTests.sshTest.calledOnceWith(
+          "host",
+          "username",
+          "privateKey"
+        )
       );
     });
     it("should call and run doesNotConnect ssh test from connect with a connection package", () => {
@@ -374,7 +444,5 @@ describe("builders", () => {
         )
       );
     });
-
-
   });
 });

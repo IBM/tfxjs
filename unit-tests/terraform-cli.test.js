@@ -237,7 +237,7 @@ describe("terraformCli", () => {
       };
 
       return tf
-        .plan({test: "test"}, () => {}, {
+        .plan({ test: "test" }, () => {}, {
           cleanup: true,
         })
         .then(() => {
@@ -245,7 +245,9 @@ describe("terraformCli", () => {
             execSpy.args,
             [
               ["cd ../directory\nterraform init"],
-              ["cd ../directory\nterraform plan -out=tfplan -input=false --var-file=tfxjs.tfvars"],
+              [
+                "cd ../directory\nterraform plan -out=tfplan -input=false --var-file=tfxjs.tfvars",
+              ],
               ["cd ../directory\nterraform show -json tfplan"],
               [
                 "cd ../directory\nrm -rf tfplan .terraform/ .terraform.lock.hcl tfxjs.tfvars",
@@ -404,6 +406,35 @@ describe("terraformCli", () => {
         );
       });
     });
+    it("should run the correct commands with no tfvars and no callback targeting a tfstate file to run tests", () => {
+      exec.data = {
+        stdout: '{ "planned_values": "success" }',
+      };
+      return tf.apply({}, false, false, "../terraform.tfstate").then(() => {
+        assert.deepEqual(
+          execSpy.args,
+          [["cd ../directory\ncat ../terraform.tfstate"]],
+          "it should run the correct command"
+        );
+      });
+    });
+    it("should run the correct commands with no tfvars and callback targeting a tfstate file to run tests", () => {
+      exec.data = {
+        stdout: '{ "planned_values": "success" }',
+      };
+      return tf.apply(
+        {},
+        (data) => {
+          assert.deepEqual(
+            data,
+            { planned_values: "success" },
+            "it should return correct data"
+          );
+        },
+        false,
+        "../terraform.tfstate"
+      );
+    });
     it("should run the correct commands with no tfvars and no callback and destroy", () => {
       exec.data = {
         stdout: '{ "planned_values": "success" }',
@@ -428,13 +459,15 @@ describe("terraformCli", () => {
       exec.data = {
         stdout: '{ "planned_values": "success" }',
       };
-      return tf.apply({test: "test"}, false, true).then(() => {
+      return tf.apply({ test: "test" }, false, true).then(() => {
         assert.deepEqual(
           execSpy.args,
           [
             ["cd ../directory\nterraform init"],
             ["cd ../directory\nterraform plan --var-file=tfxjs.tfvars"],
-            ['cd ../directory\necho "yes" | terraform apply --var-file=tfxjs.tfvars'],
+            [
+              'cd ../directory\necho "yes" | terraform apply --var-file=tfxjs.tfvars',
+            ],
             ["cd ../directory\ncat terraform.tfstate"],
             [
               'cd ../directory\necho "yes" | terraform destroy\nrm -rf .terraform/ .terraform.lock.hcl terraform.tfstate terraform.tfstate.backup tfxjs.tfvars',
