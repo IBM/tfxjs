@@ -1,4 +1,11 @@
 {
+  "outputs": {
+    "test": {
+      "sensitive": false,
+      "type": "string",
+      "value": "test"
+    }
+  },
   "root_module": {
     "resources": [
       {
@@ -142,14 +149,7 @@
           "seed": null
         },
         "sensitive_values": {
-          "input": [
-            false,
-            false,
-            false,
-            false,
-            false,
-            false
-          ],
+          "input": [false, false, false, false, false, false],
           "keepers": {},
           "result": []
         }
@@ -163,13 +163,7 @@
         "provider_name": "registry.terraform.io/hashicorp/random",
         "schema_version": 0,
         "values": {
-          "input": [
-            "scout",
-            "slinger",
-            "warrior",
-            "builder",
-            "settler"
-          ],
+          "input": ["scout", "slinger", "warrior", "builder", "settler"],
           "keepers": {
             "shuffle_count": "2"
           },
@@ -177,13 +171,7 @@
           "seed": null
         },
         "sensitive_values": {
-          "input": [
-            false,
-            false,
-            false,
-            false,
-            false
-          ],
+          "input": [false, false, false, false, false],
           "keepers": {},
           "result": []
         }
@@ -220,9 +208,7 @@
             "provider_name": "registry.terraform.io/hashicorp/random",
             "schema_version": 0,
             "values": {
-              "input": [
-                "8.8.8.8"
-              ],
+              "input": ["8.8.8.8"],
               "keepers": {
                 "shuffle_count": "1"
               },
@@ -230,9 +216,7 @@
               "seed": null
             },
             "sensitive_values": {
-              "input": [
-                false
-              ],
+              "input": [false],
               "keepers": {},
               "result": []
             }

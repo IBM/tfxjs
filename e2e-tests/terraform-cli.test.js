@@ -23,6 +23,7 @@ describe("example-test terraformCli", () => {
           shuffle_count: 2,
         },
         (data) => {
+          fs.writeFileSync("outputs", JSON.stringify(data, null, 2))
           assert.deepEqual(
             data,
             require("./data-files/plan.json"),
@@ -39,6 +40,7 @@ describe("example-test terraformCli", () => {
           "example-module",
           "local-files",
           "main.tf",
+          "outputs.tf",
           "ping_module",
           "test-output.sh",
           "tests",
@@ -79,6 +81,7 @@ describe("example-test terraformCli", () => {
           "example-module",
           "local-files",
           "main.tf",
+          "outputs.tf",
           "ping_module",
           "test-output.sh",
           "tests",
