@@ -807,6 +807,410 @@ describe("tfUnitTestUtils", () => {
       };
       assert.deepEqual(actualData, expectedData, "should return correct data");
     });
+    describe("buildOutputTests", () => {
+      it("should return a test for a correct output", () => {
+        let tfstate = {
+          outputs: {
+            subnet_detail_list: {
+              value: {
+                "us-south-1": {
+                  "ez-multizone-subnet-zone-1": {
+                    cidr: "10.10.10.0/24",
+                    id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                  },
+                },
+                "us-south-2": {
+                  "ez-multizone-subnet-zone-2": {
+                    cidr: "10.20.10.0/24",
+                    id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                  },
+                },
+                "us-south-3": {
+                  "ez-multizone-subnet-zone-3": {
+                    cidr: "10.30.10.0/24",
+                    id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                  },
+                },
+              },
+              type: [
+                "object",
+                {
+                  "us-south-1": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-1": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-2": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-2": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-3": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-3": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        };
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
+          {
+            name: "subnet_detail_list",
+            value: {
+              "us-south-1": {
+                "ez-multizone-subnet-zone-1": {
+                  cidr: "10.10.10.0/24",
+                  id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                },
+              },
+              "us-south-2": {
+                "ez-multizone-subnet-zone-2": {
+                  cidr: "10.20.10.0/24",
+                  id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                },
+              },
+              "us-south-3": {
+                "ez-multizone-subnet-zone-3": {
+                  cidr: "10.30.10.0/24",
+                  id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                },
+              },
+            },
+          },
+        ]);
+        let expectedData = {
+          describe: "Landing Zone Outputs",
+          tests: [
+            {
+              describe: "subnet_detail_list",
+              tests: [
+                notFalseTest("Output subnet_detail_list should be in tfstate", [
+                  true,
+                  "Expected output subnet_detail_list to be in tfstate",
+                ]),
+                deepEqualTest(
+                  "Output subnet_detail_list should have the correct output value",
+                  [
+                    {
+                      "us-south-1": {
+                        "ez-multizone-subnet-zone-1": {
+                          cidr: "10.10.10.0/24",
+                          id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                        },
+                      },
+                      "us-south-2": {
+                        "ez-multizone-subnet-zone-2": {
+                          cidr: "10.20.10.0/24",
+                          id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                        },
+                      },
+                      "us-south-3": {
+                        "ez-multizone-subnet-zone-3": {
+                          cidr: "10.30.10.0/24",
+                          id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                        },
+                      },
+                    },
+                    {
+                      "us-south-1": {
+                        "ez-multizone-subnet-zone-1": {
+                          cidr: "10.10.10.0/24",
+                          id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                        },
+                      },
+                      "us-south-2": {
+                        "ez-multizone-subnet-zone-2": {
+                          cidr: "10.20.10.0/24",
+                          id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                        },
+                      },
+                      "us-south-3": {
+                        "ez-multizone-subnet-zone-3": {
+                          cidr: "10.30.10.0/24",
+                          id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                        },
+                      },
+                    },
+                    "Expected subnet_detail_list to have the correct value",
+                  ]
+                ),
+              ],
+            },
+          ],
+        };
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "It should return correct instance test data"
+        );
+      });
+      it("should return a test for an incorrect output", () => {
+        let tfstate = {
+          outputs: {
+            subnet_detail_list: {
+              value: {
+                "us-south-2": {
+                  "ez-multizone-subnet-zone-2": {
+                    cidr: "10.20.10.0/24",
+                    id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                  },
+                },
+                "us-south-3": {
+                  "ez-multizone-subnet-zone-3": {
+                    cidr: "10.30.10.0/24",
+                    id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                  },
+                },
+              },
+              type: [
+                "object",
+                {
+                  "us-south-1": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-1": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-2": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-2": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-3": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-3": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        };
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
+          {
+            name: "subnet_detail_list",
+            value: {
+              "us-south-1": {
+                "ez-multizone-subnet-zone-1": {
+                  cidr: "10.10.10.0/24",
+                  id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                },
+              },
+              "us-south-2": {
+                "ez-multizone-subnet-zone-2": {
+                  cidr: "10.20.10.0/24",
+                  id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                },
+              },
+              "us-south-3": {
+                "ez-multizone-subnet-zone-3": {
+                  cidr: "10.30.10.0/24",
+                  id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                },
+              },
+            },
+          },
+        ]);
+        let expectedData = {
+          describe: "Landing Zone Outputs",
+          tests: [
+            {
+              describe: "subnet_detail_list",
+              tests: [
+                notFalseTest("Output subnet_detail_list should be in tfstate", [
+                  true,
+                  "Expected output subnet_detail_list to be in tfstate",
+                ]),
+                deepEqualTest(
+                  "Output subnet_detail_list should have the correct output value",
+                  [
+                    {
+                      "us-south-1": {
+                        "ez-multizone-subnet-zone-1": {
+                          cidr: "10.10.10.0/24",
+                          id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                        },
+                      },
+                      "us-south-2": {
+                        "ez-multizone-subnet-zone-2": {
+                          cidr: "10.20.10.0/24",
+                          id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                        },
+                      },
+                      "us-south-3": {
+                        "ez-multizone-subnet-zone-3": {
+                          cidr: "10.30.10.0/24",
+                          id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                        },
+                      },
+                    },
+                    {
+                      "us-south-2": {
+                        "ez-multizone-subnet-zone-2": {
+                          cidr: "10.20.10.0/24",
+                          id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                        },
+                      },
+                      "us-south-3": {
+                        "ez-multizone-subnet-zone-3": {
+                          cidr: "10.30.10.0/24",
+                          id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                        },
+                      },
+                    },
+                    "Expected subnet_detail_list to have the correct value",
+                  ]
+                ),
+              ],
+            },
+          ],
+        };
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "It should return correct instance test data"
+        );
+      });
+      it("should return a test for an unfound output", () => {
+        let tfstate = {
+          outputs: {
+            frog: true,
+          },
+        };
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
+          {
+            name: "subnet_detail_list",
+            value: {
+              "us-south-1": {
+                "ez-multizone-subnet-zone-1": {
+                  cidr: "10.10.10.0/24",
+                  id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                },
+              },
+              "us-south-2": {
+                "ez-multizone-subnet-zone-2": {
+                  cidr: "10.20.10.0/24",
+                  id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                },
+              },
+              "us-south-3": {
+                "ez-multizone-subnet-zone-3": {
+                  cidr: "10.30.10.0/24",
+                  id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                },
+              },
+            },
+          },
+        ]);
+        let expectedData = {
+          describe: "Landing Zone Outputs",
+          tests: [
+            {
+              describe: "subnet_detail_list",
+              tests: [
+                notFalseTest("Output subnet_detail_list should be in tfstate", [
+                  false,
+                  "Expected output subnet_detail_list to be in tfstate",
+                ]),
+              ],
+            },
+          ],
+        };
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "It should return correct instance test data"
+        );
+      });
+      it("should return a test for outputs when not provided", () => {
+        let tfstate = {
+          outputs: {},
+        };
+        let actualData = tfutils.buildOutputTests("Landing Zone", tfstate, [
+          {
+            name: "subnet_detail_list",
+            value: {
+              "us-south-1": {
+                "ez-multizone-subnet-zone-1": {
+                  cidr: "10.10.10.0/24",
+                  id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                },
+              },
+              "us-south-2": {
+                "ez-multizone-subnet-zone-2": {
+                  cidr: "10.20.10.0/24",
+                  id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                },
+              },
+              "us-south-3": {
+                "ez-multizone-subnet-zone-3": {
+                  cidr: "10.30.10.0/24",
+                  id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                },
+              },
+            },
+          },
+        ]);
+        let expectedData = {
+          describe: "Landing Zone Outputs",
+          tests: [
+            deepEqualTest("tfstate should have correct outputs", [
+              ["subnet_detail_list"],
+              [],
+              "Expected outputs",
+            ]),
+          ],
+        };
+        assert.deepEqual(
+          actualData,
+          expectedData,
+          "It should return correct instance test data"
+        );
+      });
+    });
     describe("buildStateTest", () => {
       it("should return a list of instance tests based on the module name, tfstate, and instance tests", () => {
         let tfstate = {
@@ -1192,6 +1596,151 @@ describe("tfUnitTestUtils", () => {
           "should return correct it function were run"
         );
       });
+      it("should run the correct describe and test function for outputs", () => {
+        let tfstate = {
+          outputs: {
+            subnet_detail_list: {
+              value: {
+                "us-south-1": {
+                  "ez-multizone-subnet-zone-1": {
+                    cidr: "10.10.10.0/24",
+                    id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                  },
+                },
+                "us-south-2": {
+                  "ez-multizone-subnet-zone-2": {
+                    cidr: "10.20.10.0/24",
+                    id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                  },
+                },
+                "us-south-3": {
+                  "ez-multizone-subnet-zone-3": {
+                    cidr: "10.30.10.0/24",
+                    id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                  },
+                },
+              },
+              type: [
+                "object",
+                {
+                  "us-south-1": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-1": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-2": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-2": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                  "us-south-3": [
+                    "object",
+                    {
+                      "ez-multizone-subnet-zone-3": [
+                        "object",
+                        {
+                          cidr: "string",
+                          id: "string",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          resources: [
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_container_cluster_versions",
+              name: "cluster_versions",
+              instances: [
+                {
+                  index_key: 0,
+                  attributes: {
+                    name: "name-one",
+                  },
+                },
+                {
+                  index_key: "test",
+                  attributes: {
+                    name: "name-two",
+                  },
+                },
+              ],
+            },
+            {
+              module: "module.landing_zone",
+              mode: "data",
+              type: "ibm_resource_instance",
+              name: "cos",
+              provider: 'provider["registry.terraform.io/ibm-cloud/ibm"]',
+              instances: [],
+            },
+          ],
+        };
+        let options = {
+          moduleName: "Cluster Versions",
+          address:
+            "module.landing_zone.data.ibm_container_cluster_versions.cluster_versions",
+          tfData: tfstate,
+          isOutput: true,
+          testList: [
+            {
+              name: "subnet_detail_list",
+              value: {
+                "us-south-1": {
+                  "ez-multizone-subnet-zone-1": {
+                    cidr: "10.10.10.0/24",
+                    id: "0717-32b1e7e4-b763-4d60-9154-c15fa0b29bd2",
+                  },
+                },
+                "us-south-2": {
+                  "ez-multizone-subnet-zone-2": {
+                    cidr: "10.20.10.0/24",
+                    id: "0727-d75cbd78-273d-475d-a139-29fe0d6d5036",
+                  },
+                },
+                "us-south-3": {
+                  "ez-multizone-subnet-zone-3": {
+                    cidr: "10.30.10.0/24",
+                    id: "0737-4817d987-e870-4969-8be0-c73f25d37a23",
+                  },
+                },
+              },
+            },
+          ],
+        };
+        tfutils.testModule(options);
+        assert.deepEqual(
+          itSpy.args,
+          [
+            ["Output subnet_detail_list should be in tfstate"],
+            ["Output subnet_detail_list should have the correct output value"],
+          ],
+          "should return correct it function were run"
+        );
+        assert.deepEqual(
+          describeSpy.args,
+          [["Cluster Versions Outputs"], ["subnet_detail_list"]],
+          "should return correct it function were run"
+        );
+      });
       it("should run the correct describe and test function for apply with connection tests", () => {
         let tfx = {
           tcp: {
@@ -1240,28 +1789,25 @@ describe("tfUnitTestUtils", () => {
                 {
                   index_key: 0,
                   attributes: {
-                    address: "1.2.3.4"
-                  }
-                }
-              ]
-            }
+                    address: "1.2.3.4",
+                  },
+                },
+              ],
+            },
           ],
         };
         let options = {
           moduleName: "Connection Test",
-          address:
-            "module.landing_zone.data.test.test",
+          address: "module.landing_zone.data.test.test",
           tfData: tfstate,
           isApply: true,
           testList: [
             {
               name: "Connection Test",
-              address:
-                "module.landing_zone.data.test.test",
+              address: "module.landing_zone.data.test.test",
               instances: [
                 {
-                  address: addressFunction
-                  
+                  address: addressFunction,
                 },
               ],
             },
@@ -1273,11 +1819,11 @@ describe("tfUnitTestUtils", () => {
           [
             ["module.landing_zone.data.test.test[0] connection tests"],
             [
-              "Resource module.landing_zone.data.test.test should be in tfstate"
+              "Resource module.landing_zone.data.test.test should be in tfstate",
             ],
             [
-              "Expected instance with key 0 to exist at module.landing_zone.data.test.test"
-            ]
+              "Expected instance with key 0 to exist at module.landing_zone.data.test.test",
+            ],
           ],
           "should return correct it function were run"
         );
@@ -1285,12 +1831,8 @@ describe("tfUnitTestUtils", () => {
           describeSpy.args,
           [
             ["Connection Test"],
-            [
-              "module.landing_zone.data.test.test connection tests",
-            ],
-            [
-              "module.landing_zone.data.test.test"
-            ]
+            ["module.landing_zone.data.test.test connection tests"],
+            ["module.landing_zone.data.test.test"],
           ],
           "should return correct it function were run"
         );

@@ -292,6 +292,20 @@ describe("tfxjs", () => {
         "it should print out the correct data"
       );
     });
+    it("should produce the correct console.log data when using tfstate file to run tests", () => {
+      overrideTfx = new tfxjs(
+        "./terraform.tfstate",
+        {},
+        {
+          overrideBefore: beforeFn,
+          overrideDescribe: describeFn,
+          overrideIt: itFn,
+          quiet: true,
+        }
+      );
+      overrideTfx.apply("describe", () => {});
+      assert.deepEqual(logSpy.args, [], "it should print out the correct data");
+    });
   });
   describe("planAndSetData", () => {
     beforeEach(() => {
@@ -412,6 +426,36 @@ describe("tfxjs", () => {
       );
     });
   });
+  describe("runTestsFromTfState", () => {
+    beforeEach(() => {
+      describeSpy = new sinon.spy();
+      itSpy = new sinon.spy();
+      beforeSpy = new sinon.spy();
+      logSpy = new sinon.spy();
+      mock = new mocks();
+      overrideTfx = new tfxjs("./mock_path", "ibmcloud_api_key", {
+        overrideBefore: beforeFn,
+        overrideDescribe: describeFn,
+        overrideIt: itFn,
+        overrideExec: new mock.mockExec({
+          stdout: '{"planned_values" : "success"}',
+        }).promise,
+        state_path: "../terraform.tfstate",
+      });
+      overrideTfx.print = logSpy;
+      // prevent creation of file
+      overrideTfx.cli.createTfVarFile = () => {};
+    });
+    it("should return the correct data and set this.apply", async () => {
+      overrideTfx.exec = mock.exec;
+      await overrideTfx.runTestsFromTfState();
+      assert.deepEqual(
+        overrideTfx.tfstate,
+        { planned_values: "success" },
+        "it should store correct plan"
+      );
+    });
+  });
   describe("state", () => {
     beforeEach(() => {
       overrideTfx.tfutils.testModule = new sinon.spy();
@@ -483,6 +527,62 @@ describe("tfxjs", () => {
           assert.isTrue(done instanceof Function, "it should be a function");
         });
       });
+    });
+  });
+  describe("outputs", () => {
+    beforeEach(() => {
+      overrideTfx.tfutils.testModule = new sinon.spy();
+      overrideTfx.tfstate = {
+        outputs: {
+          test: "test",
+        },
+      };
+    });
+    it("should run tfutils with correct params", () => {
+      overrideTfx.outputs("test", [{ test: "test" }]);
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
+          moduleName: "test",
+          testList: [
+            {
+              test: "test",
+            },
+          ],
+          tfData: {
+            outputs: {
+              test: "test",
+            },
+          },
+          isOutput: true,
+        }),
+        "should have been called with expected params"
+      );
+    });
+    it("should run tfutils with correct params using multiple objects", () => {
+      overrideTfx.outputs("test", { test: "test" }, { test: "test" });
+      assert.isTrue(
+        overrideTfx.tfutils.testModule.calledOnceWith({
+          isOutput: true,
+          moduleName: "test",
+          testList: [{ test: "test" }, { test: "test" }],
+          tfData: {
+            outputs: {
+              test: "test",
+            },
+          },
+        }),
+        "should have been called with expected params"
+      );
+    });
+    it("should throw an error if no tfstate", () => {
+      overrideTfx.tfstate = undefined;
+      let task = () => {
+        overrideTfx.outputs("test", "test", []);
+      };
+      assert.throws(
+        task,
+        "`tfx.apply` needs to be successfully completed before running `tfx.state`."
+      );
     });
   });
 });

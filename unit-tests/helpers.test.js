@@ -1,19 +1,10 @@
+const helpers = require("../lib/helpers");
 const { assert } = require("chai");
 const {
   checkResourceTests,
   expectedResourceAddress,
   childArraySearch,
   convertTfVarsFromTags,
-  composeName,
-  getFoundResources,
-  valueFunctionTest,
-  checkModuleTest,
-  parseTestModuleOptions,
-  tfVarCheck,
-  capitalizeWords,
-  deepObjectIgnoreNullValues,
-  formatModuleName,
-  containsKeysModule,
 } = require("../lib/helpers");
 const constants = require("../lib/constants");
 
@@ -44,7 +35,7 @@ describe("helpers", () => {
   });
   describe("composeName", () => {
     it("should compose a name from a resource not in a module", () => {
-      let actualData = composeName({
+      let actualData = helpers.composeName({
         name: "test",
         mode: "managed",
         type: "test",
@@ -57,7 +48,7 @@ describe("helpers", () => {
       );
     });
     it("should compose a name from a data resource", () => {
-      let actualData = composeName({
+      let actualData = helpers.composeName({
         module: "test",
         name: "test",
         mode: "data",
@@ -73,7 +64,7 @@ describe("helpers", () => {
   });
   describe("childArraySearch", () => {
     it("should return correct object for found parent address", () => {
-      let data = childArraySearch("found", [
+      let data = helpers.childArraySearch("found", [
         {
           address: "found",
         },
@@ -86,7 +77,7 @@ describe("helpers", () => {
       });
     });
     it("should return correct object for unfound parent address", () => {
-      let data = childArraySearch("missing", [
+      let data = helpers.childArraySearch("missing", [
         {
           address: "found",
         },
@@ -157,7 +148,7 @@ describe("helpers", () => {
   });
   describe("getFoundResources", () => {
     it("should return correct array when none unexpected resources found and address is empty string", () => {
-      let data = getFoundResources(
+      let data = helpers.getFoundResources(
         [
           {
             address: "test.test",
@@ -169,7 +160,7 @@ describe("helpers", () => {
       assert.deepEqual(data.length, 0, "should return empty array");
     });
     it("should return correct array when none unexpected resources found and address is not empty string", () => {
-      let data = getFoundResources(
+      let data = helpers.getFoundResources(
         [
           {
             address: "test.test",
@@ -181,7 +172,7 @@ describe("helpers", () => {
       assert.deepEqual(data.length, 0, "should return empty array");
     });
     it("should return correct array when an unexpected resource is found", () => {
-      let data = getFoundResources(
+      let data = helpers.getFoundResources(
         [
           {
             address: "test.test",
@@ -194,6 +185,7 @@ describe("helpers", () => {
     });
   });
   describe("valueFunctionTest", () => {
+    let valueFunctionTest = helpers.valueFunctionTest;
     it("should return bad results if everything is correct but data isn't found", () => {
       let data = valueFunctionTest((frog) => {
         return "uh-oh";
@@ -209,6 +201,7 @@ describe("helpers", () => {
     });
   });
   describe("checkModuleTest", () => {
+    let checkModuleTest = helpers.checkModuleTest;
     it("should throw an error if no root_module", () => {
       let task = () => {
         checkModuleTest("root_module", {});
@@ -290,6 +283,7 @@ describe("helpers", () => {
     });
   });
   describe("parseTestModuleOptions", () => {
+    let parseTestModuleOptions = helpers.parseTestModuleOptions;
     it("should return the defaults if no options are passed other than tfData", () => {
       let actualData = parseTestModuleOptions({
         tfData: true,
@@ -327,6 +321,7 @@ describe("helpers", () => {
     });
   });
   describe("containsKeysModule", () => {
+    let containsKeysModule = helpers.containsKeysModule;
     it("should return true if moduleData.address and address match", () => {
       assert.isTrue(
         containsKeysModule({ address: "test" }, "test"),
@@ -377,6 +372,7 @@ describe("helpers", () => {
   });
 
   describe("tfVarCheck", () => {
+    let tfVarCheck = helpers.tfVarCheck;
     it("should not throw if string, boolean, and number are passed", () => {
       let data = {
         one: 1,
@@ -405,7 +401,7 @@ describe("helpers", () => {
   });
   describe("capitalizeWords", () => {
     it("should return capitalized words", () => {
-      let actualData = capitalizeWords(
+      let actualData = helpers.capitalizeWords(
         "all lowercase words separated by spaces"
       );
       let expectedData = "All Lowercase Words Separated By Spaces";
@@ -417,6 +413,7 @@ describe("helpers", () => {
     });
   });
   describe("deepObjectIgnoreNullValues", () => {
+    let deepObjectIgnoreNullValues = helpers.deepObjectIgnoreNullValues;
     it("should remove all null values from an object with sub object", () => {
       let testData = {
         test: {
@@ -480,43 +477,21 @@ describe("helpers", () => {
       );
     });
     it("should not recurr if an object value is null", () => {
-      let actualData = deepObjectIgnoreNullValues({ identifier: null });
+      let actualData = helpers.deepObjectIgnoreNullValues({ identifier: null });
       let expectedData = { identifier: null };
       assert.deepEqual(actualData, expectedData, "it should return object");
     });
     it("should not recurr if an object value is undefined", () => {
-      let actualData = deepObjectIgnoreNullValues(undefined);
+      let actualData = helpers.deepObjectIgnoreNullValues(undefined);
       let expectedData = {};
       assert.deepEqual(actualData, expectedData, "it should return object");
     });
     it("should not recurr if an object child value is null", () => {
-      let actualData = deepObjectIgnoreNullValues({
+      let actualData = helpers.deepObjectIgnoreNullValues({
         frog: { identifier: null },
       });
       let expectedData = { frog: { identifier: null } };
       assert.deepEqual(actualData, expectedData, "it should return object");
-    });
-  });
-  describe("formatModuleName", () => {
-    it("should create a name for a top level module", () => {
-      let actualData = formatModuleName("module.test_module");
-      let expectedData = "Test Module";
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return correct name"
-      );
-    });
-    it("should create a name for a child module", () => {
-      let actualData = formatModuleName(
-        'module.test_module["frog"].module.child.module.deep_child'
-      );
-      let expectedData = "Deep Child";
-      assert.deepEqual(
-        actualData,
-        expectedData,
-        "it should return correct name"
-      );
     });
   });
   describe("convertTfVarsFromTags", () => {
@@ -527,6 +502,132 @@ describe("helpers", () => {
         actualData,
         expectedData,
         "it should return empty object"
+      );
+    });
+  });
+  describe("restoreStringifiedJson", () => {
+    let testData, jsonStringValues;
+    beforeEach(() => {
+      testData = {
+        version: 4,
+        terraform_version: "1.2.9",
+        serial: 13,
+        lineage: "410554f0-fc4d-6733-850a-fce3af2ec2e1",
+        outputs: {
+          config: {
+            value: "__json_value_2",
+            type: "string",
+          },
+        },
+        frog: [1, 2, 3, [1, 2, 3, 4]],
+        resources: [
+          {
+            module: "module.ez_vpc",
+            mode: "data",
+            type: "external",
+            name: "format_output",
+            provider: 'provider["registry.terraform.io/hashicorp/external"]',
+            instances: [
+              {
+                schema_version: 0,
+                attributes: {
+                  id: "-",
+                  program: [
+                    "python3",
+                    "ez_vpc/scripts/output.py",
+                    "__json_value_1",
+                  ],
+                  query: null,
+                  result: {
+                    data: "__json_value_3",
+                  },
+                  working_dir: null,
+                },
+                sensitive_attributes: [],
+              },
+            ],
+          },
+        ],
+      };
+      jsonStringValues = ["zero", "one", "two", "three"];
+    });
+    it("should restore data", () => {
+      let actualData = helpers.restoreStringifiedJson(
+        testData,
+        jsonStringValues
+      );
+      let expectedData = {
+        version: 4,
+        terraform_version: "1.2.9",
+        serial: 13,
+        lineage: "410554f0-fc4d-6733-850a-fce3af2ec2e1",
+        outputs: {
+          config: {
+            value: "two",
+            type: "string",
+          },
+        },
+        frog: [1, 2, 3, [1, 2, 3, 4]],
+        resources: [
+          {
+            module: "module.ez_vpc",
+            mode: "data",
+            type: "external",
+            name: "format_output",
+            provider: 'provider["registry.terraform.io/hashicorp/external"]',
+            instances: [
+              {
+                schema_version: 0,
+                attributes: {
+                  id: "-",
+                  program: ["python3", "ez_vpc/scripts/output.py", "one"],
+                  query: null,
+                  result: {
+                    data: "three",
+                  },
+                  working_dir: null,
+                },
+                sensitive_attributes: [],
+              },
+            ],
+          },
+        ],
+      };
+      assert.deepEqual(
+        actualData,
+        expectedData,
+        "it should return correct data"
+      );
+    });
+  });
+  describe("jsonParseCallback", () => {
+    let parser, list;
+    beforeEach(() => {
+      list = [];
+      parser = new helpers.jsonParseCallback(list);
+    });
+    it("should return value if not string", () => {
+      let actualData = parser.callback("a", 0);
+      assert.deepEqual(actualData, 0, "it should return the value");
+    });
+    it("should return value if string and no { present", () => {
+      let actualData = parser.callback("a", "0");
+      assert.deepEqual(actualData, "0", "it should return the value");
+    });
+    it("should return value if { is present but json is not parsable", () => {
+      let actualData = parser.callback("a", "{0");
+      assert.deepEqual(
+        actualData,
+        "!!! ERROR -- Unable to parse stringified json.",
+        "it should return the value"
+      );
+    });
+    it("should return value if { is present but json is parsable", () => {
+      let actualData = parser.callback("a", '{ "test" : 0 }');
+      assert.deepEqual(
+        actualData,
+        "!!! ERROR -- Unable to parse stringified json.",
+        "it should return the value"
       );
     });
   });
