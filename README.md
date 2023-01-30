@@ -82,7 +82,7 @@ tfx.plan("MyModule", () => { // Gerate a plan in the directory
 ##############################################################################
 # 
 #  Running `terraform plan`
-#  Teplate File:
+#  TemplateFile:
 #     < your file path >
 # 
 ##############################################################################

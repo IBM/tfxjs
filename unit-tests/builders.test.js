@@ -282,7 +282,7 @@ describe("builders", () => {
   describe("textTemplate", () => {
     let textTemplate = builders.textTemplate;
     const resourceTemplate = `tfx.resource(\n  "$RESOURCE_NAME",\n  "$RESOURCE_ADDRESS",\n$VALUES\n),`;
-    it("should get all the args from a string teplate and set as templateArgs", () => {
+    it("should get all the args from a string templateand set as templateArgs", () => {
       let expectedData = ["$RESOURCE_NAME", "$RESOURCE_ADDRESS", "$VALUES"];
       let actualData = new textTemplate(resourceTemplate).templateArgs;
       assert.deepEqual(actualData, expectedData, "should have correct array");
