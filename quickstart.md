@@ -696,13 +696,3 @@ In this test example we are testing the ID value to ensure that it will have a t
     })
   );
 ```
-
-### Creating a Clone Workspace
-
-
-- move to box note (personal, cse)
-- get link for trello board (https://trello.com/c/1ncCmtOf/339-pitch-template-new-blog-posts)
-   - open issue
-   - add link to box note
-   - give Ian Smalley access
-- apache 2.0
